@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/types.ts","./src/vite-env.d.ts","./src/components/questioncard.tsx","./src/pages/home.tsx","./src/pages/practice.tsx","./src/pages/stats.tsx","./src/pages/wrongbook.tsx","./src/store/quizstore.ts"],"version":"5.9.3"}

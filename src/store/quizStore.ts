@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { AnswerKey, AttemptRecord, Question, Subject } from '../types'
-import { SUBJECTS, YEARS } from '../types'
+import type { AnswerKey, AttemptRecord, ExamConfig, Question, Subject } from '../types'
+import { EXAM_RATIO, SUBJECTS, YEARS } from '../types'
 import raw from '../data/questions.json'
 
 /** 题库：596 题（skip=false 的可用题） */
@@ -36,14 +36,34 @@ function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
+/** 按 408 真实比例组卷：从筛选题库中每科按 counts 数量随机抽题 */
+export function buildExam(f: SessionFilter, counts: Record<Subject, number>): Question[] {
+  const pool = filterQuestions(f)
+  const out: Question[] = []
+  for (const s of SUBJECTS) {
+    const sub = pool.filter((q) => q.subject === s)
+    out.push(...shuffle(sub).slice(0, counts[s]))
+  }
+  // 按 1-40 题号顺序排：数据结构 → 计组 → 操作系统 → 计网
+  return out
+}
+
 interface QuizState {
   // ---- 练习会话 ----
   filter: SessionFilter
+  /** 考试模式：'practice' 自由练习 / 'exam' 模拟考试 */
+  mode: 'practice' | 'exam'
+  /** 考试剩余秒数（exam 模式）：-1 = 不限时；0 = 限时已耗尽（强制交卷）；>0 = 倒计时中 */
+  examRemainSec: number
+  /** 考试开始时间戳（用于算分批） */
+  examStartTs: number | null
   session: string[] | null // 当前会话题目 id 序列（null = 未开始）
   index: number
   picked: Record<string, AnswerKey> // 会话内已选答案（qid -> 选择）
   setFilter: (patch: Partial<SessionFilter>) => void
   startSession: () => void
+  startExam: (cfg: ExamConfig) => void
+  tickExam: () => void // 考试模式每秒调用
   pick: (qid: string, key: AnswerKey) => void
   go: (delta: number) => void
   clearSession: () => void
@@ -63,6 +83,9 @@ export const useQuiz = create<QuizState>()(
   persist<QuizState, [], [], Persisted>(
     (set, get) => ({
       filter: DEFAULT_FILTER,
+      mode: 'practice',
+      examRemainSec: 0,
+      examStartTs: null,
       session: null,
       index: 0,
       picked: {},
@@ -76,7 +99,26 @@ export const useQuiz = create<QuizState>()(
         const qs = filterQuestions(get().filter)
         if (qs.length === 0) return
         const seq = (get().filter.shuffle ? shuffle(qs) : qs).map((q) => q.id)
-        set({ session: seq, index: 0, picked: {} })
+        set({ mode: 'practice', session: seq, index: 0, picked: {}, examRemainSec: 0, examStartTs: null })
+      },
+
+      startExam: (cfg) => {
+        const qs = buildExam(get().filter, cfg.counts)
+        if (qs.length === 0) return
+        set({
+          mode: 'exam',
+          session: qs.map((q) => q.id),
+          index: 0,
+          picked: {},
+          examRemainSec: cfg.durationMin === 0 ? -1 : cfg.durationMin * 60,
+          examStartTs: Date.now(),
+        })
+      },
+
+      tickExam: () => {
+        const { mode, examRemainSec } = get()
+        if (mode !== 'exam' || examRemainSec <= 0) return
+        set({ examRemainSec: examRemainSec - 1 })
       },
 
       pick: (qid, key) => {
@@ -108,7 +150,7 @@ export const useQuiz = create<QuizState>()(
         set({ index: ni })
       },
 
-      clearSession: () => set({ session: null, index: 0, picked: {} }),
+      clearSession: () => set({ session: null, index: 0, picked: {}, mode: 'practice', examRemainSec: 0, examStartTs: null }),
 
       toggleFlag: (qid) => {
         const flagged = { ...get().flagged, [qid]: !get().flagged[qid] }
@@ -137,6 +179,12 @@ export const useQuiz = create<QuizState>()(
     },
   ),
 )
+
+/** 调试用：暴露 store 到 window（仅 dev/测试） */
+if (typeof window !== 'undefined' && import.meta.env.DEV) {
+  ;(window as any).__quiz = useQuiz
+  ;(window as any).__bank = BANK
+}
 /** 派生：错题集（最近一次答错的题，按时间倒序） */
 export function wrongList(): AttemptRecord[] {
   const { attempts } = useQuiz.getState()

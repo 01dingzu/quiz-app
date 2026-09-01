@@ -1,21 +1,26 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useQuiz, BANK } from '../store/quizStore'
-import { SUBJECTS, YEARS, type Subject } from '../types'
+import { useQuiz, BANK, buildExam } from '../store/quizStore'
+import { EXAM_PER_Q_SCORE, EXAM_RATIO, SUBJECTS, YEARS, type Subject } from '../types'
 
-/** 练习设置页：年份 / 科目筛选 + 顺序/随机 + 开始 */
+/** 练习设置页：年份 / 科目筛选 + 顺序/随机 + 自由练习 / 模拟考试 */
 export default function Home() {
-  const { filter, setFilter, startSession } = useQuiz()
+  const { filter, setFilter, startSession, startExam } = useQuiz()
   const nav = useNavigate()
-  const [mode, setMode] = useState<'single' | 'all'>('single')
+  const [duration, setDuration] = useState<0 | 30 | 60 | 90 | 180>(0)
 
   const allYears = filter.years.length === 0
   const allSubjects = filter.subjects.length === 0
-  const count = BANK.filter(
-    (q) =>
-      (allYears || filter.years.includes(q.year)) &&
-      (allSubjects || filter.subjects.includes(q.subject)),
-  ).length
+
+  const count = useMemo(
+    () =>
+      BANK.filter(
+        (q) =>
+          (allYears || filter.years.includes(q.year)) &&
+          (allSubjects || filter.subjects.includes(q.subject)),
+      ).length,
+    [allYears, allSubjects, filter],
+  )
 
   const toggleYear = (y: number) => {
     const cur = allYears ? YEARS : filter.years
@@ -29,10 +34,32 @@ export default function Home() {
     setFilter({ subjects: next.length === SUBJECTS.length ? [] : next })
   }
 
-  const start = () => {
+  const startPractice = () => {
     startSession()
     nav('/practice')
   }
+
+  const startExamNow = () => {
+    startExam({ counts: EXAM_RATIO, durationMin: duration })
+    nav('/practice')
+  }
+
+  // 考试组卷预估：当前筛选下每科可用题数 vs 目标
+  const examAvail = useMemo(() => {
+    const result: Record<Subject, { need: number; have: number; ok: boolean }> = {} as never
+    for (const s of SUBJECTS) {
+      const have = BANK.filter(
+        (q) =>
+          q.subject === s &&
+          (allYears || filter.years.includes(q.year)) &&
+          (allSubjects || filter.subjects.includes(s)),
+      ).length
+      result[s] = { need: EXAM_RATIO[s], have, ok: have >= EXAM_RATIO[s] }
+    }
+    return result
+  }, [allYears, allSubjects, filter])
+  const examCanStart = Object.values(examAvail).every((v) => v.ok)
+  const examTotal = Object.values(EXAM_RATIO).reduce((a, b) => a + b, 0)
 
   return (
     <>
@@ -79,19 +106,47 @@ export default function Home() {
           <span>{filter.shuffle ? '随机顺序（每次不同）' : '按题号顺序'}</span>
         </div>
 
-        <div className="sec-title">练习模式</div>
-        <div className="chips">
-          <button className={'chip' + (mode === 'single' ? ' on' : '')} onClick={() => setMode('single')}>
-            逐题练习
-          </button>
-          <button className={'chip' + (mode === 'all' ? ' on' : '')} onClick={() => setMode('all')}>
-            整套模拟（{allYears ? 40 : '所选年'} 题）
-          </button>
-        </div>
-
-        <button className="start-btn" disabled={count === 0} onClick={start}>
+        <div className="sec-title">自由练习</div>
+        <button className="start-btn" disabled={count === 0} onClick={startPractice}>
           开始练习 · 共 {count} 题
         </button>
+      </div>
+
+      <div className="card exam-card">
+        <div className="sec-title">模拟考试（408 真实比例 11/11/10/8 = 40 题 · 满分 80）</div>
+        <div className="ratio-grid">
+          {SUBJECTS.map((s) => (
+            <div key={s} className={'ratio-cell' + (examAvail[s].ok ? '' : ' warn')}>
+              <div className="ratio-sub">{s}</div>
+              <div className="ratio-need">
+                {EXAM_RATIO[s]} 题 <span className="ratio-have">/ 可用 {examAvail[s].have}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="sec-title">时长（0 = 不计时）</div>
+        <div className="chips">
+          {[0, 30, 60, 90, 180].map((m) => (
+            <button
+              key={m}
+              className={'chip' + (duration === m ? ' on' : '')}
+              onClick={() => setDuration(m as 0 | 30 | 60 | 90 | 180)}
+            >
+              {m === 0 ? '不限时' : `${m} 分钟`}
+            </button>
+          ))}
+        </div>
+
+        <button className="start-btn exam" disabled={!examCanStart} onClick={startExamNow}>
+          {examCanStart
+            ? `开始考试 · ${examTotal} 题 · ${duration === 0 ? '不限时' : `${duration} 分钟`}`
+            : '当前筛选题量不足组卷'}
+        </button>
+        <div className="exam-hint">
+          计分：每题 {EXAM_PER_Q_SCORE} 分 · 满分 {EXAM_PER_Q_SCORE * examTotal} ·
+          完成后展示分数与分科正确率
+        </div>
       </div>
 
       <div className="card" style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.8 }}>
@@ -99,9 +154,11 @@ export default function Home() {
         <br />
         · 题库为 2009-2024 年 408 统考单选真题，共 {BANK.length} 题可用（图片题 44 道暂未收录，二期支持）。
         <br />
-        · 答错自动记入错题本；每题可手动「☆ 标记」存疑/收藏。
+        · 自由练习：可任意选择年份 / 科目 / 顺序，答错自动入错题本，每题可手动「☆ 标记」。
         <br />
-        · 错题本与统计保存在本机浏览器（localStorage），换设备不迁移。
+        · 模拟考试：按 408 真实比例组 40 题（1-11 数据结构 / 12-22 计组 / 23-32 操作系统 / 33-40 计网），可选计时。
+        <br />
+        · 数据保存在本机浏览器（localStorage），换设备不迁移。
       </div>
     </>
   )

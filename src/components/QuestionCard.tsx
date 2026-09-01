@@ -9,10 +9,15 @@ interface Props {
   /** 该题被跳过（待优先作答） */
   skipped?: boolean
   tags?: string[]
+  /** 该题题干引用了图/表但题库无图（缺图提示） */
+  missingImg?: boolean
+  /** 是否已上报缺图 */
+  imgReported?: boolean
   onPick: (key: AnswerKey) => void
   onToggleFlag: () => void
   onAddTag?: (tag: string) => void
   onRemoveTag?: (tag: string) => void
+  onReportImg?: () => void
 }
 
 /** 题目卡片：题干 + 四选项 + 判题/解析 + 标签管理 */
@@ -22,10 +27,13 @@ export default function QuestionCard({
   flagged,
   skipped = false,
   tags = [],
+  missingImg = false,
+  imgReported = false,
   onPick,
   onToggleFlag,
   onAddTag,
   onRemoveTag,
+  onReportImg,
 }: Props) {
   const [adding, setAdding] = useState(false)
   const [newTag, setNewTag] = useState('')
@@ -46,6 +54,15 @@ export default function QuestionCard({
         <span className="q-meta">{question.subject}</span>
         <span className="q-no">第 {question.no} 题</span>
         {skipped && <span className="skip-badge">⏭ 已跳过</span>}
+        {missingImg && (
+          <button
+            className={'img-report' + (imgReported ? ' on' : '')}
+            onClick={onReportImg}
+            title="题目提到了图/表但题库暂未收录图片。点击上报，方便后续统一补图。"
+          >
+            {imgReported ? '✓ 已上报缺图' : '⚠ 缺图 · 上报'}
+          </button>
+        )}
         <button
           className={'flag-btn' + (flagged ? ' on' : '')}
           onClick={onToggleFlag}

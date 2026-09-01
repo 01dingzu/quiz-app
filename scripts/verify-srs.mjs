@@ -2,6 +2,7 @@
 // 运行: node .verify/srs-verify.mjs （cwd = quiz-app）
 import { buildSync } from 'esbuild'
 import { createRequire } from 'module'
+import { unlinkSync } from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -136,4 +137,10 @@ console.log('\n[场景 F] 普通答对不追踪 SRS')
 }
 
 console.log(`\n===== 结果: ${pass} 通过, ${fail} 失败 =====`)
+
+// 清理打包产物
+for (const f of [outfile, typesFile]) {
+  try { unlinkSync(f) } catch { /* ignore */ }
+}
+
 process.exit(fail === 0 ? 0 : 1)

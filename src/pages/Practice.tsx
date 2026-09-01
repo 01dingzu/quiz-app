@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuiz, getQuestion } from '../store/quizStore'
 import QuestionCard from '../components/QuestionCard'
+import { isMissingImg } from '../lib/missingImg'
 import { EXAM_PER_Q_SCORE, SUBJECTS, type Subject } from '../types'
 
 function formatRemain(sec: number): string {
@@ -31,9 +32,17 @@ export default function Practice() {
     skipped,
     skipCurrent,
     resumeSession,
+    imgReports,
+    reportMissingImg,
+    unreportMissingImg,
   } = useQuiz()
   const nav = useNavigate()
   const [quitArmed, setQuitArmed] = useState(false)
+
+  const toggleReport = (qid: string) => {
+    if (imgReports.includes(qid)) unreportMissingImg(qid)
+    else reportMissingImg(qid)
+  }
 
   // 二次确认：3 秒内未再点则自动还原，避免误触
   useEffect(() => {
@@ -213,11 +222,14 @@ export default function Practice() {
         picked={picked[q.id] ?? null}
         flagged={!!flagged[q.id]}
         skipped={skipped.includes(q.id)}
+        missingImg={isMissingImg(q)}
+        imgReported={imgReports.includes(q.id)}
         tags={attempts[q.id]?.tags}
         onPick={(k) => pick(q.id, k)}
         onToggleFlag={() => toggleFlag(q.id)}
         onAddTag={(t) => addTag(q.id, t)}
         onRemoveTag={(t) => removeTag(q.id, t)}
+        onReportImg={() => toggleReport(q.id)}
       />
 
       <div className="nav-row">

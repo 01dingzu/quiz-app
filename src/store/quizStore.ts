@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import type { AnswerKey, AttemptRecord, ExamConfig, Question, Subject } from '../types'
 import { EXAM_RATIO, SUBJECTS, YEARS, sm2Update } from '../types'
 import raw from '../data/questions.json'
+import { isMissingImg } from '../lib/missingImg'
 
 /** 题库：596 题（skip=false 的可用题） */
 export const BANK: Question[] = (raw as Question[]).map((q) => q)
@@ -95,6 +96,12 @@ interface QuizState {
   removeTag: (qid: string, tag: string) => void
   clearWrong: () => void
   clearHistory: () => void
+
+  // ---- 缺图反馈收集 ----
+  /** 用户确认上报的缺图/缺表题 qid（持久化，供后续统一补图） */
+  imgReports: string[]
+  reportMissingImg: (qid: string) => void
+  unreportMissingImg: (qid: string) => void
 }
 
 /** 持久化范围：作答记录/收藏 + 会话进度（练习中途可恢复） + 筛选设置 */
@@ -111,6 +118,7 @@ type Persisted = Pick<
   | 'skipped'
   | 'examRemainSec'
   | 'examStartTs'
+  | 'imgReports'
 >
 
 export const useQuiz = create<QuizState>()(
@@ -127,6 +135,7 @@ export const useQuiz = create<QuizState>()(
       attempts: {},
       flagged: {},
       history: [],
+      imgReports: [],
 
       setFilter: (patch) => set({ filter: { ...get().filter, ...patch } }),
 
@@ -301,6 +310,16 @@ export const useQuiz = create<QuizState>()(
       },
 
       clearHistory: () => set({ history: [], attempts: {}, flagged: {} }),
+
+      reportMissingImg: (qid) => {
+        const { imgReports } = get()
+        if (imgReports.includes(qid) || !getQuestion(qid)) return
+        set({ imgReports: [...imgReports, qid] })
+      },
+
+      unreportMissingImg: (qid) => {
+        set({ imgReports: get().imgReports.filter((id) => id !== qid) })
+      },
     }),
     {
       name: 'quiz-app:v1', // 保持 v1 不变：改名会导致老用户错题本/历史数据丢失
@@ -316,6 +335,7 @@ export const useQuiz = create<QuizState>()(
         skipped: s.skipped,
         examRemainSec: s.examRemainSec,
         examStartTs: s.examStartTs,
+        imgReports: s.imgReports,
       }),
     },
   ),
@@ -413,6 +433,20 @@ export function allTags(attempts: Record<string, AttemptRecord>): { tag: string;
   return Array.from(m.entries())
     .map(([tag, count]) => ({ tag, count }))
     .sort((a, b) => b.count - a.count)
+}
+
+/** 自动检测到的缺图/缺表题（题干引用图但题库无图），按年份倒序 */
+export function missingImgQuestions(): Question[] {
+  return BANK.filter(isMissingImg).sort((a, b) => b.year - a.year || a.no - b.no)
+}
+
+/** 用户手动上报的缺图题列表（含自动检测与手动补充） */
+export function reportedMissingImgQuestions(): Question[] {
+  const { imgReports } = useQuiz.getState()
+  return imgReports
+    .map((id) => getQuestion(id))
+    .filter((q): q is Question => !!q)
+    .sort((a, b) => b.year - a.year || a.no - b.no)
 }
 
 export { SUBJECTS, YEARS }

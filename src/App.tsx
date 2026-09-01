@@ -3,9 +3,11 @@ import Home from './pages/Home'
 import Practice from './pages/Practice'
 import WrongBook from './pages/WrongBook'
 import Stats from './pages/Stats'
-import { BANK } from './store/quizStore'
+import MissingImg from './pages/MissingImg'
+import { BANK, useQuiz } from './store/quizStore'
 
 export default function App() {
+  const reported = useQuiz((s) => s.imgReports.length)
   return (
     <div className="app">
       <header className="topbar">
@@ -32,6 +34,12 @@ export default function App() {
           >
             统计
           </NavLink>
+          <NavLink
+            to="/missing"
+            className={({ isActive }) => 'tab' + (isActive ? ' active' : '')}
+          >
+            缺图{reported > 0 ? ` ${reported}` : ''}
+          </NavLink>
         </nav>
       </header>
 
@@ -40,6 +48,7 @@ export default function App() {
         <Route path="/practice" element={<Practice />} />
         <Route path="/wrong" element={<WrongBook />} />
         <Route path="/stats" element={<Stats />} />
+        <Route path="/missing" element={<MissingImg />} />
       </Routes>
     </div>
   )

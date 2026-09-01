@@ -1,15 +1,16 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useQuiz, BANK, buildExam, dueCount, resumeInfo } from '../store/quizStore'
+import { useQuiz, BANK, buildExam, dueCount, missingImgQuestions, resumeInfo } from '../store/quizStore'
 import { EXAM_PER_Q_SCORE, EXAM_RATIO, SUBJECTS, YEARS, type Subject } from '../types'
 
 /** 练习设置页：年份 / 科目筛选 + 顺序/随机 + 自由练习 / 模拟考试 */
 export default function Home() {
-  const { filter, setFilter, startSession, startExam, startReview, attempts, flagged, resumeSession } = useQuiz()
+  const { filter, setFilter, startSession, startExam, startReview, attempts, flagged, resumeSession, imgReports } = useQuiz()
   const nav = useNavigate()
   const [duration, setDuration] = useState<0 | 30 | 60 | 90 | 180>(0)
   const due = useMemo(() => dueCount(attempts, flagged), [attempts, flagged])
   const resume = useMemo(() => resumeInfo(), [attempts]) // attempts 变化即重算（答完题会更新）
+  const missingCount = useMemo(() => missingImgQuestions().length, [])
 
   const allYears = filter.years.length === 0
   const allSubjects = filter.subjects.length === 0
@@ -161,6 +162,22 @@ export default function Home() {
         </button>
       </div>
 
+      <div className="card missing-card">
+        <div className="sec-title">缺图反馈</div>
+        <div className="review-info">
+          <div className="review-num">{missingCount}</div>
+          <div className="review-lbl">
+            道题引用了图/表但暂无图片
+            <div className="review-sub">
+              做题遇到「如图但没图」时，点题目卡片上的「⚠ 缺图 · 上报」即可收集；已上报 {imgReports.length} 道，可一键复制清单统一补图。
+            </div>
+          </div>
+        </div>
+        <button className="start-btn review" onClick={() => nav('/missing')}>
+          查看缺图反馈{imgReports.length > 0 ? ` · 已上报 ${imgReports.length} 道` : ''} →
+        </button>
+      </div>
+
       <div className="card exam-card">
         <div className="sec-title">模拟考试（408 真实比例 11/11/10/8 = 40 题 · 满分 80）</div>
         <div className="ratio-grid">
@@ -201,7 +218,7 @@ export default function Home() {
       <div className="card" style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.8 }}>
         <b style={{ color: 'var(--ink)' }}>说明</b>
         <br />
-        · 题库为 2009-2024 年 408 统考单选真题，共 {BANK.length} 题可用（图片题 44 道暂未收录，二期支持）。
+        · 题库为 2009-2024 年 408 统考单选真题，共 {BANK.length} 题可用；引用了图/表但暂无图片的 {missingCount} 道题已自动标记「⚠ 缺图」，可到缺图页收集上报后统一补图。
         <br />
         · 自由练习：可任意选择年份 / 科目 / 顺序，答错自动入错题本，每题可手动「☆ 标记」。
         <br />

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { allTags, flaggedList, useQuiz, wrongList, getQuestion } from '../store/quizStore'
 import QuestionCard from '../components/QuestionCard'
+import { isMissingImg } from '../lib/missingImg'
 import { reviewLabel, type AttemptRecord, type Subject, SUBJECTS } from '../types'
 
 type Tab = 'wrong' | 'flag' | 'tag'
@@ -114,7 +115,23 @@ export default function WrongBook() {
   const [groupBy, setGroupBy] = useState<GroupBy>('review')
   const [tagFilter, setTagFilter] = useState<string | null>(null)
   const [openId, setOpenId] = useState<string | null>(null)
-  const { flagged, toggleFlag, removeTag, clearWrong, attempts, startReview } = useQuiz()
+  const { flagged, toggleFlag, removeTag, clearWrong, attempts, startReview, imgReports, reportMissingImg, unreportMissingImg } = useQuiz()
+  const [armedClear, setArmedClear] = useState(false)
+
+  const clearWrongNow = () => {
+    if (!armedClear) {
+      setArmedClear(true)
+      setTimeout(() => setArmedClear(false), 3000)
+      return
+    }
+    clearWrong()
+    setArmedClear(false)
+  }
+
+  const toggleReport = (qid: string) => {
+    if (imgReports.includes(qid)) unreportMissingImg(qid)
+    else reportMissingImg(qid)
+  }
 
   const wrong = useMemo(() => wrongList(), [attempts])
   const flags = useMemo(() => flaggedList(), [attempts])
@@ -167,13 +184,11 @@ export default function WrongBook() {
         </button>
         {wrong.length > 0 && tab === 'wrong' && (
           <button
-            className="danger-btn"
+            className={'danger-btn' + (armedClear ? ' armed' : '')}
             style={{ marginLeft: 'auto' }}
-            onClick={() => {
-              if (confirm('清空错题本？此操作不可撤销。')) clearWrong()
-            }}
+            onClick={clearWrongNow}
           >
-            清空错题
+            {armedClear ? '⚠ 再点一次确认清空' : '清空错题'}
           </button>
         )}
       </div>
@@ -223,10 +238,13 @@ export default function WrongBook() {
             question={openQ}
             picked={null}
             flagged={!!flagged[openQ.id]}
+            missingImg={isMissingImg(openQ)}
+            imgReported={imgReports.includes(openQ.id)}
             onPick={() => {
               /* 错题本内不直接答题，提示"重做"流程 */
             }}
             onToggleFlag={() => toggleFlag(openQ.id)}
+            onReportImg={() => toggleReport(openQ.id)}
           />
           <div style={{ marginTop: 12, textAlign: 'center' }}>
             <button className="nav-btn primary" onClick={() => setOpenId(null)}>

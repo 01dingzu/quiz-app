@@ -72,6 +72,8 @@ interface QuizState {
   picked: Record<string, AnswerKey> // 会话内已选答案（qid -> 选择）
   /** 跳过的题 id（持久化，作答后自动移除；再次打开练习时优先展示） */
   skipped: string[]
+  /** 手动从归档移出的题 id（覆盖列表：这些题即使答对也继续出现在自由练习中） */
+  unarchived: string[]
   setFilter: (patch: Partial<SessionFilter>) => void
   startSession: () => void
   startExam: (cfg: ExamConfig) => void
@@ -102,6 +104,12 @@ interface QuizState {
   imgReports: string[]
   reportMissingImg: (qid: string) => void
   unreportMissingImg: (qid: string) => void
+
+  // ---- 归档 ----
+  /** 将题移出归档（重新出现在自由练习中） */
+  unarchiveQuestion: (qid: string) => void
+  /** 将题重新归档（从 unarchived 覆盖列表移除） */
+  rearchiveQuestion: (qid: string) => void
 }
 
 /** 持久化范围：作答记录/收藏 + 会话进度（练习中途可恢复） + 筛选设置 */
@@ -119,6 +127,7 @@ type Persisted = Pick<
   | 'examRemainSec'
   | 'examStartTs'
   | 'imgReports'
+  | 'unarchived'
 >
 
 export const useQuiz = create<QuizState>()(
@@ -132,6 +141,7 @@ export const useQuiz = create<QuizState>()(
       index: 0,
       picked: {},
       skipped: [],
+      unarchived: [],
       attempts: {},
       flagged: {},
       history: [],
@@ -140,9 +150,13 @@ export const useQuiz = create<QuizState>()(
       setFilter: (patch) => set({ filter: { ...get().filter, ...patch } }),
 
       startSession: () => {
-        const qs = filterQuestions(get().filter)
+        const { filter, unarchived, attempts } = get()
+        // 自由练习：过滤已归档的题（做过且从没错过 / 已复习毕业），手动移出的除外
+        const qs = filterQuestions(filter).filter(
+          (q) => !isArchivedAttempt(attempts[q.id]) || unarchived.includes(q.id),
+        )
         if (qs.length === 0) return
-        const seq = (get().filter.shuffle ? shuffle(qs) : qs).map((q) => q.id)
+        const seq = (filter.shuffle ? shuffle(qs) : qs).map((q) => q.id)
         set({
           mode: 'practice',
           session: reorderWithSkipped(seq, get().skipped),
@@ -320,6 +334,17 @@ export const useQuiz = create<QuizState>()(
       unreportMissingImg: (qid) => {
         set({ imgReports: get().imgReports.filter((id) => id !== qid) })
       },
+
+      unarchiveQuestion: (qid) => {
+        if (!getQuestion(qid)) return
+        const { unarchived } = get()
+        if (unarchived.includes(qid)) return
+        set({ unarchived: [...unarchived, qid] })
+      },
+
+      rearchiveQuestion: (qid) => {
+        set({ unarchived: get().unarchived.filter((id) => id !== qid) })
+      },
     }),
     {
       name: 'quiz-app:v1', // 保持 v1 不变：改名会导致老用户错题本/历史数据丢失
@@ -336,6 +361,7 @@ export const useQuiz = create<QuizState>()(
         examRemainSec: s.examRemainSec,
         examStartTs: s.examStartTs,
         imgReports: s.imgReports,
+        unarchived: s.unarchived,
       }),
     },
   ),
@@ -447,6 +473,52 @@ export function reportedMissingImgQuestions(): Question[] {
     .map((id) => getQuestion(id))
     .filter((q): q is Question => !!q)
     .sort((a, b) => b.year - a.year || a.no - b.no)
+}
+
+// ===== 归档 =====
+
+/**
+ * 归档判定（基于最近一次作答）：
+ *  - 最近答对 且 无 SRS 跟踪（从没错过、也未被收藏）→ 归档
+ *  - 最近答对 且 SRS 已毕业（曾错过但复习满 5 次毕业）→ 归档
+ *  - 最近答错 / SRS 未毕业（还在复习队列）→ 不归档
+ */
+export function isArchivedAttempt(a: AttemptRecord | undefined): boolean {
+  if (!a) return false
+  if (!a.correct) return false
+  if (!a.srs) return true
+  return a.srs.graduated
+}
+
+/** 某题当前是否处于归档状态（已归档且未被手动移出） */
+export function isArchivedQuestion(qid: string): boolean {
+  const { attempts, unarchived } = useQuiz.getState()
+  if (unarchived.includes(qid)) return false
+  return isArchivedAttempt(attempts[qid])
+}
+
+/** 已归档题目列表（按年份倒序，题号升序） */
+export function archivedQuestions(): Question[] {
+  return BANK.filter((q) => isArchivedQuestion(q.id)).sort((a, b) => b.year - a.year || a.no - b.no)
+}
+
+/** 已归档题数（含手动移出的题被排除） */
+export function archivedCount(): number {
+  const { attempts, unarchived } = useQuiz.getState()
+  const unarchivedSet = new Set(unarchived)
+  let n = 0
+  for (const a of Object.values(attempts)) {
+    if (!unarchivedSet.has(a.qid) && isArchivedAttempt(a)) n++
+  }
+  return n
+}
+
+/** 某筛选条件下自由练习可用题数（已归档的题排除，手动移出的除外） */
+export function practiceCount(f: SessionFilter): number {
+  const { attempts, unarchived } = useQuiz.getState()
+  return filterQuestions(f).filter(
+    (q) => !isArchivedAttempt(attempts[q.id]) || unarchived.includes(q.id),
+  ).length
 }
 
 export { SUBJECTS, YEARS }

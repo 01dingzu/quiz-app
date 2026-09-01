@@ -1,16 +1,26 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useQuiz, BANK, buildExam, dueCount, missingImgQuestions, resumeInfo } from '../store/quizStore'
+import {
+  useQuiz,
+  BANK,
+  buildExam,
+  dueCount,
+  missingImgQuestions,
+  practiceCount,
+  archivedCount,
+  resumeInfo,
+} from '../store/quizStore'
 import { EXAM_PER_Q_SCORE, EXAM_RATIO, SUBJECTS, YEARS, type Subject } from '../types'
 
 /** 练习设置页：年份 / 科目筛选 + 顺序/随机 + 自由练习 / 模拟考试 */
 export default function Home() {
-  const { filter, setFilter, startSession, startExam, startReview, attempts, flagged, resumeSession, imgReports } = useQuiz()
+  const { filter, setFilter, startSession, startExam, startReview, attempts, flagged, resumeSession, imgReports, unarchived } = useQuiz()
   const nav = useNavigate()
   const [duration, setDuration] = useState<0 | 30 | 60 | 90 | 180>(0)
   const due = useMemo(() => dueCount(attempts, flagged), [attempts, flagged])
   const resume = useMemo(() => resumeInfo(), [attempts]) // attempts 变化即重算（答完题会更新）
   const missingCount = useMemo(() => missingImgQuestions().length, [])
+  const archN = useMemo(() => archivedCount(), [attempts, unarchived])
 
   const allYears = filter.years.length === 0
   const allSubjects = filter.subjects.length === 0
@@ -24,6 +34,9 @@ export default function Home() {
       ).length,
     [allYears, allSubjects, filter],
   )
+
+  // 自由练习可用题数（排除已归档）
+  const available = useMemo(() => practiceCount(filter), [filter, attempts, unarchived])
 
   const toggleYear = (y: number) => {
     const cur = allYears ? YEARS : filter.years
@@ -139,9 +152,16 @@ export default function Home() {
         </div>
 
         <div className="sec-title">自由练习</div>
-        <button className="start-btn" disabled={count === 0} onClick={startPractice}>
-          开始练习 · 共 {count} 题
+        <button className="start-btn" disabled={available === 0} onClick={startPractice}>
+          {available === 0
+            ? `当前筛选已全部归档（${archN} 题）`
+            : `开始练习 · 共 ${available} 题`}
         </button>
+        {available < count && (
+          <div className="exam-hint">
+            已自动隐藏 {count - available} 道答对归档的题；如需重做可到「归档」页移出。
+          </div>
+        )}
       </div>
 
       <div className="card review-card">
@@ -175,6 +195,22 @@ export default function Home() {
         </div>
         <button className="start-btn review" onClick={() => nav('/missing')}>
           查看缺图反馈{imgReports.length > 0 ? ` · 已上报 ${imgReports.length} 道` : ''} →
+        </button>
+      </div>
+
+      <div className="card arch-card">
+        <div className="sec-title">答对题归档</div>
+        <div className="review-info">
+          <div className="review-num">{archN}</div>
+          <div className="review-lbl">
+            道题已归档
+            <div className="review-sub">
+              做过且从没错过的题自动归档，自由练习不再重复出现；曾答错但已复习毕业的题也会归档。移出后可重新练习。
+            </div>
+          </div>
+        </div>
+        <button className="start-btn review" onClick={() => nav('/archived')}>
+          查看归档{archN > 0 ? ` · ${archN} 道` : ''} →
         </button>
       </div>
 
@@ -220,9 +256,9 @@ export default function Home() {
         <br />
         · 题库为 2009-2024 年 408 统考单选真题，共 {BANK.length} 题可用；引用了图/表但暂无图片的 {missingCount} 道题已自动标记「⚠ 缺图」，可到缺图页收集上报后统一补图。
         <br />
-        · 自由练习：可任意选择年份 / 科目 / 顺序，答错自动入错题本，每题可手动「☆ 标记」。
+        · 自由练习：可任意选择年份 / 科目 / 顺序，答错自动入错题本，每题可手动「☆ 标记」。做过且从没错过的题自动归档，不再重复出现（可在「归档」页查看/移出）。
         <br />
-        · 模拟考试：按 408 真实比例组 40 题（1-11 数据结构 / 12-22 计组 / 23-32 操作系统 / 33-40 计网），可选计时。
+        · 模拟考试：按 408 真实比例组 40 题（1-11 数据结构 / 12-22 计组 / 23-32 操作系统 / 33-40 计网），可选计时；考试始终使用完整题库（含已归档题）。
         <br />
         · 今日复习：基于 SM-2 算法自动安排复习时间（答对 1→3→7→14→30+ 天，答错立即重排 1 天）。
         <br />

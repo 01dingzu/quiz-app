@@ -1,13 +1,18 @@
+import { useMemo } from 'react'
 import { NavLink, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Practice from './pages/Practice'
 import WrongBook from './pages/WrongBook'
 import Stats from './pages/Stats'
 import MissingImg from './pages/MissingImg'
-import { BANK, useQuiz } from './store/quizStore'
+import Archived from './pages/Archived'
+import { BANK, archivedCount, useQuiz } from './store/quizStore'
 
 export default function App() {
   const reported = useQuiz((s) => s.imgReports.length)
+  const attempts = useQuiz((s) => s.attempts)
+  const unarchived = useQuiz((s) => s.unarchived)
+  const archN = useMemo(() => archivedCount(), [attempts, unarchived])
   return (
     <div className="app">
       <header className="topbar">
@@ -40,6 +45,12 @@ export default function App() {
           >
             缺图{reported > 0 ? ` ${reported}` : ''}
           </NavLink>
+          <NavLink
+            to="/archived"
+            className={({ isActive }) => 'tab' + (isActive ? ' active' : '')}
+          >
+            归档{archN > 0 ? ` ${archN}` : ''}
+          </NavLink>
         </nav>
       </header>
 
@@ -49,6 +60,7 @@ export default function App() {
         <Route path="/wrong" element={<WrongBook />} />
         <Route path="/stats" element={<Stats />} />
         <Route path="/missing" element={<MissingImg />} />
+        <Route path="/archived" element={<Archived />} />
       </Routes>
     </div>
   )

@@ -58,7 +58,8 @@ a { color: inherit; text-decoration: none; }
 .brand { font-size: 17px; font-weight: 700; letter-spacing: 0.3px; }
 .brand small { color: var(--muted); font-weight: 400; font-size: 12px; margin-left: 6px; }
 
-.tabs { display: flex; gap: 4px; }
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
 .tab {
   border: none;
   background: transparent;
@@ -68,6 +69,7 @@ a { color: inherit; text-decoration: none; }
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.15s;
+  flex-shrink: 0;
 }
 .tab:hover { background: var(--line); color: var(--ink); }
 .tab.active { background: var(--brand); color: #fff; }
@@ -184,6 +186,30 @@ a { color: inherit; text-decoration: none; }
 }
 .img-report.on:hover { background: #fecaca; }
 
+/* 归档徽章 / 移出按钮（答对题归档） */
+.arch-badge {
+  border: 1px solid #86efac;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.arch-btn {
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.arch-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-weak); }
+
 .q-stem { font-size: 15.5px; line-height: 1.75; margin: 0 0 16px; white-space: pre-wrap; word-break: break-word; }
 
 .opts { display: flex; flex-direction: column; gap: 10px; }
@@ -263,6 +289,7 @@ a { color: inherit; text-decoration: none; }
 /* ===== v0.4 SRS 复习 + 标签 ===== */
 .review-card { border-left: 4px solid var(--warn); }
 .missing-card { border-left: 4px solid #f59e0b; }
+.arch-card { border-left: 4px solid #16a34a; }
 .resume-card { border-left: 4px solid var(--brand); }
 .review-info { display: flex; align-items: center; gap: 16px; padding: 12px 4px 16px; }
 .review-num { font-size: 48px; font-weight: 800; color: var(--warn); line-height: 1; min-width: 80px; text-align: center; }

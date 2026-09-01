@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuiz, getQuestion } from '../store/quizStore'
 import QuestionCard from '../components/QuestionCard'
@@ -30,6 +30,14 @@ export default function Practice() {
     removeTag,
   } = useQuiz()
   const nav = useNavigate()
+  const [quitArmed, setQuitArmed] = useState(false)
+
+  // 二次确认：3 秒内未再点则自动还原，避免误触
+  useEffect(() => {
+    if (!quitArmed) return
+    const t = setTimeout(() => setQuitArmed(false), 3000)
+    return () => clearTimeout(t)
+  }, [quitArmed])
 
   // 考试模式计时（仅限时模式启动倒计时）
   useEffect(() => {
@@ -211,16 +219,21 @@ export default function Practice() {
       </div>
       <div style={{ textAlign: 'center', marginTop: 16 }}>
         <button
-          className="quit-btn"
+          className={`quit-btn${quitArmed ? ' armed' : ''}`}
           onClick={() => {
-            if (window.confirm('结束本次练习？已作答记录会保留在错题本/统计中，但当前进度将清除。')) {
+            if (quitArmed) {
               clearSession()
               nav('/')
+            } else {
+              setQuitArmed(true)
             }
           }}
         >
-          ✕ 结束练习
+          {quitArmed ? '⚠ 再点一次确认结束' : '✕ 结束练习'}
         </button>
+        {quitArmed && (
+          <p className="quit-hint">再次点击将结束本次练习并返回首页（已答记录保留在错题本）</p>
+        )}
       </div>
     </>
   )

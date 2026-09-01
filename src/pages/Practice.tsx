@@ -24,6 +24,9 @@ export default function Practice() {
     mode,
     examRemainSec,
     tickExam,
+    attempts,
+    addTag,
+    removeTag,
   } = useQuiz()
   const nav = useNavigate()
 
@@ -158,6 +161,12 @@ export default function Practice() {
           </span>
         </div>
       )}
+      {mode === 'review' && (
+        <div className="exam-bar" style={{ background: 'linear-gradient(90deg, #f59e0b, #d97706)' }}>
+          <span className="exam-tag">今日复习</span>
+          <span className="exam-timer">已答 {doneCount} / {total}</span>
+        </div>
+      )}
       <div className="progress-row">
         <span>
           第 {index + 1} / {total} 题 · 已答 {doneCount}
@@ -165,6 +174,7 @@ export default function Practice() {
         <span>
           本卷 {correctCount} 对 / {doneCount - correctCount} 错
           {mode === 'exam' && ` · 计分 ${correctCount * EXAM_PER_Q_SCORE}`}
+          {mode === 'review' && ' · 答对自动延后复习'}
         </span>
       </div>
       <div className="progress-bar">
@@ -175,8 +185,11 @@ export default function Practice() {
         question={q}
         picked={picked[q.id] ?? null}
         flagged={!!flagged[q.id]}
+        tags={attempts[q.id]?.tags}
         onPick={(k) => pick(q.id, k)}
         onToggleFlag={() => toggleFlag(q.id)}
+        onAddTag={(t) => addTag(q.id, t)}
+        onRemoveTag={(t) => removeTag(q.id, t)}
       />
 
       <div className="nav-row">

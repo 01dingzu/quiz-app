@@ -1,13 +1,14 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useQuiz, BANK, buildExam } from '../store/quizStore'
+import { useQuiz, BANK, buildExam, dueCount } from '../store/quizStore'
 import { EXAM_PER_Q_SCORE, EXAM_RATIO, SUBJECTS, YEARS, type Subject } from '../types'
 
 /** 练习设置页：年份 / 科目筛选 + 顺序/随机 + 自由练习 / 模拟考试 */
 export default function Home() {
-  const { filter, setFilter, startSession, startExam } = useQuiz()
+  const { filter, setFilter, startSession, startExam, startReview, attempts, flagged } = useQuiz()
   const nav = useNavigate()
   const [duration, setDuration] = useState<0 | 30 | 60 | 90 | 180>(0)
+  const due = useMemo(() => dueCount(attempts, flagged), [attempts, flagged])
 
   const allYears = filter.years.length === 0
   const allSubjects = filter.subjects.length === 0
@@ -41,6 +42,11 @@ export default function Home() {
 
   const startExamNow = () => {
     startExam({ counts: EXAM_RATIO, durationMin: duration })
+    nav('/practice')
+  }
+
+  const startReviewNow = () => {
+    startReview()
     nav('/practice')
   }
 
@@ -112,6 +118,24 @@ export default function Home() {
         </button>
       </div>
 
+      <div className="card review-card">
+        <div className="sec-title">今日复习（SRS 间隔重复 · 错题自动消化）</div>
+        <div className="review-info">
+          <div className="review-num">{due}</div>
+          <div className="review-lbl">
+            {due === 0 ? '题待复习' : '题待复习'}
+            <div className="review-sub">
+              {due === 0
+                ? '当前没有需要复习的题目。做完练习或考试后，错题会自动加入复习队列。'
+                : '基于 SM-2 算法：答对延后复习，答错立即重排'}
+            </div>
+          </div>
+        </div>
+        <button className="start-btn review" disabled={due === 0} onClick={startReviewNow}>
+          {due === 0 ? '暂无待复习' : `开始复习 · ${due} 题`}
+        </button>
+      </div>
+
       <div className="card exam-card">
         <div className="sec-title">模拟考试（408 真实比例 11/11/10/8 = 40 题 · 满分 80）</div>
         <div className="ratio-grid">
@@ -157,6 +181,8 @@ export default function Home() {
         · 自由练习：可任意选择年份 / 科目 / 顺序，答错自动入错题本，每题可手动「☆ 标记」。
         <br />
         · 模拟考试：按 408 真实比例组 40 题（1-11 数据结构 / 12-22 计组 / 23-32 操作系统 / 33-40 计网），可选计时。
+        <br />
+        · 今日复习：基于 SM-2 算法自动安排复习时间（答对 1→3→7→14→30+ 天，答错立即重排 1 天）。
         <br />
         · 数据保存在本机浏览器（localStorage），换设备不迁移。
       </div>

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { AnswerKey, Question } from '../types'
 import { KEYS } from '../types'
 
@@ -5,14 +6,35 @@ interface Props {
   question: Question
   picked: AnswerKey | null
   flagged: boolean
+  tags?: string[]
   onPick: (key: AnswerKey) => void
   onToggleFlag: () => void
+  onAddTag?: (tag: string) => void
+  onRemoveTag?: (tag: string) => void
 }
 
-/** 题目卡片：题干 + 四选项 + 判题/解析（答后展示） */
-export default function QuestionCard({ question, picked, flagged, onPick, onToggleFlag }: Props) {
+/** 题目卡片：题干 + 四选项 + 判题/解析 + 标签管理 */
+export default function QuestionCard({
+  question,
+  picked,
+  flagged,
+  tags = [],
+  onPick,
+  onToggleFlag,
+  onAddTag,
+  onRemoveTag,
+}: Props) {
+  const [adding, setAdding] = useState(false)
+  const [newTag, setNewTag] = useState('')
   const answered = picked !== null
   const correct = answered && picked === question.answer
+
+  const commit = () => {
+    const t = newTag.trim()
+    if (t && onAddTag) onAddTag(t)
+    setNewTag('')
+    setAdding(false)
+  }
 
   return (
     <div className="card">
@@ -58,6 +80,49 @@ export default function QuestionCard({ question, picked, flagged, onPick, onTogg
               <span className="expl-tag">解析：</span>
               {question.explanation}
             </div>
+          )}
+        </div>
+      )}
+
+      {/* 标签管理区：始终显示，方便加自定义标签 */}
+      {(onAddTag || tags.length > 0) && (
+        <div className="tag-bar">
+          <span className="tag-bar-label">标签：</span>
+          {tags.map((t) => (
+            <span key={t} className="tag custom" onClick={() => onRemoveTag?.(t)} title="点击删除">
+              {t} ×
+            </span>
+          ))}
+          {adding ? (
+            <>
+              <input
+                className="tag-input"
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') commit()
+                  if (e.key === 'Escape') {
+                    setAdding(false)
+                    setNewTag('')
+                  }
+                }}
+                placeholder="输入标签名"
+                autoFocus
+                maxLength={12}
+              />
+              <button className="tag-add-btn" onClick={commit} disabled={!newTag.trim()}>
+                添加
+              </button>
+              <button className="tag-add-btn" onClick={() => { setAdding(false); setNewTag('') }}>
+                取消
+              </button>
+            </>
+          ) : (
+            onAddTag && (
+              <button className="tag-add-btn" onClick={() => setAdding(true)}>
+                + 加标签
+              </button>
+            )
           )}
         </div>
       )}

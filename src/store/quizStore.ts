@@ -36,6 +36,16 @@ function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
+/** 将跳过的题排到会话最前（保持各自相对顺序）；无跳过题或不在会话内则原样返回 */
+function reorderWithSkipped(session: string[], skipped: string[]): string[] {
+  if (skipped.length === 0) return session
+  const skipSet = new Set(skipped)
+  const head = session.filter((id) => skipSet.has(id))
+  if (head.length === 0) return session
+  const tail = session.filter((id) => !skipSet.has(id))
+  return [...head, ...tail]
+}
+
 /** 按 408 真实比例组卷：从筛选题库中每科按 counts 数量随机抽题 */
 export function buildExam(f: SessionFilter, counts: Record<Subject, number>): Question[] {
   const pool = filterQuestions(f)
@@ -59,6 +69,8 @@ interface QuizState {
   session: string[] | null // 当前会话题目 id 序列（null = 未开始）
   index: number
   picked: Record<string, AnswerKey> // 会话内已选答案（qid -> 选择）
+  /** 跳过的题 id（持久化，作答后自动移除；再次打开练习时优先展示） */
+  skipped: string[]
   setFilter: (patch: Partial<SessionFilter>) => void
   startSession: () => void
   startExam: (cfg: ExamConfig) => void
@@ -66,6 +78,10 @@ interface QuizState {
   tickExam: () => void
   pick: (qid: string, key: AnswerKey) => void
   go: (delta: number) => void
+  /** 跳过当前题：标记 + 前进到下一题 */
+  skipCurrent: () => void
+  /** 恢复会话时重排：跳过的题排到最前，并定位到第一道未答的跳过题（无跳过题则不动） */
+  resumeSession: () => void
   /** 恢复会话时校准考试倒计时（扣除页面在后台期间流逝的时间） */
   reconcileExam: () => void
   clearSession: () => void
@@ -92,6 +108,7 @@ type Persisted = Pick<
   | 'session'
   | 'index'
   | 'picked'
+  | 'skipped'
   | 'examRemainSec'
   | 'examStartTs'
 >
@@ -106,6 +123,7 @@ export const useQuiz = create<QuizState>()(
       session: null,
       index: 0,
       picked: {},
+      skipped: [],
       attempts: {},
       flagged: {},
       history: [],
@@ -116,7 +134,14 @@ export const useQuiz = create<QuizState>()(
         const qs = filterQuestions(get().filter)
         if (qs.length === 0) return
         const seq = (get().filter.shuffle ? shuffle(qs) : qs).map((q) => q.id)
-        set({ mode: 'practice', session: seq, index: 0, picked: {}, examRemainSec: 0, examStartTs: null })
+        set({
+          mode: 'practice',
+          session: reorderWithSkipped(seq, get().skipped),
+          index: 0,
+          picked: {},
+          examRemainSec: 0,
+          examStartTs: null,
+        })
       },
 
       startExam: (cfg) => {
@@ -124,7 +149,7 @@ export const useQuiz = create<QuizState>()(
         if (qs.length === 0) return
         set({
           mode: 'exam',
-          session: qs.map((q) => q.id),
+          session: reorderWithSkipped(qs.map((q) => q.id), get().skipped),
           index: 0,
           picked: {},
           examRemainSec: cfg.durationMin === 0 ? -1 : cfg.durationMin * 60,
@@ -137,7 +162,14 @@ export const useQuiz = create<QuizState>()(
         const { attempts, flagged } = get()
         const ids = dueIds(attempts, flagged)
         if (ids.length === 0) return
-        set({ mode: 'review', session: ids, index: 0, picked: {}, examRemainSec: 0, examStartTs: null })
+        set({
+          mode: 'review',
+          session: reorderWithSkipped(ids, get().skipped),
+          index: 0,
+          picked: {},
+          examRemainSec: 0,
+          examStartTs: null,
+        })
       },
 
       tickExam: () => {
@@ -147,7 +179,7 @@ export const useQuiz = create<QuizState>()(
       },
 
       pick: (qid, key) => {
-        const { picked, attempts, flagged, history } = get()
+        const { picked, attempts, flagged, history, skipped } = get()
         if (picked[qid] || !getQuestion(qid)) return
         const q = getQuestion(qid)!
         const correct = key === q.answer
@@ -173,6 +205,7 @@ export const useQuiz = create<QuizState>()(
           picked: { ...picked, [qid]: key },
           attempts: { ...attempts, [qid]: rec },
           history: [...history, rec],
+          skipped: skipped.filter((id) => id !== qid), // 作答后不再算跳过
         })
       },
 
@@ -181,6 +214,30 @@ export const useQuiz = create<QuizState>()(
         if (!session) return
         const ni = Math.min(Math.max(index + delta, 0), session.length - 1)
         set({ index: ni })
+      },
+
+      skipCurrent: () => {
+        const { session, index, picked, skipped } = get()
+        if (!session || session.length === 0) return
+        const qid = session[index]
+        if (!qid || picked[qid]) return // 已答的题无需跳过
+        const ns = skipped.includes(qid) ? skipped : [...skipped, qid]
+        const ni = Math.min(index + 1, session.length - 1)
+        set({ skipped: ns, index: ni })
+      },
+
+      resumeSession: () => {
+        const { session, skipped, picked } = get()
+        if (!session || session.length === 0) return
+        const skipSet = new Set(skipped)
+        // 无跳过题（或全部已答）→ 保持现状，不打断用户位置
+        if (!session.some((id) => skipSet.has(id) && !picked[id])) return
+        const reordered = reorderWithSkipped(session, skipped)
+        // 定位到第一道未答的跳过题；若都已答，则第一道未答题
+        let ni = reordered.findIndex((id) => skipSet.has(id) && !picked[id])
+        if (ni === -1) ni = reordered.findIndex((id) => !picked[id])
+        if (ni === -1) ni = 0
+        set({ session: reordered, index: ni })
       },
 
       reconcileExam: () => {
@@ -256,6 +313,7 @@ export const useQuiz = create<QuizState>()(
         session: s.session,
         index: s.index,
         picked: s.picked,
+        skipped: s.skipped,
         examRemainSec: s.examRemainSec,
         examStartTs: s.examStartTs,
       }),
@@ -331,15 +389,19 @@ export function resumeInfo(): {
   index: number
   done: number
   label: string
+  /** 会话中未答的跳过题数（>0 表示继续后优先展示） */
+  skipped: number
 } | null {
-  const { mode, session, index, picked } = useQuiz.getState()
+  const { mode, session, index, picked, skipped } = useQuiz.getState()
   if (!session || session.length === 0 || index < 0 || index >= session.length) return null
   const done = session.filter((id) => picked[id]).length
   // 已答完所有题 → 直接展示结果页，无需恢复入口
   if (done >= session.length) return null
   const label =
     mode === 'exam' ? '模拟考试' : mode === 'review' ? '今日复习' : '自由练习'
-  return { mode, total: session.length, index, done, label }
+  const skipSet = new Set(skipped)
+  const skippedCount = session.filter((id) => skipSet.has(id) && !picked[id]).length
+  return { mode, total: session.length, index, done, label, skipped: skippedCount }
 }
 
 /** 全部标签（去重 + 频次倒序） */

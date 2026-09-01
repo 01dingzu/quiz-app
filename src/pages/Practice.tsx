@@ -28,6 +28,9 @@ export default function Practice() {
     attempts,
     addTag,
     removeTag,
+    skipped,
+    skipCurrent,
+    resumeSession,
   } = useQuiz()
   const nav = useNavigate()
   const [quitArmed, setQuitArmed] = useState(false)
@@ -46,9 +49,10 @@ export default function Practice() {
     return () => clearInterval(t)
   }, [mode, examRemainSec, tickExam])
 
-  // 恢复会话（刷新/重开页面后）：先校准考试倒计时，扣除后台流逝时间
+  // 恢复会话（刷新/重开页面后）：先校准考试倒计时；若有跳过的题则重排到最前
   useEffect(() => {
     reconcileExam()
+    resumeSession()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -58,6 +62,13 @@ export default function Practice() {
     if (!session) return 0
     return session.filter((id) => picked[id]).length
   }, [session, picked])
+
+  // 会话中未答的跳过题数
+  const skippedCount = useMemo(() => {
+    if (!session) return 0
+    const skipSet = new Set(skipped)
+    return session.filter((id) => skipSet.has(id) && !picked[id]).length
+  }, [session, picked, skipped])
 
   if (!session || !q) {
     return (
@@ -185,6 +196,7 @@ export default function Practice() {
       <div className="progress-row">
         <span>
           第 {index + 1} / {total} 题 · 已答 {doneCount}
+          {skippedCount > 0 && <span className="skip-count"> · 跳过 {skippedCount}</span>}
         </span>
         <span>
           本卷 {correctCount} 对 / {doneCount - correctCount} 错
@@ -200,6 +212,7 @@ export default function Practice() {
         question={q}
         picked={picked[q.id] ?? null}
         flagged={!!flagged[q.id]}
+        skipped={skipped.includes(q.id)}
         tags={attempts[q.id]?.tags}
         onPick={(k) => pick(q.id, k)}
         onToggleFlag={() => toggleFlag(q.id)}
@@ -211,6 +224,11 @@ export default function Practice() {
         <button className="nav-btn" disabled={index === 0} onClick={() => go(-1)}>
           ← 上一题
         </button>
+        {!picked[q.id] && (
+          <button className="skip-btn" onClick={skipCurrent} title="标记为跳过，下次打开时优先展示">
+            ⏭ 跳过
+          </button>
+        )}
         {!isLast && (
           <button className="nav-btn primary" disabled={!picked[q.id]} onClick={() => go(1)}>
             {picked[q.id] ? '下一题 →' : '请先作答'}

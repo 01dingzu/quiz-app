@@ -5,7 +5,7 @@ import { EXAM_PER_Q_SCORE, EXAM_RATIO, SUBJECTS, YEARS, type Subject } from '../
 
 /** 练习设置页：年份 / 科目筛选 + 顺序/随机 + 自由练习 / 模拟考试 */
 export default function Home() {
-  const { filter, setFilter, startSession, startExam, startReview, attempts, flagged } = useQuiz()
+  const { filter, setFilter, startSession, startExam, startReview, attempts, flagged, resumeSession } = useQuiz()
   const nav = useNavigate()
   const [duration, setDuration] = useState<0 | 30 | 60 | 90 | 180>(0)
   const due = useMemo(() => dueCount(attempts, flagged), [attempts, flagged])
@@ -51,7 +51,10 @@ export default function Home() {
     nav('/practice')
   }
 
-  const resumeNow = () => nav('/practice') // Practice 页直接从持久化的 session/index 恢复
+  const resumeNow = () => {
+    resumeSession() // 跳过的题排到最前，先做之前不会的
+    nav('/practice')
+  }
 
   // 考试组卷预估：当前筛选下每科可用题数 vs 目标
   const examAvail = useMemo(() => {
@@ -78,7 +81,11 @@ export default function Home() {
           <div className="review-info">
             <div className="review-lbl">
               <b>{resume.label}</b> · 上次做到第 {resume.index + 1} / {resume.total} 题 · 已答 {resume.done} 题
-              <div className="review-sub">继续后从上次的题目接着做，作答记录全部保留。</div>
+              <div className="review-sub">
+                {resume.skipped > 0
+                  ? `有 ${resume.skipped} 道跳过的题未答，继续后将优先展示。`
+                  : '继续后从上次的题目接着做，作答记录全部保留。'}
+              </div>
             </div>
           </div>
           <button className="start-btn review" onClick={resumeNow}>

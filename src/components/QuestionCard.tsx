@@ -6,6 +6,8 @@ interface Props {
   question: Question
   picked: AnswerKey | null
   flagged: boolean
+  /** 该题被跳过（待优先作答） */
+  skipped?: boolean
   tags?: string[]
   onPick: (key: AnswerKey) => void
   onToggleFlag: () => void
@@ -18,6 +20,7 @@ export default function QuestionCard({
   question,
   picked,
   flagged,
+  skipped = false,
   tags = [],
   onPick,
   onToggleFlag,
@@ -42,6 +45,7 @@ export default function QuestionCard({
         <span className="q-meta">{question.year} 年</span>
         <span className="q-meta">{question.subject}</span>
         <span className="q-no">第 {question.no} 题</span>
+        {skipped && <span className="skip-badge">⏭ 已跳过</span>}
         <button
           className={'flag-btn' + (flagged ? ' on' : '')}
           onClick={onToggleFlag}

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useQuiz, getQuestion } from '../store/quizStore'
 import QuestionCard from '../components/QuestionCard'
 import { isMissingImg } from '../lib/missingImg'
-import { EXAM_PER_Q_SCORE, SUBJECTS, type Subject } from '../types'
+import { EXAM_PER_Q_SCORE, SUBJECTS, type AnswerKey, type Subject } from '../types'
 
 function formatRemain(sec: number): string {
   const m = Math.floor(sec / 60)
@@ -38,6 +38,23 @@ export default function Practice() {
   } = useQuiz()
   const nav = useNavigate()
   const [quitArmed, setQuitArmed] = useState(false)
+  /** 刚答对并触发归档的题（显示"下次不再出现"提示，4 秒后消失） */
+  const [archivedTip, setArchivedTip] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!archivedTip) return
+    const t = setTimeout(() => setArchivedTip(null), 4000)
+    return () => clearTimeout(t)
+  }, [archivedTip])
+
+  const handlePick = (key: AnswerKey) => {
+    const prev = attempts[q!.id]
+    pick(q!.id, key)
+    // 答对 且 从没错过（无 SRS）且未被收藏 → 该题自动归档，下次练习不再出现
+    if (key === q!.answer && !prev?.srs && !flagged[q!.id]) {
+      setArchivedTip(q!.id)
+    }
+  }
 
   const toggleReport = (qid: string) => {
     if (imgReports.includes(qid)) unreportMissingImg(qid)
@@ -225,12 +242,18 @@ export default function Practice() {
         missingImg={isMissingImg(q)}
         imgReported={imgReports.includes(q.id)}
         tags={attempts[q.id]?.tags}
-        onPick={(k) => pick(q.id, k)}
+        onPick={handlePick}
         onToggleFlag={() => toggleFlag(q.id)}
         onAddTag={(t) => addTag(q.id, t)}
         onRemoveTag={(t) => removeTag(q.id, t)}
         onReportImg={() => toggleReport(q.id)}
       />
+
+      {archivedTip && (
+        <div className="arch-tip">
+          ✓ 已掌握并归档：这道题下次进入练习不再出现（可在顶部「归档」页查看 / 移出）
+        </div>
+      )}
 
       <div className="nav-row">
         <button className="nav-btn" disabled={index === 0} onClick={() => go(-1)}>

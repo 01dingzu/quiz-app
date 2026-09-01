@@ -236,7 +236,8 @@ export default function WrongBook() {
         <>
           <QuestionCard
             question={openQ}
-            picked={null}
+            // 传入上次作答：显示对错 + 正确答案 + 解析（做错的题也能直接看解析复盘）
+            picked={attempts[openQ.id]?.picked ?? null}
             flagged={!!flagged[openQ.id]}
             missingImg={isMissingImg(openQ)}
             imgReported={imgReports.includes(openQ.id)}

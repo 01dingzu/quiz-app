@@ -209,7 +209,7 @@ export default function Practice() {
           </button>
         )}
       </div>
-      <div style={{ textAlign: 'center', marginTop: 12 }}>
+      <div style={{ textAlign: 'center', marginTop: 16 }}>
         <button
           className="quit-btn"
           onClick={() => {
@@ -219,7 +219,7 @@ export default function Practice() {
             }
           }}
         >
-          结束练习（保存已答记录，退出本次会话）
+          ✕ 结束练习
         </button>
       </div>
     </>

@@ -24,6 +24,7 @@ export default function Practice() {
     mode,
     examRemainSec,
     tickExam,
+    reconcileExam,
     attempts,
     addTag,
     removeTag,
@@ -36,6 +37,12 @@ export default function Practice() {
     const t = setInterval(tickExam, 1000)
     return () => clearInterval(t)
   }, [mode, examRemainSec, tickExam])
+
+  // 恢复会话（刷新/重开页面后）：先校准考试倒计时，扣除后台流逝时间
+  useEffect(() => {
+    reconcileExam()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const q = session ? getQuestion(session[index]) : undefined
 
@@ -201,6 +208,19 @@ export default function Practice() {
             {picked[q.id] ? '下一题 →' : '请先作答'}
           </button>
         )}
+      </div>
+      <div style={{ textAlign: 'center', marginTop: 12 }}>
+        <button
+          className="quit-btn"
+          onClick={() => {
+            if (window.confirm('结束本次练习？已作答记录会保留在错题本/统计中，但当前进度将清除。')) {
+              clearSession()
+              nav('/')
+            }
+          }}
+        >
+          结束练习（保存已答记录，退出本次会话）
+        </button>
       </div>
     </>
   )

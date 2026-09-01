@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useQuiz, BANK, buildExam, dueCount } from '../store/quizStore'
+import { useQuiz, BANK, buildExam, dueCount, resumeInfo } from '../store/quizStore'
 import { EXAM_PER_Q_SCORE, EXAM_RATIO, SUBJECTS, YEARS, type Subject } from '../types'
 
 /** 练习设置页：年份 / 科目筛选 + 顺序/随机 + 自由练习 / 模拟考试 */
@@ -9,6 +9,7 @@ export default function Home() {
   const nav = useNavigate()
   const [duration, setDuration] = useState<0 | 30 | 60 | 90 | 180>(0)
   const due = useMemo(() => dueCount(attempts, flagged), [attempts, flagged])
+  const resume = useMemo(() => resumeInfo(), [attempts]) // attempts 变化即重算（答完题会更新）
 
   const allYears = filter.years.length === 0
   const allSubjects = filter.subjects.length === 0
@@ -50,6 +51,8 @@ export default function Home() {
     nav('/practice')
   }
 
+  const resumeNow = () => nav('/practice') // Practice 页直接从持久化的 session/index 恢复
+
   // 考试组卷预估：当前筛选下每科可用题数 vs 目标
   const examAvail = useMemo(() => {
     const result: Record<Subject, { need: number; have: number; ok: boolean }> = {} as never
@@ -69,6 +72,21 @@ export default function Home() {
 
   return (
     <>
+      {resume && (
+        <div className="card resume-card">
+          <div className="sec-title">⏸ 继续上次练习（进度已自动保存，刷新/关闭页面不丢失）</div>
+          <div className="review-info">
+            <div className="review-lbl">
+              <b>{resume.label}</b> · 上次做到第 {resume.index + 1} / {resume.total} 题 · 已答 {resume.done} 题
+              <div className="review-sub">继续后从上次的题目接着做，作答记录全部保留。</div>
+            </div>
+          </div>
+          <button className="start-btn review" onClick={resumeNow}>
+            继续练习 →
+          </button>
+        </div>
+      )}
+
       <div className="card">
         <div className="sec-title">年份（当前：{allYears ? '全部 16 年' : `${filter.years.length} 年`}）</div>
         <div className="chips">

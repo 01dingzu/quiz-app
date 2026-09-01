@@ -66,6 +66,8 @@ interface QuizState {
   tickExam: () => void
   pick: (qid: string, key: AnswerKey) => void
   go: (delta: number) => void
+  /** 恢复会话时校准考试倒计时（扣除页面在后台期间流逝的时间） */
+  reconcileExam: () => void
   clearSession: () => void
 
   // ---- 持久化：attempts/flagged/history + srs + tags ----
@@ -79,7 +81,20 @@ interface QuizState {
   clearHistory: () => void
 }
 
-type Persisted = Pick<QuizState, 'attempts' | 'flagged' | 'history'>
+/** 持久化范围：作答记录/收藏 + 会话进度（练习中途可恢复） + 筛选设置 */
+type Persisted = Pick<
+  QuizState,
+  | 'attempts'
+  | 'flagged'
+  | 'history'
+  | 'filter'
+  | 'mode'
+  | 'session'
+  | 'index'
+  | 'picked'
+  | 'examRemainSec'
+  | 'examStartTs'
+>
 
 export const useQuiz = create<QuizState>()(
   persist<QuizState, [], [], Persisted>(
@@ -168,6 +183,18 @@ export const useQuiz = create<QuizState>()(
         set({ index: ni })
       },
 
+      reconcileExam: () => {
+        const { mode, examStartTs, examRemainSec } = get()
+        if (mode !== 'exam' || !examStartTs || examRemainSec <= 0) return
+        // 扣除页面在后台/刷新期间流逝的时间，校准剩余秒数
+        const elapsed = Math.floor((Date.now() - examStartTs) / 1000)
+        if (elapsed <= 0) return
+        set({
+          examRemainSec: Math.max(0, examRemainSec - elapsed),
+          examStartTs: Date.now(), // 校准后重新起算，避免重复扣减
+        })
+      },
+
       clearSession: () => set({ session: null, index: 0, picked: {}, mode: 'practice', examRemainSec: 0, examStartTs: null }),
 
       toggleFlag: (qid) => {
@@ -219,8 +246,19 @@ export const useQuiz = create<QuizState>()(
       clearHistory: () => set({ history: [], attempts: {}, flagged: {} }),
     }),
     {
-      name: 'quiz-app:v1',
-      partialize: (s) => ({ attempts: s.attempts, flagged: s.flagged, history: s.history }),
+      name: 'quiz-app:v1', // 保持 v1 不变：改名会导致老用户错题本/历史数据丢失
+      partialize: (s) => ({
+        attempts: s.attempts,
+        flagged: s.flagged,
+        history: s.history,
+        filter: s.filter,
+        mode: s.mode,
+        session: s.session,
+        index: s.index,
+        picked: s.picked,
+        examRemainSec: s.examRemainSec,
+        examStartTs: s.examStartTs,
+      }),
     },
   ),
 )
@@ -284,6 +322,24 @@ export function dueCount(
     if (flagged[a.qid] && a.srs.nextReview <= now) return true
     return false
   }).length
+}
+
+/** 可恢复的练习会话信息（用于首页"继续上次练习"入口）；无进行中会话返回 null */
+export function resumeInfo(): {
+  mode: 'practice' | 'exam' | 'review'
+  total: number
+  index: number
+  done: number
+  label: string
+} | null {
+  const { mode, session, index, picked } = useQuiz.getState()
+  if (!session || session.length === 0 || index < 0 || index >= session.length) return null
+  const done = session.filter((id) => picked[id]).length
+  // 已答完所有题 → 直接展示结果页，无需恢复入口
+  if (done >= session.length) return null
+  const label =
+    mode === 'exam' ? '模拟考试' : mode === 'review' ? '今日复习' : '自由练习'
+  return { mode, total: session.length, index, done, label }
 }
 
 /** 全部标签（去重 + 频次倒序） */

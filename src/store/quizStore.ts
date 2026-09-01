@@ -323,7 +323,7 @@ export const useQuiz = create<QuizState>()(
         set({ attempts })
       },
 
-      clearHistory: () => set({ history: [], attempts: {}, flagged: {} }),
+      clearHistory: () => set({ history: [], attempts: {}, flagged: {}, unarchived: [] }),
 
       reportMissingImg: (qid) => {
         const { imgReports } = get()

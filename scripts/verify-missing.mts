@@ -89,12 +89,17 @@ const missSingle = in408.filter((x: { type: string }) => isMissingImg(x) && x.ty
 const missApplied = in408.filter((x: { type: string }) => isMissingImg(x) && x.type === 'applied')
 const missing408 = in408.filter((x) => isMissingImg(x))
 check('408 单选题缺图 = 30（存量基线，未回归）', missSingle.length === 30, missSingle.length)
+// 补录 2022/2023 综合应用题后，应用题缺图从 1 道涨到 8 道：这几年的题干来自 PDF
+// 文本层，文中引用的「题43图」「题45(a)图」「题47图」等位图无法从文本层还原 ——
+// 属于源本身的固有限制，不是解析缺陷，故整体登记为新基线。
+const APPLIED_MISSING_IDS = ['2016-a47', '2022-a41', '2022-a43', '2022-a45', '2022-a47', '2023-a41', '2023-a45', '2023-a47']
 check(
-  '408 综合应用题缺图 = 1（仅 2016-a47）',
-  missApplied.length === 1 && missApplied[0].id === '2016-a47',
+  '408 综合应用题缺图 = 8（2016-a47 + 补录的 2022 四道 / 2023 三道）',
+  missApplied.length === APPLIED_MISSING_IDS.length &&
+    APPLIED_MISSING_IDS.every((id) => missApplied.some((x: { id: string }) => x.id === id)),
   missApplied.map((x: { id: string }) => x.id),
 )
-check('408 缺图合计 = 31（存量基线，未回归）', missing408.length === 31, missing408.length)
+check('408 缺图合计 = 38（30 单选 + 8 应用题，存量基线）', missing408.length === 38, missing408.length)
 
 // 扩容后：数学一也带进来 2 道真的引用了图的题（函数图像 / 空间平面图），
 // 政治题干纯文字，无图引用。按册显式登记，避免基线被"稀释"。
@@ -109,7 +114,7 @@ check(
 check('政治题干无图引用（0 题）', BANK.filter((x) => isMissingImg(x) && paperOf(x) === '政治').length === 0)
 check(
   'missingImgQuestions(paper) 分册过滤生效',
-  missingImgQuestions('408').length === 31 &&
+  missingImgQuestions('408').length === 38 &&
     missingImgQuestions('政治').length === 0 &&
     missingImgQuestions('数学一').length === 2,
   {
@@ -127,7 +132,7 @@ check('"坐标下表示" 题型不误报缺表（math-2016-06）', !isMissingImg
 check('真实引用函数图像的题仍判缺图（math-2015-01 如右图所示）', isMissingImg(q('math-2015-01')))
 
 const missing = BANK.filter((x) => isMissingImg(x))
-check('全题库缺图 = 31（408 基线）+ 2（数学一）= 33', missing.length === 33, {
+check('全题库缺图 = 38（408 基线）+ 2（数学一）= 40', missing.length === 40, {
   total: missing.length,
   non408: missingNon408.length,
 })

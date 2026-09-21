@@ -215,8 +215,9 @@ function AppliedView({ q, picked, onAnswer }: Common & { q: AppliedQ }) {
   return (
     <>
       <div className="applied-hint">
-        综合应用题按小问作答（线下手写），先展开参考要点自评，再给出得分档位。
-        自评结果会计入错题本与复习节奏。
+        本题满分 <b>{q.totalScore} 分</b> · 共 {q.parts.length} 问 —— 按小问作答（线下手写），
+        先展开参考要点自评，再给出得分档位。自评结果会计入错题本与复习节奏。
+        {q.parts.every((p) => !p.score) && '（原始真题未给出小问分值，故不逐问标注）'}
       </div>
 
       {q.parts.map((p, i) => (

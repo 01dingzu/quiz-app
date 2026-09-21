@@ -101,8 +101,8 @@ log('[A] 题库总量与分卷归属')
 
 const PAPER_COUNT = (p: string) => (BANK as Q[]).filter((q) => paperOfQuestion(q) === p).length
 
-check('总量 = 1946（408 单选 596 + 408 应用题 77 + 政治 495 + 数学一 218 + 英语一 560）', BANK.length === 1946, BANK.length)
-check('408 = 673 题', PAPER_COUNT('408') === 673, PAPER_COUNT('408'))
+check('总量 = 1974（408 单选 596 + 408 应用题 105 + 政治 495 + 数学一 218 + 英语一 560）', BANK.length === 1974, BANK.length)
+check('408 = 701 题', PAPER_COUNT('408') === 701, PAPER_COUNT('408'))
 check('政治 = 495 题', PAPER_COUNT('政治') === 495, PAPER_COUNT('政治'))
 check('数学一 = 218 题', PAPER_COUNT('数学一') === 218, PAPER_COUNT('数学一'))
 check('英语一 = 560 题（完形 280 + 阅读 280）', PAPER_COUNT('英语一') === 560, PAPER_COUNT('英语一'))
@@ -122,13 +122,58 @@ check('政治科目 5 科', paperSubjects('政治').length === 5, paperSubjects(
 check('数学一科目 3 科', JSON.stringify(paperSubjects('数学一')) === JSON.stringify(['高等数学', '线性代数', '概率统计']), paperSubjects('数学一'))
 check('英语一科目 = [完形填空, 阅读理解]（新题型未收录）', JSON.stringify(paperSubjects('英语一')) === JSON.stringify(['完形填空', '阅读理解']), paperSubjects('英语一'))
 
+// ---------------------------------------------------------------- [B2] 408 应用题
+log('\n[B2] 408 综合应用题（41–47）')
+
+const APPLIED = (BANK as Q[]).filter((q) => paperOfQuestion(q) === '408' && q.type === 'applied')
+type AQ = Q & { parts: { no: number; stem: string; answer: string }[]; totalScore: number }
+const applied = APPLIED as unknown as AQ[]
+
+check('408 应用题 = 105 题（15 年 × 7 题）', applied.length === 105, applied.length)
+
+const appYears = [...new Set(applied.map((q) => q.year))].sort((a, b) => a - b)
+check('应用题覆盖 2009–2023 共 15 年（2024 无可用综合应用题源）', appYears.length === 15 && appYears[0] === 2009 && appYears[14] === 2023, appYears)
+
+const badYears: number[] = []
+for (const y of appYears) {
+  const qs = applied.filter((q) => q.year === y).sort((a, b) => a.no - b.no)
+  const nos = qs.map((q) => q.no).join(',')
+  const tot = qs.reduce((s, q) => s + q.totalScore, 0)
+  if (nos !== '41,42,43,44,45,46,47' || tot !== 70) badYears.push(y)
+}
+check('每年恰好 7 题、题号 41–47、分值合计 70', badYears.length === 0, badYears)
+
+check('全库应用题分值合计 = 1050（15 × 70）', applied.reduce((s, q) => s + q.totalScore, 0) === 1050, applied.reduce((s, q) => s + q.totalScore, 0))
+
+// 曾出现的真实缺陷：2012 的 43/44/45 把大节「共70分」当成了小题分 → 出现 70 分的单题、该年合计 250
+const absurd = applied.filter((q) => q.totalScore > 22)
+check('无单题分值异常（历史上 2012 出现过 70 分/题）', absurd.length === 0, absurd.map((q) => `${q.id}:${q.totalScore}`))
+
+check('每题至少 1 个小问，且小问题干与解答均非空', applied.every((q) => q.parts.length >= 1 && q.parts.every((p) => p.stem.trim() && p.answer.trim())), applied.filter((q) => !(q.parts.length >= 1 && q.parts.every((p) => p.stem.trim() && p.answer.trim()))).map((q) => q.id))
+
+check('id 形如 {year}-a{no} 且唯一', new Set(applied.map((q) => q.id)).size === applied.length && applied.every((q) => q.id === `${q.year}-a${q.no}`), applied.filter((q) => q.id !== `${q.year}-a${q.no}`).map((q) => q.id))
+
+// 补录年份（原 extract_applied.py 覆盖不到、由 extract_applied_missing.py 产出）
+const BACKFILL = [2011, 2020, 2022, 2023]
+const missingBackfill = BACKFILL.filter((y) => applied.filter((q) => q.year === y).length !== 7)
+check('补录年份 2011/2020/2022/2023 各 7 题', missingBackfill.length === 0, missingBackfill)
+
+// 人工校正过的科目归属（2014 是跨课程融合年：43 计网 / 45 计组 / 47 操作系统）
+const sub14 = Object.fromEntries(applied.filter((q) => q.year === 2014).map((q) => [q.no, q.subject]))
+check(
+  '2014 跨课程科目归属已订正（43 计网 / 45 计组 / 47 操作系统）',
+  sub14[43] === '计算机网络' && sub14[45] === '计算机组成原理' && sub14[47] === '操作系统',
+  sub14,
+)
+
+
 // ---------------------------------------------------------------- [C] 隔离
 log('\n[C] 筛选隔离与零迁移')
 
 // 关键：老用户的 persisted filter 里根本没有 paper 字段
 const legacy = { years: [], subjects: [], shuffle: false }
 check('旧 filter（无 paper 字段）默认按 408 解析', paperOfFilter(legacy) === '408', paperOfFilter(legacy))
-check('零迁移：旧 filter 练习题数 = 408 全量 673（不含政治/数学）', practiceCount(legacy) === 673, practiceCount(legacy))
+check('零迁移：旧 filter 练习题数 = 408 全量 701（不含政治/数学）', practiceCount(legacy) === 701, practiceCount(legacy))
 check('政治 filter 练习题数 = 495', practiceCount({ ...T, years: [], subjects: [], shuffle: false }) === 495, practiceCount({ ...T, years: [], subjects: [], shuffle: false }))
 check('数学一 filter 练习题数 = 218', practiceCount({ ...M1, years: [], subjects: [], shuffle: false }) === 218, practiceCount({ ...M1, years: [], subjects: [], shuffle: false }))
 check('英语一 filter 练习题数 = 560', practiceCount({ ...E1, years: [], subjects: [], shuffle: false }) === 560, practiceCount({ ...E1, years: [], subjects: [], shuffle: false }))
@@ -143,7 +188,7 @@ setState({ filter: { paper: '408', years: [], subjects: [], shuffle: false }, se
 getState().startSession()
 ses = getState().session!
 check('408 会话不含政治 / 数学题', ses.every((id) => paperOfQuestion(getQuestion(id)) === '408'), ses.filter((id) => paperOfQuestion(getQuestion(id)) !== '408').slice(0, 5))
-check('408 会话长度 = 673', ses.length === 673, ses.length)
+check('408 会话长度 = 701', ses.length === 701, ses.length)
 
 // setPaper 必须清空跨卷不通用的年份 / 科目筛选
 setState({ filter: { paper: '408', years: [2009], subjects: ['数据结构'], shuffle: true } })

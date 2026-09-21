@@ -263,8 +263,12 @@ await goto('/')
   check('四张可用试卷都在（408 / 政治 / 英语一 / 数学一）', ['408', '政治', '英语一', '数学一'].every((x) => t.includes(x)))
   check('英语一已是可选试卷（不再有「暂不纳入」占位）', !t.includes('暂不纳入'))
   check('默认落在 408 卷', t.includes('当前：计算机学科专业基础'))
-  check('默认卷副标题含题目数与 KPI', /673 题 · 客观 80\/150 分 · 目标正确率 88%/.test(t), excerpt(t, 120))
+  check('默认卷副标题含题目数与 KPI', /701 题 · 客观 80\/150 分 · 目标正确率 88%/.test(t), excerpt(t, 120))
   check('机试入口卡片存在', t.includes('复试机试'))
+  // 「说明」卡的题库构成必须是现算的：历史上这里是手写数字，
+  // 补录 28 道综合应用题之后依然写着「408 综合应用题 77（2009-2024）」。
+  check('说明卡题库构成随题库现算（含 105 道应用题 / 560 道英语）', t.includes('408 综合应用题 105') && t.includes('英语一 560'), excerpt(t, 200))
+  check('说明卡无陈旧数字（77 道应用题 / 199 道数学）', !t.includes('综合应用题 77') && !t.includes('数学一客观题 199'), '')
   check('首页无运行时报错', errs.length === 0, errs.join(' | '))
   lines.push(`  text: ${excerpt(t, 200)}`)
 }
@@ -531,9 +535,152 @@ await goto('/')
   // 顶部品牌副标题必须由题库实际覆盖的试卷推导（曾经硬编码漏掉英语一）
   const t2 = await bodyText()
   check('顶栏试卷列表包含英语一', t2.includes('408 / 政治 / 英语一 / 数学一'), excerpt(t2, 90))
-  check('顶栏题量为全库 1946 题', t2.includes('1946 题'), excerpt(t2, 90))
+  check('顶栏题量为全库 1974 题', t2.includes('1974 题'), excerpt(t2, 90))
   const errs = runtimeErrors()
   check('英语一练习页无运行时报错', errs.length === 0, errs.join(' | '))
+}
+
+// [I] 408 综合应用题：OCR 补录题的小问拆分（缺图页模态里看最省事）
+// 2022 / 2023 补录的那批是从 PDF 文本层抠出来的，小问靠正则还原 —— 属于「解析产物」，
+// 必须在真实浏览器里确认拆出来的小问、分值、参考要点都真的渲染出来了。
+section('I · 408 综合应用题（OCR 补录题的小问拆分）')
+await goto('/missing')
+{
+  const head = await bodyText()
+  check('缺图清单渲染出内容', head.includes('缺图反馈收集'), excerpt(head, 120))
+  // 补录 2022/2023 应用题后，全库缺图从 33 涨到 40（多出的都是 PDF 里取不回的位图）
+  check('缺图总数已含补录应用题（40 道）', head.includes('题库有 40 道题'), excerpt(head, 200))
+
+  const opened = await evaluate(`(() => {
+    const row = [...document.querySelectorAll('.list-item')].find(x => (x.innerText || '').includes('2022-Q43'))
+    if (!row) return 'NOT_FOUND'
+    row.click()
+    return 'OK'
+  })()`)
+  check('点开 2022-Q43（OCR 补录、5 小问）', opened === 'OK', opened)
+  await sleep(500)
+
+  const parts = await evaluate(`document.querySelectorAll('.applied-part').length`)
+  check('OCR 题按小问渲染出 5 问', parts === 5, `parts=${parts}`)
+  const nos = await evaluate(`[...document.querySelectorAll('.applied-no')].map(x => x.innerText.trim()).join(',')`)
+  check('小问号连续 1）2）3）4）5）', nos === '1）,2）,3）,4）,5）', nos)
+  const scoreTxt = await evaluate(`[...document.querySelectorAll('.applied-score')].map(x => x.innerText).join('|')`)
+  const scored = (scoreTxt.match(/分/g) ?? []).length
+  // 原始真题只给题目总分（43 题共 15 分），不给小问切分 —— 缺的时候宁可不标，也不编。
+  check('小问分值要么全标、要么整题不标（不编造）', scored === 0 || scored === parts, `scored=${scored} parts=${parts}`)
+  const hint = await evaluate(`document.querySelector('.applied-hint')?.innerText || ''`)
+  check('题目总分与小问数对用户可见', hint.includes('满分 15 分') && hint.includes('共 5 问'), excerpt(hint, 120))
+  const stems = await evaluate(`[...document.querySelectorAll('.applied-stem')].map(x => x.innerText.trim().length)`)
+  check('5 个小问题干均非空（> 5 字）', stems.length === 5 && stems.every((n) => n > 5), stems)
+
+  const openOne = await clickButton('展开参考要点')
+  check('可展开参考要点', openOne === 'OK', openOne)
+  const ansLen = await evaluate(`document.querySelector('.applied-answer')?.innerText.length || 0`)
+  check('参考要点非空（> 30 字）', ansLen > 30, `len=${ansLen}`)
+  const errs = runtimeErrors()
+  check('缺图页无运行时报错', errs.length === 0, errs.join(' | '))
+}
+
+// [J] 综合应用题自评链路：小问 → 自评档位 → 落库掌握判定
+// 这一条走的是完整练习会话，覆盖 gradeAnswer 的 applied 分支（0 / 0.5 / 1 求平均，≥0.6 视为掌握）。
+section('J · 综合应用题自评（自评 → 掌握判定）')
+await goto('/')
+{
+  await clickButton('408', 'startsWith')
+
+  /**
+   * 年份 chip 的语义是「在『全部』态下点某年 = 排除该年」，所以想只留一年，
+   * 得把其余 15 个逐个点掉。用精确文案匹配，避免误碰「全部」和时长 chip。
+   */
+  const clickChip = async (label) => {
+    const r = await evaluate(`(() => {
+      const b = [...document.querySelectorAll('button.chip')].find(x => (x.innerText || '').trim() === ${JSON.stringify(label)})
+      if (!b) return 'NOT_FOUND'
+      b.click()
+      return 'OK'
+    })()`)
+    await sleep(90)
+    return r
+  }
+
+  let excluded = 0
+  for (const y of [2009, 2010, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]) {
+    if ((await clickChip(String(y))) === 'OK') excluded++
+  }
+  for (const s of ['数据结构', '计算机组成原理', '操作系统']) await clickChip(s)
+  // 时长 chip 也是 .chip.on，读选中状态时按「年份 / 科目」形状过滤掉它
+  const picked = await evaluate(
+    `[...document.querySelectorAll('.chip.on')].map(x => x.innerText.trim()).filter(t => /^\\d{4}$/.test(t) || ['数据结构','计算机组成原理','操作系统','计算机网络'].includes(t)).join(',')`,
+  )
+  check('筛选收敛到「2011 · 计算机网络」', picked === '2011,计算机网络', picked)
+
+  const startTxt = await evaluate(
+    `([...document.querySelectorAll('.start-btn')].map(x => x.innerText.replace(/\\s+/g, ' ')).find(t => t.includes('开始练习')) || '')`,
+  )
+  check('该筛选下池子 = 9 题（8 单选 + 1 应用题）', startTxt.includes('共 9 题'), startTxt)
+
+  const started = await clickButton('开始练习', 'startsWith')
+  check('点击「开始练习」成功', started === 'OK', started)
+
+  let hit = false
+  let skips = 0
+  for (; skips < 12; skips++) {
+    if ((await evaluate(`document.querySelectorAll('.applied-part').length`)) > 0) {
+      hit = true
+      break
+    }
+    if ((await clickButton('跳过')) !== 'OK') break
+  }
+  check('跳过前面 8 道单选后翻到综合应用题', hit, `skips=${skips}`)
+
+  if (hit) {
+    const parts = await evaluate(`document.querySelectorAll('.applied-part').length`)
+    check('2011-a47 按小问渲染（4 问）', parts === 4, `parts=${parts}`)
+    const hint = await evaluate(`document.querySelector('.applied-hint')?.innerText || ''`)
+    check('题目总分与小问数对用户可见（9 分 · 4 问）', hint.includes('满分 9 分') && hint.includes('共 4 问'), excerpt(hint, 120))
+    check(
+      '每问 3 档自评（4 问 → 12 个按钮）',
+      (await evaluate(`document.querySelectorAll('.applied-part .applied-levels').length`)) === 4 &&
+        (await evaluate(`document.querySelectorAll('.level-btn').length`)) === 12,
+    )
+    check(
+      '未自评完时提交按钮禁用（且提示还差几问）',
+      (await evaluate(`document.querySelector('.submit-row .nav-btn.primary')?.disabled === true`)) === true &&
+        (await evaluate(`document.querySelector('.submit-row .nav-btn.primary')?.innerText || ''`)).includes('还差'),
+    )
+
+    // 只答对 2 问「基本对」+ 1 问「部分对」+ 1 问没答对 → 得分率 (1+1+0.5+0)/4 = 0.625 ≥ 0.6
+    const rated = await evaluate(`(() => {
+      const parts = [...document.querySelectorAll('.applied-part')]
+      const want = ['基本对', '基本对', '部分对', '没答对']
+      let n = 0
+      parts.forEach((p, i) => {
+        const b = [...p.querySelectorAll('.level-btn')].find(x => (x.innerText || '').includes(want[i]))
+        if (b) { b.click(); n++ }
+      })
+      return n
+    })()`)
+    check('4 问按 1/1/0.5/0 档位自评', rated === 4, `rated=${rated}`)
+    await sleep(350)
+
+    const submitTxt = await evaluate(`document.querySelector('.submit-row .nav-btn.primary')?.innerText || ''`)
+    check('自评完成后按钮变为「提交自评」', submitTxt.includes('提交自评'), submitTxt)
+    const submitted = await clickButton('提交自评')
+    check('点击「提交自评」成功', submitted === 'OK', submitted)
+    await sleep(500)
+
+    const verdict = await evaluate(`document.querySelector('.verdict')?.innerText || ''`)
+    check('得分率按小问平均算（1+1+0.5+0 → 63%）', verdict.includes('63%'), excerpt(verdict, 90))
+    check('≥60% 判为已掌握', (await evaluate(`!!document.querySelector('.verdict.ok')`)) === true, excerpt(verdict, 60))
+    check('提交后不再出现自评按钮（防重复提交）', (await evaluate(`document.querySelectorAll('.level-btn').length`)) === 0)
+    const selfTxt = await evaluate(`[...document.querySelectorAll('.applied-self')].map(x => x.innerText).join('|')`)
+    check('提交后每问回显自评档位', selfTxt.includes('基本对') && selfTxt.includes('部分对') && selfTxt.includes('没答对'), selfTxt)
+    // 这是会话最后一题，所以「下一题」不渲染 —— 要看的是作答后的进度与对错计数
+    const head = await bodyText()
+    check('作答后进度记到「第 9 / 9 题 · 已答 1」', head.includes('第 9 / 9 题') && head.includes('已答 1'), excerpt(head, 140))
+    const errs = runtimeErrors()
+    check('应用题练习页无运行时报错', errs.length === 0, errs.join(' | '))
+  }
 }
 
 // ---------- 收尾 ----------

@@ -249,8 +249,8 @@ check('单年（2016）组卷仍为 40 题且同年', ex16.length === 40 && ex16
 check('单年（2016）满分仍 = 50', examFullScore(getState().filter) === 50, examFullScore(getState().filter))
 
 // 补全题量到全库
-check('全库总量 = 1946（408 673 + 政治 495 + 数学一 218 + 英语一 560）', BANK.length === 1946, BANK.length)
-check('408 = 673 题', (BANK as Q[]).filter((q) => paperOfQuestion(q) === '408').length === 673, (BANK as Q[]).filter((q) => paperOfQuestion(q) === '408').length)
+check('全库总量 = 1974（408 701 + 政治 495 + 数学一 218 + 英语一 560）', BANK.length === 1974, BANK.length)
+check('408 = 701 题', (BANK as Q[]).filter((q) => paperOfQuestion(q) === '408').length === 701, (BANK as Q[]).filter((q) => paperOfQuestion(q) === '408').length)
 check('政治 = 495 题', (BANK as Q[]).filter((q) => paperOfQuestion(q) === '政治').length === 495, (BANK as Q[]).filter((q) => paperOfQuestion(q) === '政治').length)
 check('数学一 = 218 题', (BANK as Q[]).filter((q) => paperOfQuestion(q) === '数学一').length === 218, (BANK as Q[]).filter((q) => paperOfQuestion(q) === '数学一').length)
 
@@ -263,7 +263,7 @@ setState({ attempts: {}, history: [], picked: {}, unarchived: [] })
 
 check('英语一练习题数 = 560', practiceCount({ ...E, years: [], subjects: [], shuffle: false }) === 560, practiceCount({ ...E, years: [], subjects: [], shuffle: false }))
 check('完形填空单科筛选 = 280', practiceCount({ ...E, years: [], subjects: ['完形填空'], shuffle: false }) === 280, practiceCount({ ...E, years: [], subjects: ['完形填空'], shuffle: false }))
-check('旧 filter（无 paper）仍默认 408，不被英语稀释', practiceCount({ years: [], subjects: [], shuffle: false }) === 673, practiceCount({ years: [], subjects: [], shuffle: false }))
+check('旧 filter（无 paper）仍默认 408，不被英语稀释', practiceCount({ years: [], subjects: [], shuffle: false }) === 701, practiceCount({ years: [], subjects: [], shuffle: false }))
 
 setState({ attempts: {}, unarchived: [], filter: { ...E, years: [], subjects: [], shuffle: false }, session: null, index: 0, picked: {} })
 getState().startSession()

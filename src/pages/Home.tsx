@@ -33,6 +33,39 @@ function paperSubtitle(p: Paper): string {
   )}%`
 }
 
+/**
+ * 「说明」卡片里的题库构成：一律从 BANK 现算。
+ * 手写数字在每次扩容后都会变成谎话（历史上就出现过"应用题 77（2009-2024）"
+ * 这种在补录 28 题之后依然留在页面上 的说法）。
+ */
+function bankBreakdown(): string {
+  const inPaper = (p: Paper) => (q: (typeof BANK)[number]) => (q.paper ?? '408') === p
+  const n = (pred: (q: (typeof BANK)[number]) => boolean) => BANK.filter(pred).length
+  const span = (p: Paper) => {
+    const ys = paperYears(p)
+    return `${Math.min(...ys)}-${Math.max(...ys)}`
+  }
+
+  const p408 = inPaper('408')
+  const pol = inPaper('政治')
+  const math = inPaper('数学一')
+  const eng = inPaper('英语一')
+
+  return [
+    `408 单选 ${n((q) => p408(q) && q.type === 'single')}（${span('408')}）`,
+    `408 综合应用题 ${n((q) => p408(q) && q.type === 'applied')}（2009-2023，按小问自评计分）`,
+    `政治 ${n(pol)}（${span('政治')}，${n((q) => pol(q) && q.type === 'single')} 单选 + ${n(
+      (q) => pol(q) && q.type === 'multi',
+    )} 多选）`,
+    `数学一 ${n(math)}（${span('数学一')}，${n((q) => math(q) && q.type === 'single')} 选择 + ${n(
+      (q) => math(q) && q.type === 'blank',
+    )} 填空）`,
+    `英语一 ${n(eng)}（${span('英语一')}，完形 ${n(
+      (q) => eng(q) && q.subject === '完形填空',
+    )} + 阅读 ${n((q) => eng(q) && q.subject === '阅读理解')}）`,
+  ].join('；')
+}
+
 /** 练习设置页：试卷 / 年份 / 科目筛选 + 自由练习 / 模拟考试 / 机试入口 */
 export default function Home() {
   const {
@@ -352,15 +385,15 @@ export default function Home() {
       <div className="card" style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.8 }}>
         <b style={{ color: 'var(--ink)' }}>说明</b>
         <br />
-        · 题库共 {BANK.length} 题：408 单选 596 + 408 综合应用题 77（2009-2024）；
-        政治客观题 495（2010-2024，240 单选 + 255 多选）；数学一客观题 199（2010-2025 除 2024，
-        110 选择 + 89 填空）。
+        · 题库共 {BANK.length} 题：{bankBreakdown()}。
         <br />
-        · 覆盖边界：只做客观题。政治分析题、数学解答题、英语、主观题批改按方案 §6 明确不做。
+        · 覆盖边界：只做客观题。政治分析题、数学解答题、英语主观题（作文 / 翻译 / 新题型）
+        按方案 §6 明确不做；已收录的四张试卷之外暂未纳入。
         <br />
         · 自由练习：可任意选择年份 / 科目 / 顺序，答错自动入错题本，每题可手动「☆ 标记」。做过且从没错过的题自动归档，不再重复出现（可在「归档」页查看/移出）。
         <br />
-        · 模拟考试：按各试卷真实结构组卷（408 按 11/11/10/8 抽 40 单选；政治 16 单选 + 17 多选；数学一 10 选择 + 6 填空），可选计时；始终使用完整题库（含已归档题）。
+        · 模拟考试：按各试卷真实结构组卷（408 按 11/11/10/8 抽 40 单选；政治 16 单选 + 17 多选；
+        数学一 10 选择 + 6 填空；英语一 20 完形 + 20 阅读），可选计时；始终使用完整题库（含已归档题）。
         <br />
         · 填空题判定支持等价写法（分数 / 小数、π 与 pi、`x=1` 与 `1`、多解乱序），由受限求值器完成，不执行任何代码。
         <br />

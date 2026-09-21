@@ -241,7 +241,7 @@ export default function WrongBook() {
             flagged={!!flagged[openQ.id]}
             missingImg={isMissingImg(openQ)}
             imgReported={imgReports.includes(openQ.id)}
-            onPick={() => {
+            onAnswer={() => {
               /* 错题本内不直接答题，提示"重做"流程 */
             }}
             onToggleFlag={() => toggleFlag(openQ.id)}

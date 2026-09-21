@@ -6,18 +6,21 @@ import WrongBook from './pages/WrongBook'
 import Stats from './pages/Stats'
 import MissingImg from './pages/MissingImg'
 import Archived from './pages/Archived'
-import { BANK, archivedCount, useQuiz } from './store/quizStore'
+import Jishi from './pages/Jishi'
+import { BANK, archivedCount, availablePapers, useQuiz } from './store/quizStore'
 
 export default function App() {
   const reported = useQuiz((s) => s.imgReports.length)
   const attempts = useQuiz((s) => s.attempts)
   const unarchived = useQuiz((s) => s.unarchived)
   const archN = useMemo(() => archivedCount(), [attempts, unarchived])
+  // 副标题从题库实际覆盖的试卷推导，避免新增试卷后这里忘记改（英语一就是这么漏的）
+  const paperList = useMemo(() => availablePapers().join(' / '), [])
   return (
     <div className="app">
       <header className="topbar">
         <div className="brand">
-          408 刷题<small>{BANK.length} 题可用 · 2009-2024</small>
+          考研刷题<small>{BANK.length} 题 · {paperList}</small>
         </div>
         <nav className="tabs">
           <NavLink
@@ -26,6 +29,12 @@ export default function App() {
             className={({ isActive }) => 'tab' + (isActive ? ' active' : '')}
           >
             练习
+          </NavLink>
+          <NavLink
+            to="/jishi"
+            className={({ isActive }) => 'tab' + (isActive ? ' active' : '')}
+          >
+            机试
           </NavLink>
           <NavLink
             to="/wrong"
@@ -57,6 +66,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/practice" element={<Practice />} />
+        <Route path="/jishi" element={<Jishi />} />
         <Route path="/wrong" element={<WrongBook />} />
         <Route path="/stats" element={<Stats />} />
         <Route path="/missing" element={<MissingImg />} />

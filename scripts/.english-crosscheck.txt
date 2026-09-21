@@ -1,0 +1,49 @@
+2017.md
+  标题年=2017  内容年=2017:72.1% 2007:25.4% 2012:25.3%
+  跳过（无可用答案键）
+2018.md
+  标题年=2018  内容年=2018:73.3% 2020:25.2% 2014:24.9%
+  跳过（无可用答案键）
+2019.md
+  标题年=2019  内容年=2019:74.4% 2020:27.6% 2021:27.2%
+  丢弃 19 条「全是同一字母」的伪答案键（残缺选项表）
+  跳过（无可用答案键）
+2020.md
+  标题年=2020  内容年=2020:73.2% 2023:27.3% 2012:26.5%
+  跳过（无可用答案键）
+2021.md
+  标题年=2021  内容年=2015:66.1% 2010:23.9% 2012:23.6%
+  ⚠ 标题与内容不符 —— 按内容年份 2015 比对
+  比对 39 题：答案一致 20（其中仅选项序号不同 0）、不一致 19
+    ✗ 第 1 题 我们=A「when」 外部=D「what」
+    ✗ 第 3 题 我们=D「by」 外部=C「on」
+    ✗ 第 4 题 我们=C「separated」 外部=A「compared」
+    ✗ 第 7 题 我们=C「seek」 外部=D「know」
+    ✗ 第 8 题 我们=D「surpass」 外部=A「resemble」
+    ✗ 第 12 题 我们=D「limit」 外部=A「drive」
+    ✗ 第 14 题 我们=C「missions」 外部=D「benefits」
+    ✗ 第 15 题 我们=A「later」 外部=C「faster」
+    ✗ 第 16 题 我们=D「express」 外部=C「understand」
+    ✗ 第 18 题 我们=A「endeavor」 外部=D「tendency」
+    ✗ 第 22 题 我们=A「to give voters more public figures to look up to.」 外部=A「owing to their undoubted and respectable status」
+    ✗ 第 24 题 我们=D「takes a tough line on political issues.」 外部=D「fails to adapt himself to his future role」
+    ✗ 第 28 题 我们=A「going through one's wallet.」 外部=A「getting into one’s residence」
+    ✗ 第 29 题 我们=C「phones are used to store sensitive information.」 外部=C「citizens’ privacy is not effectively protected」
+    ✗ 第 30 题 我们=B「principles of the Constitution should never be altered.」 外部=A「the Constitution should be implemented flexibly」
+    ✗ 第 32 题 我们=B「revised.」 外部=C「marked」
+    ✗ 第 38 题 我们=C「revealed a cunning personality.」 外部=C「was hardly convincing」
+    ✗ 第 39 题 我们=A「a marginalized lifestyle.」 外部=A「(generally distorted values)」
+    ✗ 第 40 题 我们=C「Common humanity is central to news reporting.」 外部=C「moral awareness matters in editing a newspaper」
+2022.md
+  标题年=2022  内容年=2022:70.4% 2007:24.6% 2021:23.8%
+  跳过（无可用答案键）
+2023.md
+  标题年=?  内容年=2023:66.3% 2020:25.3% 2012:24.6%
+  跳过（无可用答案键）
+2024.md
+  标题年=2022  内容年=2022:65.4% 2007:28.3% 2014:28.3%
+  比对 40 题：答案一致 38（其中仅选项序号不同 0）、不一致 2
+    ✗ 第 34 题 我们=B「It exemplified valuable art-science alliances.」 外部=B「It exemplified the valuable art-science alliances.」
+    ✗ 第 40 题 我们=C「is beneficial to business owners」 外部=D「is difficult to put into practice」
+
+合计比对 79 题；答案文本不一致 21 题；仅选项序号不同 0 题

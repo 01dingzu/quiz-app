@@ -1,14 +1,33 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useQuiz, getQuestion } from '../store/quizStore'
+import { useQuiz, getQuestion, paperOfQuestion } from '../store/quizStore'
 import QuestionCard from '../components/QuestionCard'
 import { isMissingImg } from '../lib/missingImg'
-import { EXAM_PER_Q_SCORE, SUBJECTS, type AnswerKey, type Subject } from '../types'
+import { gradeAnswer, isCorrect } from '../lib/grade'
+import {
+  PAPER_DEFAULT_SCORE,
+  PAPER_INFO,
+  PAPER_KPI,
+  SUBJECTS,
+  type Answer,
+  type Paper,
+  type Question,
+  type Subject408,
+} from '../types'
 
 function formatRemain(sec: number): string {
   const m = Math.floor(sec / 60)
   const s = sec % 60
   return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+}
+
+/**
+ * 单题分值：题目自带 score 优先（政治单选 1 / 多选 2；数学随年份结构 4 或 5），
+ * 缺省按题目所属试卷的默认分值兜底（408 单选 2 分）。
+ */
+function scoreOf(q: Question): number {
+  if (q.score != null) return q.score
+  return PAPER_DEFAULT_SCORE[paperOfQuestion(q)]
 }
 
 /** 练习会话页：逐题作答 → 即时判题 → 本卷小结（自由练习 / 模拟考试共享） */
@@ -18,7 +37,7 @@ export default function Practice() {
     index,
     picked,
     go,
-    pick,
+    submitAnswer,
     toggleFlag,
     flagged,
     clearSession,
@@ -47,12 +66,13 @@ export default function Practice() {
     return () => clearTimeout(t)
   }, [archivedTip])
 
-  const handlePick = (key: AnswerKey) => {
-    const prev = attempts[q!.id]
-    pick(q!.id, key)
+  const handleAnswer = (a: Answer) => {
+    const qq = q!
+    const prev = attempts[qq.id]
+    submitAnswer(qq.id, a)
     // 答对 且 从没错过（无 SRS）且未被收藏 → 该题自动归档，下次练习不再出现
-    if (key === q!.answer && !prev?.srs && !flagged[q!.id]) {
-      setArchivedTip(q!.id)
+    if (isCorrect(qq, a) && !prev?.srs && !flagged[qq.id]) {
+      setArchivedTip(qq.id)
     }
   }
 
@@ -96,6 +116,13 @@ export default function Practice() {
     return session.filter((id) => skipSet.has(id) && !picked[id]).length
   }, [session, picked, skipped])
 
+  // 本卷所属试卷（一个会话内的题必然同卷；取首题判定）
+  const sesPaper: Paper = useMemo(() => {
+    if (!session || session.length === 0) return '408'
+    const first = getQuestion(session[0])
+    return first ? paperOfQuestion(first) : '408'
+  }, [session])
+
   if (!session || !q) {
     return (
       <div className="card empty">
@@ -113,9 +140,8 @@ export default function Practice() {
   const isLast = index === total - 1
   const finished = doneCount === total
   const correctCount = session.filter((id) => {
-    const p = picked[id]
     const qq = getQuestion(id)
-    return p && qq && p === qq.answer
+    return !!qq && isCorrect(qq, picked[id])
   }).length
 
   // 限时模式倒计时归零 → 强制交卷
@@ -124,27 +150,45 @@ export default function Practice() {
   // 本卷小结（自由练习 / 考试通用；考试模式额外展示分数与分科正确率）
   if (finished || examTimeUp) {
     if (mode === 'exam') {
-      // 分科正确率
-      const subStats: Record<Subject, { right: number; total: number }> = {} as never
-      for (const s of SUBJECTS) subStats[s] = { right: 0, total: 0 }
+      // 分科正确率（按会话中实际出现的科目动态归集）
+      const subStats: Record<string, { right: number; total: number }> = {}
       for (const id of session) {
         const qq = getQuestion(id)
         if (!qq) continue
-        subStats[qq.subject].total++
-        if (picked[id] === qq.answer) subStats[qq.subject].right++
+        const st = (subStats[qq.subject] ??= { right: 0, total: 0 })
+        st.total++
+        if (isCorrect(qq, picked[id])) st.right++
       }
-      const score = correctCount * EXAM_PER_Q_SCORE
-      const fullScore = total * EXAM_PER_Q_SCORE
-      const passed = score >= fullScore * 0.6 // 60% 视为及格
+      const subKeys = [
+        ...SUBJECTS.filter((s) => subStats[s]),
+        ...Object.keys(subStats).filter((k) => !SUBJECTS.includes(k as Subject408)),
+      ]
+
+      // 计分：单选/多选按对错满额计，填空/综合应用题按得分比例计
+      let score = 0
+      let fullScore = 0
+      for (const id of session) {
+        const qq = getQuestion(id)
+        if (!qq) continue
+        const per = scoreOf(qq)
+        fullScore += per
+        const g = gradeAnswer(qq, picked[id])
+        if (g.correct) score += per
+        else if (g.ratio > 0) score += Math.round(g.ratio * per)
+      }
+      // 达标线用各试卷的客观题 KPI（408 需 88%，其余 80%），而不是一刀切 60%
+      const kpi = PAPER_KPI[sesPaper]
+      const passed = fullScore > 0 && score >= fullScore * kpi
       return (
         <div className="card done-box">
-          <div className="done-tag">模拟考试结果</div>
+          <div className="done-tag">{PAPER_INFO[sesPaper].short} 模拟考试结果</div>
           <div className="done-score">{score} / {fullScore}</div>
           <div className="done-sub">
-            答对 {correctCount} / {total} 题 · {passed ? '✓ 及格' : '✗ 未及格'}
+            答对 {correctCount} / {total} 题 · 达标线 {Math.round(kpi * 100)}% ·{' '}
+            {passed ? '✓ 达标' : '✗ 未达标'}
           </div>
           <div className="sub-stats">
-            {SUBJECTS.map((s) => {
+            {subKeys.map((s) => {
               const st = subStats[s]
               const pct = st.total === 0 ? 0 : Math.round((st.right / st.total) * 100)
               return (
@@ -203,11 +247,25 @@ export default function Practice() {
     )
   }
 
+  // 实时计分：已答题目的得分 / 已答题目的满分（按各题自身分值累加，跨试卷口径一致）
+  let runningScore = 0
+  let runningFull = 0
+  for (const id of session) {
+    if (!picked[id]) continue
+    const qq = getQuestion(id)
+    if (!qq) continue
+    const per = scoreOf(qq)
+    runningFull += per
+    const g = gradeAnswer(qq, picked[id])
+    if (g.correct) runningScore += per
+    else if (g.ratio > 0) runningScore += Math.round(g.ratio * per)
+  }
+
   return (
     <>
       {mode === 'exam' && (
         <div className="exam-bar">
-          <span className="exam-tag">模拟考试</span>
+          <span className="exam-tag">{PAPER_INFO[sesPaper].short} 模拟考试</span>
           <span className="exam-timer" data-warn={examRemainSec > 0 && examRemainSec < 300 ? '1' : '0'}>
             ⏱ {examRemainSec < 0 ? '不限时' : formatRemain(examRemainSec)}
           </span>
@@ -226,7 +284,7 @@ export default function Practice() {
         </span>
         <span>
           本卷 {correctCount} 对 / {doneCount - correctCount} 错
-          {mode === 'exam' && ` · 计分 ${correctCount * EXAM_PER_Q_SCORE}`}
+          {mode === 'exam' && ` · 计分 ${runningScore} / ${runningFull}`}
           {mode === 'review' && ' · 答对自动延后复习'}
         </span>
       </div>
@@ -242,7 +300,8 @@ export default function Practice() {
         missingImg={isMissingImg(q)}
         imgReported={imgReports.includes(q.id)}
         tags={attempts[q.id]?.tags}
-        onPick={handlePick}
+        materialOpen
+        onAnswer={handleAnswer}
         onToggleFlag={() => toggleFlag(q.id)}
         onAddTag={(t) => addTag(q.id, t)}
         onRemoveTag={(t) => removeTag(q.id, t)}

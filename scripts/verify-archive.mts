@@ -63,7 +63,7 @@ const mk = (qid: string, correct: boolean, srs?: unknown) => ({
   year: q(qid).year,
   no: q(qid).no,
   subject: q(qid).subject,
-  picked: 'A',
+  picked: { t: 'single', k: 'A' },
   correct,
   flagged: null,
   ts: Date.now(),
@@ -132,12 +132,7 @@ const all2009 = BANK.filter((x) => x.year === 2009)
 const attsAll: Record<string, unknown> = {}
 for (const x of all2009) attsAll[x.id] = mk(x.id, true) // 2009 全部答对 → 全部归档
 setState({ attempts: attsAll, unarchived: [] })
-useQuiz.getState().startExam({ counts: {
-  数据结构: 11,
-  计算机组成原理: 11,
-  操作系统: 10,
-  计算机网络: 8,
-}, durationMin: 0 })
+useQuiz.getState().startExam(0) // 0 = 不限时；组卷规则取自当前 filter 所属试卷（此处为 408）
 const ses = getState().session!
 check('2009 全部归档后考试会话仍可启动（不过滤）', ses.length > 0, ses.length)
 check('考试会话中的题全部来自归档池（未过滤）', ses.every((id) => isArchivedAttempt(attsAll[id])), ses)

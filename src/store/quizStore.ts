@@ -1,28 +1,109 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { AnswerKey, AttemptRecord, ExamConfig, Question, Subject } from '../types'
-import { EXAM_RATIO, SUBJECTS, YEARS, sm2Update } from '../types'
+import type {
+  Answer,
+  AttemptRecord,
+  Paper,
+  Question,
+  Subject,
+} from '../types'
+import { PAPER_DEFAULT_SCORE, PAPER_EXAM, PAPER_KPI, PAPERS, SUBJECTS, YEARS, paperOfSubject, sm2Update } from '../types'
 import raw from '../data/questions.json'
+import rawApplied from '../data/applied.json'
+import rawPolitics from '../data/politics.json'
+import rawMath from '../data/math.json'
+import rawEnglish from '../data/english.json'
 import { isMissingImg } from '../lib/missingImg'
+import { normalizeAnswer, normalizeBank } from '../lib/normalize'
+import { gradeAnswer } from '../lib/grade'
 
-/** 题库：596 题（skip=false 的可用题） */
-export const BANK: Question[] = (raw as Question[]).map((q) => q)
+/**
+ * 题库：归一化后的可用题。
+ * - `questions.json`：2009–2024 单选 596 题（无 type 字段，自动归入 single 分支）
+ * - `applied.json`：2009–2024 综合应用题第 41–47 题（applied 分支，含小问与参考要点）
+ * - `politics.json`：2010–2024 政治客观题 495 题（240 单选 + 255 多选）
+ * - `math.json`：2010–2025 数学一客观题（124 选择 + 95 填空；归一时剔除 1 道空选项题 → 218）
+ * - `english.json`：2010–2023 英语一客观题 560 题（完形 280 + 阅读 Part A 280），
+ *   带 `materials` 共享长文（70 篇）与题目上的 `materialId`
+ *
+ * 五条数据各自的 schema 都是原样保留的，靠 normalizeQuestion 在读入时归入判别联合，
+ * 因此任何一条的字段变动都不会污染另外几条。
+ */
+export const BANK: Question[] = [
+  ...normalizeBank(raw),
+  ...normalizeBank(rawApplied),
+  ...normalizeBank(rawPolitics),
+  ...normalizeBank(rawMath),
+  ...normalizeBank((rawEnglish as { questions?: unknown }).questions),
+]
+
+/** 共享长文表（英语一）：id → 正文。完形 1 篇/年、阅读 4 篇/年 */
+export const MATERIALS: Record<string, string> =
+  (rawEnglish as { materials?: Record<string, string> }).materials ?? {}
+
+/** 408 单一选择题池（模拟考试 408 用） */
+export const EXAM_POOL: Question[] = BANK.filter((q) => q.type === 'single' && q.paper === '408')
+
+/** 取题所属试卷（存量 408 数据不带 paper，由 normalize 补齐；这里再兜一层） */
+export function paperOfQuestion(q: Question): Paper {
+  return (q.paper ?? paperOfSubject(q.subject)) as Paper
+}
 
 export function getQuestion(qid: string): Question | undefined {
   return BANK.find((q) => q.id === qid)
 }
 
 export interface SessionFilter {
-  years: number[] // 空数组 = 全部
-  subjects: Subject[] // 空数组 = 全部
+  /**
+   * 试卷。可选是为了兼容已持久化的旧 filter（没有这个字段）——
+   * 缺省一律按 '408' 处理，老用户行为完全不变，无需写 migrate。
+   */
+  paper?: Paper
+  years: number[] // 空数组 = 该试卷全部年份
+  subjects: Subject[] // 空数组 = 该试卷全部科目
   shuffle: boolean
 }
 
-const DEFAULT_FILTER: SessionFilter = { years: [], subjects: [], shuffle: false }
+const DEFAULT_FILTER: SessionFilter = { paper: '408', years: [], subjects: [], shuffle: false }
+
+/** 该筛选条件所属试卷 */
+export function paperOfFilter(f: SessionFilter): Paper {
+  return f.paper ?? '408'
+}
+
+/** 某试卷在题库中实际有数据的年份（升序）—— 各试卷年份区间不同，不能共用 YEARS */
+export function paperYears(paper: Paper): number[] {
+  return Array.from(
+    new Set(BANK.filter((q) => paperOfQuestion(q) === paper).map((q) => q.year)),
+  ).sort((a, b) => a - b)
+}
+
+/** 某试卷在题库中实际有数据的细分科目（按试卷声明的科目顺序） */
+export function paperSubjects(paper: Paper): string[] {
+  const present = new Set(BANK.filter((q) => paperOfQuestion(q) === paper).map((q) => q.subject))
+  return paperSubjectsOrder(paper).filter((s) => present.has(s as Subject))
+}
+
+/** 各试卷的细分科目声明顺序 */
+function paperSubjectsOrder(paper: Paper): string[] {
+  switch (paper) {
+    case '408': return [...SUBJECTS]
+    case '政治': return ['马原', '毛中特', '史纲', '思修法纪', '时政']
+    case '数学一': return ['高等数学', '线性代数', '概率统计']
+    case '英语一': return ['完形填空', '阅读理解', '新题型']
+  }
+}
+
+/** 题库中已收录数据的试卷（切换器只列这些） */
+export function availablePapers(): Paper[] {
+  return PAPERS.filter((p) => BANK.some((q) => paperOfQuestion(q) === p))
+}
 
 function filterQuestions(f: SessionFilter): Question[] {
+  const paper = paperOfFilter(f)
   return BANK.filter(
     (q) =>
+      paperOfQuestion(q) === paper &&
       (f.years.length === 0 || f.years.includes(q.year)) &&
       (f.subjects.length === 0 || f.subjects.includes(q.subject)),
   )
@@ -47,15 +128,110 @@ function reorderWithSkipped(session: string[], skipped: string[]): string[] {
   return [...head, ...tail]
 }
 
-/** 按 408 真实比例组卷：从筛选题库中每科按 counts 数量随机抽题 */
-export function buildExam(f: SessionFilter, counts: Record<Subject, number>): Question[] {
+/**
+ * 按当前筛选所属试卷的真实结构组卷。
+ * 408 走 bySubject（各科真实比例）；政治 / 数学一 / 英语一 走 slots（按题型或科目配比）。
+ * 返回空数组 = 该试卷未定义蓝图，或筛完后一题都抽不到。
+ */
+export function buildPaperExam(f: SessionFilter): Question[] {
+  const bp = PAPER_EXAM[paperOfFilter(f)]
+  if (!bp) return []
   const pool = filterQuestions(f)
   const out: Question[] = []
-  for (const s of SUBJECTS) {
-    const sub = pool.filter((q) => q.subject === s)
-    out.push(...shuffle(sub).slice(0, counts[s]))
+
+  if (bp.bySubject) {
+    for (const s of SUBJECTS) {
+      const sub = pool.filter((q) => q.type === 'single' && q.subject === s)
+      out.push(...shuffle(sub).slice(0, bp.bySubject[s]))
+    }
+    return out
+  }
+
+  for (const slot of bp.slots) {
+    const sub = slot.subject
+      ? pool.filter((q) => q.type === slot.type && q.subject === slot.subject)
+      : pool.filter((q) => q.type === slot.type)
+    out.push(...shuffle(sub).slice(0, slot.count))
   }
   return out
+}
+
+export interface ExamSlotAvail {
+  label: string
+  need: number
+  have: number
+  ok: boolean
+}
+
+const TYPE_LABEL: Record<string, string> = {
+  single: '单项选择',
+  multi: '多项选择',
+  blank: '填空题',
+  applied: '综合应用题',
+}
+
+/** 组卷可行性：当前筛选下每个槽位的需求量 vs 题库可用量（首页据此禁用按钮） */
+export function examAvailability(f: SessionFilter): ExamSlotAvail[] {
+  const bp = PAPER_EXAM[paperOfFilter(f)]
+  if (!bp) return []
+  const pool = filterQuestions(f)
+  if (bp.bySubject) {
+    return SUBJECTS.map((s) => {
+      const need = bp.bySubject![s]
+      const have = pool.filter((q) => q.type === 'single' && q.subject === s).length
+      return { label: s, need, have, ok: have >= need }
+    })
+  }
+  return bp.slots.map((sl) => {
+    const have = (
+      sl.subject
+        ? pool.filter((q) => q.type === sl.type && q.subject === sl.subject)
+        : pool.filter((q) => q.type === sl.type)
+    ).length
+    const label = sl.subject ?? TYPE_LABEL[sl.type] ?? sl.type
+    return { label, need: sl.count, have, ok: have >= sl.count }
+  })
+}
+
+/** 该试卷的组卷题量（各槽位需求之和） */
+export function examQuestionCount(paper: Paper): number {
+  const bp = PAPER_EXAM[paper]
+  if (!bp) return 0
+  if (bp.bySubject) return Object.values(bp.bySubject).reduce((a, b) => a + b, 0)
+  return bp.slots.reduce((a, s) => a + s.count, 0)
+}
+
+/**
+ * 组卷满分**估算**。
+ * 不写死分值：题目自带 score（政治单选 1 / 多选 2；数学逐题分值随大纲版本变化，
+ * 2020 及以前每题 4 分、2021 起每题 5 分），这里按当前筛选题库中该槽位的平均分值估算。
+ *
+ * 需求数要按题库实际可用量截断 —— 例如只筛 2018 年时，数学一当年只有 8 道选择题，
+ * 蓝图要 10 道也抽不出来，此时满分应按 8 题算而不是 10 题。
+ * 真实满分由 Practice 按实际抽到的题累加。
+ */
+export function examFullScore(f: SessionFilter): number {
+  const paper = paperOfFilter(f)
+  const bp = PAPER_EXAM[paper]
+  if (!bp) return 0
+  const pool = filterQuestions(f)
+  const dflt = PAPER_DEFAULT_SCORE[paper]
+  const avgOf = (sub: Question[]) =>
+    sub.length ? sub.reduce((a, q) => a + (q.score ?? dflt), 0) / sub.length : dflt
+
+  if (bp.bySubject) {
+    const sin = pool.filter((q) => q.type === 'single')
+    return Math.round(avgOf(sin) * Math.min(examQuestionCount(paper), sin.length))
+  }
+
+  let sum = 0
+  for (const slot of bp.slots) {
+    const sub = slot.subject
+      ? pool.filter((q) => q.type === slot.type && q.subject === slot.subject)
+      : pool.filter((q) => q.type === slot.type)
+    sum += avgOf(sub) * Math.min(slot.count, sub.length)
+  }
+  return Math.round(sum)
 }
 
 interface QuizState {
@@ -69,17 +245,20 @@ interface QuizState {
   examStartTs: number | null
   session: string[] | null // 当前会话题目 id 序列（null = 未开始）
   index: number
-  picked: Record<string, AnswerKey> // 会话内已选答案（qid -> 选择）
+  picked: Record<string, Answer> // 会话内已作答值（qid -> Answer）
   /** 跳过的题 id（持久化，作答后自动移除；再次打开练习时优先展示） */
   skipped: string[]
   /** 手动从归档移出的题 id（覆盖列表：这些题即使答对也继续出现在自由练习中） */
   unarchived: string[]
   setFilter: (patch: Partial<SessionFilter>) => void
+  /** 切换试卷：年份与科目筛选必须一并清空（跨试卷的科目名不通用） */
+  setPaper: (p: Paper) => void
   startSession: () => void
-  startExam: (cfg: ExamConfig) => void
+  /** 按当前试卷的真实结构组卷；durationMin=0 表示不限时 */
+  startExam: (durationMin: number) => void
   startReview: () => void
   tickExam: () => void
-  pick: (qid: string, key: AnswerKey) => void
+  submitAnswer: (qid: string, a: Answer) => void
   go: (delta: number) => void
   /** 跳过当前题：标记 + 前进到下一题 */
   skipCurrent: () => void
@@ -130,6 +309,47 @@ type Persisted = Pick<
   | 'unarchived'
 >
 
+/** 存储版本：v0 的 picked 是裸 AnswerKey 字符串，v1 起是判别联合 */
+const STORE_VERSION = 1
+
+/**
+ * 旧数据迁移：把 v0 里所有裸 'A' 字符串的作答值转成 { t:'single', k:'A' }。
+ * 保持 storage name 不变，因此迁移后老用户的错题本/历史/收藏全部保留。
+ */
+function migratePersisted(persisted: unknown, version: number): Persisted {
+  const s = persisted as Record<string, unknown> | null | undefined
+  if (!s || version >= STORE_VERSION) return (s ?? {}) as unknown as Persisted
+
+  if (s.picked && typeof s.picked === 'object') {
+    const next: Record<string, Answer> = {}
+    for (const [qid, v] of Object.entries(s.picked as Record<string, unknown>)) {
+      const a = normalizeAnswer(v)
+      if (a) next[qid] = a
+    }
+    s.picked = next
+  }
+
+  if (s.attempts && typeof s.attempts === 'object') {
+    for (const rec of Object.values(s.attempts as Record<string, unknown>)) {
+      if (!rec || typeof rec !== 'object') continue
+      const r = rec as Record<string, unknown>
+      const a = normalizeAnswer(r.picked)
+      if (a) r.picked = a
+    }
+  }
+
+  if (Array.isArray(s.history)) {
+    for (const rec of s.history as unknown[]) {
+      if (!rec || typeof rec !== 'object') continue
+      const r = rec as Record<string, unknown>
+      const a = normalizeAnswer(r.picked)
+      if (a) r.picked = a
+    }
+  }
+
+  return s as unknown as Persisted
+}
+
 export const useQuiz = create<QuizState>()(
   persist<QuizState, [], [], Persisted>(
     (set, get) => ({
@@ -149,6 +369,8 @@ export const useQuiz = create<QuizState>()(
 
       setFilter: (patch) => set({ filter: { ...get().filter, ...patch } }),
 
+      setPaper: (p) => set({ filter: { paper: p, years: [], subjects: [], shuffle: get().filter.shuffle } }),
+
       startSession: () => {
         const { filter, unarchived, attempts } = get()
         // 自由练习：过滤已归档的题（做过且从没错过 / 已复习毕业），手动移出的除外
@@ -167,15 +389,15 @@ export const useQuiz = create<QuizState>()(
         })
       },
 
-      startExam: (cfg) => {
-        const qs = buildExam(get().filter, cfg.counts)
+      startExam: (durationMin) => {
+        const qs = buildPaperExam(get().filter)
         if (qs.length === 0) return
         set({
           mode: 'exam',
           session: reorderWithSkipped(qs.map((q) => q.id), get().skipped),
           index: 0,
           picked: {},
-          examRemainSec: cfg.durationMin === 0 ? -1 : cfg.durationMin * 60,
+          examRemainSec: durationMin === 0 ? -1 : durationMin * 60,
           examStartTs: Date.now(),
         })
       },
@@ -201,11 +423,14 @@ export const useQuiz = create<QuizState>()(
         set({ examRemainSec: examRemainSec - 1 })
       },
 
-      pick: (qid, key) => {
+      submitAnswer: (qid, a) => {
         const { picked, attempts, flagged, history, skipped } = get()
-        if (picked[qid] || !getQuestion(qid)) return
-        const q = getQuestion(qid)!
-        const correct = key === q.answer
+        if (picked[qid]) return
+        const q = getQuestion(qid)
+        if (!q) return
+        const grade = gradeAnswer(q, a)
+        if (!grade.answered) return
+        const correct = grade.correct
         const prev = attempts[qid]
         const now = Date.now()
         // 追踪 SRS：错题/收藏题/已追踪过 SRS 的题都更新
@@ -217,15 +442,16 @@ export const useQuiz = create<QuizState>()(
           year: q.year,
           no: q.no,
           subject: q.subject,
-          picked: key,
+          picked: a,
           correct,
+          ratio: grade.ratio,
           flagged: flagged[qid] ?? null,
           ts: now,
           tags: prev?.tags ?? [],
           srs: newSrs,
         }
         set({
-          picked: { ...picked, [qid]: key },
+          picked: { ...picked, [qid]: a },
           attempts: { ...attempts, [qid]: rec },
           history: [...history, rec],
           skipped: skipped.filter((id) => id !== qid), // 作答后不再算跳过
@@ -297,7 +523,7 @@ export const useQuiz = create<QuizState>()(
           if (!q) return
           const newRec: AttemptRecord = {
             qid, year: q.year, no: q.no, subject: q.subject,
-            picked: 'A', correct: false, flagged: true, ts: Date.now(),
+            picked: { t: 'single', k: 'A' }, correct: false, flagged: true, ts: Date.now(),
             tags: [t], srs: undefined,
           }
           set({ attempts: { ...get().attempts, [qid]: newRec } })
@@ -348,6 +574,8 @@ export const useQuiz = create<QuizState>()(
     }),
     {
       name: 'quiz-app:v1', // 保持 v1 不变：改名会导致老用户错题本/历史数据丢失
+      version: STORE_VERSION,
+      migrate: migratePersisted,
       partialize: (s) => ({
         attempts: s.attempts,
         flagged: s.flagged,
@@ -461,9 +689,11 @@ export function allTags(attempts: Record<string, AttemptRecord>): { tag: string;
     .sort((a, b) => b.count - a.count)
 }
 
-/** 自动检测到的缺图/缺表题（题干引用图但题库无图），按年份倒序 */
-export function missingImgQuestions(): Question[] {
-  return BANK.filter(isMissingImg).sort((a, b) => b.year - a.year || a.no - b.no)
+/** 自动检测到的缺图/缺表题（题干引用图但题库无图），按年份倒序；传 paper 则只取该试卷 */
+export function missingImgQuestions(paper?: Paper): Question[] {
+  return BANK.filter((q) => (paper ? paperOfQuestion(q) === paper : true))
+    .filter(isMissingImg)
+    .sort((a, b) => b.year - a.year || a.no - b.no)
 }
 
 /** 用户手动上报的缺图题列表（含自动检测与手动补充） */
@@ -497,20 +727,59 @@ export function isArchivedQuestion(qid: string): boolean {
   return isArchivedAttempt(attempts[qid])
 }
 
-/** 已归档题目列表（按年份倒序，题号升序） */
-export function archivedQuestions(): Question[] {
-  return BANK.filter((q) => isArchivedQuestion(q.id)).sort((a, b) => b.year - a.year || a.no - b.no)
+/** 已归档题目列表（按年份倒序，题号升序）；传 paper 则只取该试卷 */
+export function archivedQuestions(paper?: Paper): Question[] {
+  return BANK.filter(
+    (q) => (paper ? paperOfQuestion(q) === paper : true) && isArchivedQuestion(q.id),
+  ).sort((a, b) => b.year - a.year || a.no - b.no)
 }
 
-/** 已归档题数（含手动移出的题被排除） */
-export function archivedCount(): number {
+/** 已归档题数（手动移出的题被排除）；传 paper 则只统计该试卷 */
+export function archivedCount(paper?: Paper): number {
   const { attempts, unarchived } = useQuiz.getState()
   const unarchivedSet = new Set(unarchived)
   let n = 0
   for (const a of Object.values(attempts)) {
-    if (!unarchivedSet.has(a.qid) && isArchivedAttempt(a)) n++
+    if (unarchivedSet.has(a.qid) || !isArchivedAttempt(a)) continue
+    if (paper) {
+      const q = getQuestion(a.qid)
+      if (!q || paperOfQuestion(q) !== paper) continue
+    }
+    n++
   }
   return n
+}
+
+/**
+ * 分试卷客观题正确率（统计页 KPI）。
+ * 口径用 `attempts`（每题最近一次）而非 `history`（含重做）——
+ * KPI 问的是"现在还会不会"，不是"历史上错过几次"。
+ */
+export function paperStats(): {
+  paper: Paper
+  total: number
+  correct: number
+  pct: number
+  kpi: number
+  gap: number
+}[] {
+  const { attempts } = useQuiz.getState()
+  const agg = new Map<Paper, { total: number; correct: number }>()
+  for (const a of Object.values(attempts)) {
+    const q = getQuestion(a.qid)
+    if (!q) continue
+    const p = paperOfQuestion(q)
+    const st = agg.get(p) ?? { total: 0, correct: 0 }
+    st.total++
+    if (a.correct) st.correct++
+    agg.set(p, st)
+  }
+  return PAPERS.filter((p) => agg.has(p)).map((p) => {
+    const st = agg.get(p)!
+    const pct = st.total > 0 ? st.correct / st.total : 0
+    const kpi = PAPER_KPI[p]
+    return { paper: p, total: st.total, correct: st.correct, pct, kpi, gap: pct - kpi }
+  })
 }
 
 /** 某筛选条件下自由练习可用题数（已归档的题排除，手动移出的除外） */

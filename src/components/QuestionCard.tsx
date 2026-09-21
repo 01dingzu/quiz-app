@@ -1,10 +1,53 @@
 import { useState } from 'react'
-import type { AnswerKey, Question } from '../types'
-import { KEYS } from '../types'
+import type { Answer, Question } from '../types'
+import { gradeAnswer, typeLabel } from '../lib/grade'
+import { Tex } from '../lib/tex'
+import { MATERIALS } from '../store/quizStore'
+import AnswerArea from './AnswerArea'
+
+/**
+ * 共享长文（英语一）。
+ * - 阅读理解：一篇长文对应其后的 5 道题，题目各自带同一个 materialId，长文只存一份。
+ * - 完形填空：20 个空共用一篇长文，正文里以 `{{N}}` 标记第 N 空；
+ *   渲染时把**当前题**对应的那个空高亮出来，否则考生在一屏里找不到自己要做哪一空。
+ */
+function MaterialPassage({
+  text,
+  activeNo,
+  open,
+}: {
+  text: string
+  activeNo?: number
+  open?: boolean
+}) {
+  return (
+    <details className="material" open={open}>
+      <summary className="material-summary">原文阅读</summary>
+      <div className="material-body">
+        {text.split(/\n{2,}/).map((para, pi) => (
+          <p key={pi} className="material-p">
+            {para.split(/\{\{(\d+)\}\}/).map((seg, si) =>
+              si % 2 === 1 ? (
+                <span
+                  key={si}
+                  className={'material-blank' + (Number(seg) === activeNo ? ' active' : '')}
+                >
+                  {seg}
+                </span>
+              ) : (
+                <span key={si}>{seg}</span>
+              ),
+            )}
+          </p>
+        ))}
+      </div>
+    </details>
+  )
+}
 
 interface Props {
   question: Question
-  picked: AnswerKey | null
+  picked: Answer | null
   flagged: boolean
   /** 该题被跳过（待优先作答） */
   skipped?: boolean
@@ -13,14 +56,18 @@ interface Props {
   missingImg?: boolean
   /** 是否已上报缺图 */
   imgReported?: boolean
-  onPick: (key: AnswerKey) => void
+  /** 是否展示共享长文（英语一）；错题本等长列表传 false 以免刷屏 */
+  showMaterial?: boolean
+  /** 共享长文默认是否展开（练习页展开，列表页折叠） */
+  materialOpen?: boolean
+  onAnswer: (a: Answer) => void
   onToggleFlag: () => void
   onAddTag?: (tag: string) => void
   onRemoveTag?: (tag: string) => void
   onReportImg?: () => void
 }
 
-/** 题目卡片：题干 + 四选项 + 判题/解析 + 标签管理 */
+/** 题目卡片：题干 + 按题型作答 + 判题/解析 + 标签管理 */
 export default function QuestionCard({
   question,
   picked,
@@ -29,7 +76,9 @@ export default function QuestionCard({
   tags = [],
   missingImg = false,
   imgReported = false,
-  onPick,
+  showMaterial = true,
+  materialOpen = false,
+  onAnswer,
   onToggleFlag,
   onAddTag,
   onRemoveTag,
@@ -37,8 +86,9 @@ export default function QuestionCard({
 }: Props) {
   const [adding, setAdding] = useState(false)
   const [newTag, setNewTag] = useState('')
-  const answered = picked !== null
-  const correct = answered && picked === question.answer
+
+  const grade = gradeAnswer(question, picked)
+  const material = question.materialId ? MATERIALS[question.materialId] : undefined
 
   const commit = () => {
     const t = newTag.trim()
@@ -52,6 +102,7 @@ export default function QuestionCard({
       <div className="q-head">
         <span className="q-meta">{question.year} 年</span>
         <span className="q-meta">{question.subject}</span>
+        <span className="q-type">{typeLabel(question)}</span>
         <span className="q-no">第 {question.no} 题</span>
         {skipped && <span className="skip-badge">⏭ 已跳过</span>}
         {missingImg && (
@@ -72,34 +123,33 @@ export default function QuestionCard({
         </button>
       </div>
 
-      <p className="q-stem">{question.stem}</p>
+      {showMaterial && material && (
+        <MaterialPassage
+          text={material}
+          activeNo={question.subject === '完形填空' ? question.no : undefined}
+          open={materialOpen}
+        />
+      )}
 
-      <div className="opts">
-        {KEYS.map((k) => {
-          const isPicked = picked === k
-          const isAnswer = question.answer === k
-          let cls = 'opt'
-          if (answered) {
-            if (isAnswer) cls += ' correct'
-            else if (isPicked) cls += ' wrong'
-            else cls += ' dim'
-          }
-          return (
-            <button key={k} className={cls} disabled={answered} onClick={() => onPick(k)}>
-              <span className="key">{k}</span>
-              <span>{question.options[k]}</span>
-            </button>
-          )
-        })}
-      </div>
+      <p className="q-stem">
+        <Tex text={question.stem} />
+      </p>
 
-      {answered && (
-        <div className={'verdict ' + (correct ? 'ok' : 'bad')}>
-          {correct ? '✓ 回答正确' : `✗ 回答错误（正确答案 ${question.answer}）`}
+      <AnswerArea
+        key={question.id}
+        question={question}
+        picked={picked}
+        onAnswer={onAnswer}
+      />
+
+      {grade.answered && (
+        <div className={'verdict ' + (grade.correct ? 'ok' : 'bad')}>
+          {grade.correct ? '✓ ' : '✗ '}
+          {grade.label}
           {question.explanation && (
             <div className="expl">
               <span className="expl-tag">解析：</span>
-              {question.explanation}
+              <Tex text={question.explanation} />
             </div>
           )}
         </div>

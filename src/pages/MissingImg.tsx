@@ -185,7 +185,7 @@ export default function MissingImg() {
             flagged={!!flagged[openQ.id]}
             missingImg
             imgReported={imgReports.includes(openQ.id)}
-            onPick={() => {
+            onAnswer={() => {
               /* 清单内只查看不答题 */
             }}
             onToggleFlag={() => toggleFlag(openQ.id)}

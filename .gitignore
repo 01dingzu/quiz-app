@@ -6,3 +6,9 @@ shot-*.png
 vite.config.js
 vite.config.d.ts
 vite.config.js.timestamp-*.mjs
+# 验证脚本 / 冒烟测试的报告产物（每次运行重新生成，不入库）
+smoke-report.txt
+scripts/.*-report.txt
+scripts/.*-store.cjs
+scripts/.*-detect.cjs
+.ghpages-deploy

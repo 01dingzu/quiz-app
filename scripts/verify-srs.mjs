@@ -54,7 +54,7 @@ console.log(`\n测试题: ${q.year}-${String(q.no).padStart(2, '0')}  答案=${q
 
 // ===== 场景 A：首次答错 → SRS 启动 + 立即进复习队列 =====
 console.log('\n[场景 A] 首次答错')
-st().pick(qid, wrongKey)
+st().submitAnswer(qid, { t: 'single', k: wrongKey })
 {
   const rec = st().attempts[qid]
   assert('correct=false', rec?.correct === false)
@@ -68,7 +68,7 @@ st().pick(qid, wrongKey)
 // ===== 场景 B：错题答对 → trackSrs 修复验证（reps+1 / interval 更新） =====
 console.log('\n[场景 B] 错题答对（trackSrs 修复点）')
 st().clearSession() // 清会话内 picked，允许再次 pick
-st().pick(qid, q.answer)
+st().submitAnswer(qid, { t: 'single', k: q.answer })
 {
   const rec = st().attempts[qid]
   assert('correct=true', rec?.correct === true)
@@ -90,7 +90,7 @@ st().toggleFlag(qid)
   assert('明天到期后进队列', dueIds(st().attempts, st().flagged, now + 2 * ONE_DAY).includes(qid))
   // 第二天答对
   st().clearSession()
-  st().pick(qid, q.answer)
+  st().submitAnswer(qid, { t: 'single', k: q.answer })
   const rec2 = st().attempts[qid]
   assert('reps=2', rec2?.srs?.reps === 2, JSON.stringify(rec2?.srs))
   assert('interval=3（第 2 次答对）', rec2?.srs?.interval === 3)
@@ -110,7 +110,7 @@ console.log('\n[场景 D] 连续答对 → 毕业')
   }
   assert('毕业（reps>=5 且 interval>=21）', srs.graduated === true, JSON.stringify(srs))
   // 毕业后退队列
-  const rec = { qid, year: q.year, no: q.no, subject: q.subject, picked: 'A', correct: true, flagged: true, ts: Date.now(), srs }
+  const rec = { qid, year: q.year, no: q.no, subject: q.subject, picked: { t: 'single', k: 'A' }, correct: true, flagged: true, ts: Date.now(), srs }
   const attempts = { ...st().attempts, [qid]: rec }
   assert('毕业后不进队列', !dueIds(attempts, st().flagged, Date.now() + 100 * ONE_DAY).includes(qid))
 }
@@ -131,7 +131,7 @@ console.log('\n[场景 F] 普通答对不追踪 SRS')
 {
   const q2 = BANK.find((x) => x.id !== qid && x.answer) ?? BANK[1]
   st().clearSession()
-  st().pick(q2.id, q2.answer)
+  st().submitAnswer(q2.id, { t: 'single', k: q2.answer })
   const rec = st().attempts[q2.id]
   assert('srs 为 undefined（未污染）', rec?.srs === undefined, JSON.stringify(rec?.srs))
 }

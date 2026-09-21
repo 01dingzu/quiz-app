@@ -107,7 +107,7 @@ export default function Archived() {
             question={openQ}
             picked={null}
             flagged={!!flagged[openQ.id]}
-            onPick={() => {
+            onAnswer={() => {
               /* 归档清单内只查看不答题 */
             }}
             onToggleFlag={() => toggleFlag(openQ.id)}

@@ -770,3 +770,93 @@ a { color: inherit; text-decoration: none; }
   .jishi-phase-left { flex: 0 0 76px; }
   .jishi-tpl-state { white-space: normal; }
 }
+
+/* ============================================================
+   AI 指引（构建期预生成 + 逐字引用校验）
+   视觉上刻意与「解析」区分：解析是题库原文，指引是派生内容。
+   ============================================================ */
+
+.guide { margin-top: 14px; border: 1px solid var(--line); border-radius: 10px; background: #fbfcfe; padding: 2px 14px 12px; }
+.guide-block { padding: 12px 0; border-top: 1px dashed var(--line); }
+.guide-block:first-child { border-top: none; }
+
+.guide-h { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.guide-h-t { font-size: 12px; font-weight: 700; color: var(--brand); letter-spacing: 0.4px; }
+.guide-h-sub { font-size: 11.5px; color: var(--muted); }
+.guide-chapter { font-size: 11.5px; color: var(--muted); }
+
+.guide-fold > summary { cursor: pointer; user-select: none; list-style: none; }
+.guide-fold > summary::-webkit-details-marker { display: none; }
+.guide-fold > summary::after { content: ' ▾'; color: var(--muted); font-size: 11px; }
+.guide-fold[open] > summary::after { content: ' ▴'; }
+
+.guide-topic-name { font-size: 15px; font-weight: 600; margin: 6px 0 4px; }
+.guide-summary { font-size: 13px; line-height: 1.8; color: #334155; margin: 0; word-break: break-word; }
+
+.guide-kw { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.guide-kw-item { font-size: 11px; color: var(--muted); background: #eef2f7; border-radius: 4px; padding: 2px 7px; }
+
+.guide-pre { margin: 8px 0 0; padding: 0; list-style: none; }
+.guide-pre li { display: flex; align-items: baseline; gap: 8px; padding: 5px 0; border-bottom: 1px solid #f1f5f9; }
+.guide-pre li:last-child { border-bottom: none; }
+.guide-pre-idx {
+  flex: 0 0 18px; height: 18px; line-height: 18px; text-align: center;
+  font-size: 10.5px; color: #fff; background: #94a3b8; border-radius: 50%;
+}
+.guide-pre-name { flex: 0 0 auto; font-size: 13px; font-weight: 600; }
+.guide-pre-sum {
+  font-size: 12px; color: var(--muted); line-height: 1.6;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.guide-mt-name { font-size: 14px; font-weight: 600; margin: 6px 0 6px; }
+.guide-skel { margin: 0; padding-left: 20px; }
+.guide-skel li { font-size: 13px; line-height: 1.8; color: #334155; margin-bottom: 3px; }
+.guide-hidden { font-size: 12.5px; color: var(--muted); font-style: italic; }
+.guide-peek {
+  margin-left: auto; border: 1px solid #bfdbfe; background: var(--brand-weak);
+  color: var(--brand); font-size: 11.5px; padding: 3px 9px; border-radius: 999px; cursor: pointer;
+}
+.guide-peek:hover { background: #dbeafe; }
+
+.guide-list { margin: 0; padding: 0; list-style: none; }
+.g-item { padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; line-height: 1.7; }
+.g-item:last-child { border-bottom: none; }
+.g-key {
+  display: inline-block; min-width: 20px; text-align: center;
+  font-weight: 700; color: var(--ink); background: #e2e8f0;
+  border-radius: 4px; padding: 0 5px; margin-right: 7px; font-size: 12px;
+}
+.g-body { color: #1f2937; word-break: break-word; }
+
+.g-badge-wrap { display: inline-flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-left: 6px; }
+.g-badge { font-size: 10.5px; border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
+.g-conc { background: var(--ok-weak); color: #15803d; border: 1px solid #bbf7d0; }
+.g-crit { background: var(--warn-weak); color: #b45309; border: 1px solid #fde68a; }
+.g-probe { background: #eef2f7; color: var(--muted); border: 1px solid var(--line); }
+.g-quote-toggle {
+  border: none; background: transparent; color: var(--brand);
+  font-size: 10.5px; cursor: pointer; padding: 0 2px; text-decoration: underline dotted;
+}
+.g-quote {
+  display: block; width: 100%; margin-top: 4px;
+  font-size: 12px; color: var(--muted); line-height: 1.7;
+  background: #f8fafc; border-left: 2px solid #cbd5e1; padding: 4px 9px; border-radius: 0 4px 4px 0;
+}
+.g-trap { display: block; margin-top: 4px; font-size: 11.5px; color: #7c3aed; }
+
+.guide-warn {
+  margin: 12px 0 0; padding: 9px 11px; border-radius: 8px;
+  background: var(--warn-weak); border: 1px solid #fde68a;
+  font-size: 12.5px; line-height: 1.8; color: #92400e;
+}
+.guide-warn-tag { font-weight: 700; margin-right: 6px; }
+.guide-warn-hint { color: #a16207; }
+
+.guide-empty { font-size: 12.5px; color: var(--muted); }
+
+@media (max-width: 640px) {
+  .guide { padding: 2px 11px 10px; }
+  .guide-pre-sum { -webkit-line-clamp: 3; }
+  .guide-peek { margin-left: 0; }
+}

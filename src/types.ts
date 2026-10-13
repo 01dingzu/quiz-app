@@ -51,6 +51,15 @@ interface QBase {
   paper?: Paper
   /** 关联知识点（可选，用于错题归因） */
   topic?: string
+  /**
+   * 知识点 id 数组，对齐 public/guide/kg-408.json 的节点 id（如 ds-1.2.2）。
+   *
+   * 与 `topic` 的区别：`topic` 是存量题库里的自由文本字段（实测 1974 题里 0 题使用），
+   * `topics` 是构建期由 scripts/ai-guide 标注出来的图节点引用，用于挂 AI 指引。
+   */
+  topics?: string[]
+  /** 母题 id，对齐 scripts/ai-guide/data/mothers-ds.json（如 mt-ds-001） */
+  mt?: string
   /** 配图 URL（绝对地址，或相对 data/ 目录） */
   images?: string[]
   /** 单题分值；缺省按试卷口径推断 */

@@ -3,6 +3,7 @@ import type { Answer, Question } from '../types'
 import { gradeAnswer, typeLabel } from '../lib/grade'
 import { Tex } from '../lib/tex'
 import { MATERIALS } from '../store/quizStore'
+import AiGuide from './AiGuide'
 import AnswerArea from './AnswerArea'
 
 /**
@@ -154,6 +155,13 @@ export default function QuestionCard({
           )}
         </div>
       )}
+
+      {/*
+        AI 指引（构建期预生成 + 逐字引用校验）。
+        revealed 传 grade.answered：干扰项诊断只在作答后出现，避免提前排除选项。
+        指引属增强项，加载失败自行静默降级，不影响做题主流程。
+      */}
+      <AiGuide question={question} revealed={grade.answered} />
 
       {/* 标签管理区：始终显示，方便加自定义标签 */}
       {(onAddTag || tags.length > 0) && (

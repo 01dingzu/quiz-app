@@ -134,6 +134,9 @@ export function normalizeQuestion(raw: Raw): Question | null {
     explanation: str(raw.explanation),
     paper,
     topic: raw.topic ? str(raw.topic) : undefined,
+    // AI 指引的两个外键（构建期由 scripts/ai-guide 标注写入题库 JSON）
+    topics: Array.isArray(raw.topics) ? (raw.topics as unknown[]).map(str).filter(Boolean) : undefined,
+    mt: raw.mt ? str(raw.mt) : undefined,
     images: Array.isArray(raw.images) ? (raw.images as unknown[]).map(str) : undefined,
     score: typeof raw.score === 'number' ? raw.score : undefined,
     // 英语一的共享长文引用（其余试卷为 undefined）

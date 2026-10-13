@@ -683,6 +683,200 @@ await goto('/')
   }
 }
 
+// [K] AI 指引面板：验的不是排版，而是两条硬约束 ——
+//   ① 信息披露的时机：作答前不能出现干扰项诊断（提前看到＝直接排除三个错项），
+//      母题骨架也必须折叠（摊开＝把题变成填空题）。
+//   ② 结论可核验：作答后每条诊断都要带来源徽标，且「引用原文」这一档
+//      必须能展开逐字原文供学生自己核对 —— 这是整套机制信任的来源。
+section('K · AI 指引面板（知识点 / 母题折叠 / 干扰项诊断 + 来源徽标）')
+await goto('/')
+{
+  // 切试卷会顺带重置年份/科目（Home 的 setPaper），所以这里从「全部」态开始收敛
+  await clickButton('408', 'startsWith')
+
+  const clickChip = async (label) => {
+    const r = await evaluate(`(() => {
+      const b = [...document.querySelectorAll('button.chip')].find(x => (x.innerText || '').trim() === ${JSON.stringify(String(label))})
+      if (!b) return 'NOT_FOUND'
+      b.click()
+      return 'OK'
+    })()`)
+    await sleep(80)
+    return r
+  }
+  // 年份/科目 chip 的语义是「在『全部』态点某年 = 排除该年」，所以只留一格要点掉其余所有
+  for (const y of [2009, 2010, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]) await clickChip(y)
+  for (const s of ['计算机组成原理', '操作系统', '计算机网络']) await clickChip(s)
+  const picked = await evaluate(
+    `[...document.querySelectorAll('.chip.on')].map(x => x.innerText.trim()).filter(t => /^\\d{4}$/.test(t) || ['数据结构','计算机组成原理','操作系统','计算机网络'].includes(t)).join(',')`,
+  )
+  check('筛选收敛到「2011 · 数据结构」', picked === '2011,数据结构', picked)
+
+  const started = await clickButton('开始练习', 'startsWith')
+  check('点击「开始练习」成功', started === 'OK', started)
+  await sleep(900)
+
+  /**
+   * 题库按「年升序 + 题号升序」排列，且随机出题默认关，所以该池首题恒为 2011-01
+   * （打样样本里它带 B/C/D 三条诊断：判据型 2 + 结论型 1）。
+   * 仍然写成「逐题前进直到找到带诊断的题」：万一排序前提变了，只会少验几条，不会假绿。
+   */
+  let sawGuide = false
+  let preAnswerDiag = -1
+  let foldedOk = false
+  let peekOk = false
+  let diagCount = 0
+  let badges = []
+  let badgeCls = []
+  let quoteOk = false
+  let quoteLen = 0
+  let scanned = 0
+
+  for (; scanned < 6; scanned++) {
+    if (!(await evaluate(`!!document.querySelector('.guide')`))) {
+      if ((await clickButton('跳过')) !== 'OK') break
+      continue
+    }
+    sawGuide = true
+
+    // 作答前：干扰项诊断必须一条都不在 DOM 里
+    preAnswerDiag = await evaluate(`document.querySelectorAll('.guide-list').length`)
+
+    // 作答前：母题骨架必须折叠；点「想不出来？」属于用户主动求助，允许展开
+    const folded = await evaluate(`!!document.querySelector('.guide-hidden')`)
+    const skelBefore = await evaluate(`document.querySelectorAll('.guide-skel').length`)
+    foldedOk = folded && skelBefore === 0
+    if (folded) {
+      const peeked = await clickButton('想不出来？看解题骨架')
+      peekOk = peeked === 'OK' && (await evaluate(`document.querySelectorAll('.guide-skel li').length`)) >= 3
+    }
+
+    // 作答（点第一个选项即可，对错都会进入只读回顾态）
+    const opted = await evaluate(`(() => {
+      const b = document.querySelector('button.opt')
+      if (!b) return 'NOT_FOUND'
+      b.click()
+      return 'OK'
+    })()`)
+    if (opted !== 'OK') break
+    await sleep(700)
+
+    diagCount = await evaluate(`document.querySelectorAll('.guide-list .g-item').length`)
+    if (diagCount > 0) {
+      badges = await evaluate(`[...document.querySelectorAll('.guide-list .g-badge')].map(x => x.innerText.trim())`)
+      badgeCls = await evaluate(
+        `[...document.querySelectorAll('.guide-list .g-badge')].map(x => [...x.classList].filter(c => c === 'g-conc' || c === 'g-crit' || c === 'g-probe').join(''))`,
+      )
+      const clicked = await evaluate(`(() => {
+        const t = document.querySelector('.guide-list .g-quote-toggle')
+        if (!t) return 'NO_TOGGLE'
+        t.click()
+        return 'OK'
+      })()`)
+      if (clicked === 'OK') {
+        await sleep(220)
+        const q = await evaluate(`document.querySelector('.guide-list .g-quote')?.innerText || ''`)
+        quoteLen = q.length
+        quoteOk = q.startsWith('「') && q.endsWith('」') && q.length > 8
+      }
+      break
+    }
+    if ((await clickButton('下一题', 'startsWith')) !== 'OK') break
+  }
+
+  check('该池题目渲染出 AI 指引面板', sawGuide === true, `第 ${scanned + 1} 题命中`)
+  check('作答前不出现干扰项诊断（防提前送答案）', preAnswerDiag === 0, `n=${preAnswerDiag}`)
+  check('作答前母题骨架折叠、不渲染步骤', foldedOk === true)
+  check('点「想不出来？」可展开解题骨架（≥3 步）', peekOk === true)
+  check('作答后出现干扰项诊断', diagCount === 3, `items=${diagCount}`)
+  check('每条诊断都带来源徽标', badges.length === diagCount, `badges=${badges.length}`)
+  check(
+    '徽标只取三档可信度（引用原文 / 依判据推得 / 请你自查）',
+    badges.length > 0 && badges.every((b) => ['引用原文', '依判据推得', '请你自查'].includes(b)),
+    badges.join(','),
+  )
+  check(
+    '徽标与 evidence.kind 一致（结论型 g-conc / 判据型 g-crit / 提问式 g-probe）',
+    badgeCls.length === badges.length &&
+      badgeCls.every((c, i) =>
+        badges[i] === '引用原文' ? c === 'g-conc' : badges[i] === '依判据推得' ? c === 'g-crit' : c === 'g-probe',
+      ),
+    badgeCls.join(','),
+  )
+  check('「原文」可展开逐字引用供学生核对', quoteOk === true, `len=${quoteLen}`)
+  const errs = runtimeErrors()
+  check('指引面板无运行时报错', errs.length === 0, errs.join(' | '))
+}
+
+// [L] 污染解析的兜底：走提问式引导，只给自查问题、不给结论。
+// 2023 年那批解析整体错位（题干问排序、解析在讲别的题），这些解析既当不了证据，
+// 也不该照常展示 —— 面板必须显式打出「解析未通过校验」，且诊断全部降级为「请你自查」，
+// 连「原文」都不给展开（展开一段错位原文只会更误导）。
+section('L · 解析未通过校验（只给自查问题，不给结论）')
+await goto('/')
+{
+  await clickButton('408', 'startsWith')
+
+  const clickChip = async (label) => {
+    const r = await evaluate(`(() => {
+      const b = [...document.querySelectorAll('button.chip')].find(x => (x.innerText || '').trim() === ${JSON.stringify(String(label))})
+      if (!b) return 'NOT_FOUND'
+      b.click()
+      return 'OK'
+    })()`)
+    await sleep(80)
+    return r
+  }
+  for (const y of [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2024]) await clickChip(y)
+  for (const s of ['计算机组成原理', '操作系统', '计算机网络']) await clickChip(s)
+  const picked = await evaluate(
+    `[...document.querySelectorAll('.chip.on')].map(x => x.innerText.trim()).filter(t => /^\\d{4}$/.test(t) || ['数据结构','计算机组成原理','操作系统','计算机网络'].includes(t)).join(',')`,
+  )
+  check('筛选收敛到「2023 · 数据结构」', picked === '2023,数据结构', picked)
+
+  const started = await clickButton('开始练习', 'startsWith')
+  check('点击「开始练习」成功', started === 'OK', started)
+  await sleep(900)
+
+  let warnTxt = ''
+  let probeHeader = ''
+  let probeBadges = []
+  let probeToggleCount = -1
+  let scanned = 0
+
+  for (; scanned < 6; scanned++) {
+    const w = await evaluate(`document.querySelector('.guide-warn')?.innerText || ''`)
+    if (w) warnTxt = w
+    const opted = await evaluate(`(() => {
+      const b = document.querySelector('button.opt')
+      if (!b) return 'NOT_FOUND'
+      b.click()
+      return 'OK'
+    })()`)
+    if (opted !== 'OK') break
+    await sleep(700)
+
+    const items = await evaluate(`document.querySelectorAll('.guide-list .g-item').length`)
+    if (items > 0) {
+      probeHeader = await evaluate(
+        `document.querySelector('.guide-list')?.closest('.guide-block')?.querySelector('.guide-h-sub')?.innerText || ''`,
+      )
+      probeBadges = await evaluate(`[...document.querySelectorAll('.guide-list .g-badge')].map(x => x.innerText.trim())`)
+      probeToggleCount = await evaluate(`document.querySelectorAll('.guide-list .g-quote-toggle').length`)
+      break
+    }
+    if ((await clickButton('下一题', 'startsWith')) !== 'OK') break
+  }
+
+  check('解析未通过校验的题打出警示条', warnTxt.includes('解析未通过校验'), excerpt(warnTxt, 120))
+  check('警示条说明该解析已不作为结论来源', warnTxt.includes('已不作为结论来源'), excerpt(warnTxt, 120))
+  check('诊断区标头声明只给自查问题', probeHeader.includes('只给自查问题'), probeHeader)
+  check('诊断全部降级为「请你自查」', probeBadges.length > 0 && probeBadges.every((b) => b === '请你自查'), probeBadges.join(','))
+  check('不给「原文」展开按钮（错位原文不展示）', probeToggleCount === 0, `n=${probeToggleCount}`)
+  const errs = runtimeErrors()
+  check('解析警示与提问式引导无运行时报错', errs.length === 0, errs.join(' | '))
+}
+
 // ---------- 收尾 ----------
 
 lines.push('', `RESULT: ${pass} pass / ${fail} fail`)

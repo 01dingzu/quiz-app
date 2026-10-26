@@ -13,6 +13,7 @@ import rawApplied from '../data/applied.json'
 import rawPolitics from '../data/politics.json'
 import rawMath from '../data/math.json'
 import rawEnglish from '../data/english.json'
+import { LESSON_QUESTIONS } from '../lessons'
 import { isMissingImg } from '../lib/missingImg'
 import { normalizeAnswer, normalizeBank } from '../lib/normalize'
 import { gradeAnswer } from '../lib/grade'
@@ -35,7 +36,13 @@ export const BANK: Question[] = [
   ...normalizeBank(rawPolitics),
   ...normalizeBank(rawMath),
   ...normalizeBank((rawEnglish as { questions?: unknown }).questions),
+  // 考点卡片练习题（带 lesson 外键）：不进真题抽题池，只从考点页面成组进入，
+  // 但判分 / 错题本 / SRS / 统计与真题完全同路
+  ...LESSON_QUESTIONS,
 ]
+
+/** 真题题库（不含考点练习题）：所有按试卷统计的口径都用它 */
+export const REAL_BANK: Question[] = BANK.filter((q) => !q.lesson)
 
 /** 共享长文表（英语一）：id → 正文。完形 1 篇/年、阅读 4 篇/年 */
 export const MATERIALS: Record<string, string> =
@@ -103,6 +110,8 @@ function filterQuestions(f: SessionFilter): Question[] {
   const paper = paperOfFilter(f)
   return BANK.filter(
     (q) =>
+      // 考点练习题不进自由练习 / 模拟考试的抽题池，只从考点页面成组进入
+      !q.lesson &&
       paperOfQuestion(q) === paper &&
       (f.years.length === 0 || f.years.includes(q.year)) &&
       (f.subjects.length === 0 || f.subjects.includes(q.subject)),
@@ -254,6 +263,11 @@ interface QuizState {
   /** 切换试卷：年份与科目筛选必须一并清空（跨试卷的科目名不通用） */
   setPaper: (p: Paper) => void
   startSession: () => void
+  /**
+   * 按给定题目 id 列表开局（考点卡片「开始练习」用）。
+   * 与自由练习同路：mode='practice'，不计时，作答进 attempts/SRS。
+   */
+  startSessionWithIds: (ids: string[]) => void
   /** 按当前试卷的真实结构组卷；durationMin=0 表示不限时 */
   startExam: (durationMin: number) => void
   startReview: () => void
@@ -382,6 +396,19 @@ export const useQuiz = create<QuizState>()(
         set({
           mode: 'practice',
           session: reorderWithSkipped(seq, get().skipped),
+          index: 0,
+          picked: {},
+          examRemainSec: 0,
+          examStartTs: null,
+        })
+      },
+
+      startSessionWithIds: (ids) => {
+        const valid = ids.filter((id) => !!getQuestion(id))
+        if (valid.length === 0) return
+        set({
+          mode: 'practice',
+          session: valid,
           index: 0,
           picked: {},
           examRemainSec: 0,
@@ -691,7 +718,7 @@ export function allTags(attempts: Record<string, AttemptRecord>): { tag: string;
 
 /** 自动检测到的缺图/缺表题（题干引用图但题库无图），按年份倒序；传 paper 则只取该试卷 */
 export function missingImgQuestions(paper?: Paper): Question[] {
-  return BANK.filter((q) => (paper ? paperOfQuestion(q) === paper : true))
+  return BANK.filter((q) => !q.lesson && (paper ? paperOfQuestion(q) === paper : true))
     .filter(isMissingImg)
     .sort((a, b) => b.year - a.year || a.no - b.no)
 }

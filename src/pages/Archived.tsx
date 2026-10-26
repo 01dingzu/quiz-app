@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { archivedCount, archivedQuestions, BANK, getQuestion, useQuiz } from '../store/quizStore'
+import { archivedCount, archivedQuestions, REAL_BANK, getQuestion, useQuiz } from '../store/quizStore'
 import QuestionCard from '../components/QuestionCard'
 import type { Question } from '../types'
 
@@ -88,7 +88,7 @@ export default function Archived() {
             disabled={count === 0}
             onClick={() => nav('/')}
           >
-            回自由练习（题库 {BANK.length} 题，未归档 {BANK.length - count} 题可用）
+            回自由练习（题库 {REAL_BANK.length} 题，未归档 {REAL_BANK.length - count} 题可用）
           </button>
           {count > 0 && (
             <button className={'danger-btn' + (armedAll ? ' armed' : '')} onClick={unarchiveAll}>

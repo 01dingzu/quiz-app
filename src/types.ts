@@ -70,6 +70,13 @@ interface QBase {
    * 题目通过这个字段指回 `MATERIALS`，避免把 17 万字长文复制 40 份。
    */
   materialId?: string
+  /**
+   * 所属考点卡片 id（对齐 lessons.ts 的 Lesson.id）。
+   * 带此字段的题是考点卡片的配套练习题：不进入自由练习 / 模拟考试的抽题池
+   * （filterQuestions 会排除），只通过考点页面的「开始练习」入口成组出现，
+   * 但作答记录照样进错题本 / SRS / 统计。
+   */
+  lesson?: string
 }
 
 /** 单选（存量 596 题的形态；读入时自动补 type:'single'） */

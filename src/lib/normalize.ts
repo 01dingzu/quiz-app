@@ -141,6 +141,8 @@ export function normalizeQuestion(raw: Raw): Question | null {
     score: typeof raw.score === 'number' ? raw.score : undefined,
     // 英语一的共享长文引用（其余试卷为 undefined）
     materialId: raw.materialId ? str(raw.materialId) : undefined,
+    // 考点卡片练习题的归属标记（lessons.ts 写入，透传到判别联合）
+    lesson: raw.lesson ? str(raw.lesson) : undefined,
   }
 
   const declared = str(raw.type)

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   useQuiz,
   BANK,
+  REAL_BANK,
   archivedCount,
   availablePapers,
   dueCount,
@@ -27,7 +28,7 @@ import { JISHI_DRILLS, JISHI_TEMPLATES } from '../data/jishi'
 
 /** 试卷切换器上的副标题：题库覆盖 / 客观题分值 / 正确率 KPI */
 function paperSubtitle(p: Paper): string {
-  const n = BANK.filter((q) => (q.paper ?? '408') === p).length
+  const n = REAL_BANK.filter((q) => (q.paper ?? '408') === p).length
   return `${n} 题 · 客观 ${PAPER_INFO[p].objective}/${PAPER_INFO[p].total} 分 · 目标正确率 ${Math.round(
     PAPER_KPI[p] * 100,
   )}%`
@@ -39,8 +40,8 @@ function paperSubtitle(p: Paper): string {
  * 这种在补录 28 题之后依然留在页面上 的说法）。
  */
 function bankBreakdown(): string {
-  const inPaper = (p: Paper) => (q: (typeof BANK)[number]) => (q.paper ?? '408') === p
-  const n = (pred: (q: (typeof BANK)[number]) => boolean) => BANK.filter(pred).length
+  const inPaper = (p: Paper) => (q: (typeof BANK)[number]) => !q.lesson && (q.paper ?? '408') === p
+  const n = (pred: (q: (typeof BANK)[number]) => boolean) => REAL_BANK.filter(pred).length
   const span = (p: Paper) => {
     const ys = paperYears(p)
     return `${Math.min(...ys)}-${Math.max(...ys)}`
@@ -103,7 +104,7 @@ export default function Home() {
 
   const count = useMemo(
     () =>
-      BANK.filter(
+      REAL_BANK.filter(
         (q) =>
           (q.paper ?? '408') === paper &&
           (allYears || filter.years.includes(q.year)) &&

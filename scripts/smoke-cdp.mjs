@@ -879,6 +879,72 @@ await goto('/')
 
 // ---------- 收尾 ----------
 
+// [M] 考点卡片 /learn：列表 → 详情 → 例题折叠 → 成组练习 → 进度联动
+{
+  section('M · 考点页 /learn（列表 → 详情 → 例题 → 练习联动）')
+
+  await goto('/learn')
+  const listTxt = await bodyText()
+  check('考点列表页渲染出考点卡片', listTxt.includes('用泰勒展开求极限'), excerpt(listTxt, 120))
+  check('列表页展示掌握标准与练习数', listTxt.includes('掌握标准') && listTxt.includes('5 道练习'), excerpt(listTxt, 160))
+  check('列表页初始状态为未开始', listTxt.includes('未开始'), '')
+  const errsList = runtimeErrors()
+  check('考点列表无运行时报错', errsList.length === 0, errsList.join(' | '))
+
+  // 点卡片进详情
+  const openCard = await evaluate(`(() => {
+    const c = [...document.querySelectorAll('.lesson-card')].find(x => x.innerText.includes('泰勒'))
+    if (!c) return 'NOT_FOUND'
+    c.click()
+    return 'OK'
+  })()`)
+  await sleep(900)
+  check('点击卡片进入考点详情', openCard === 'OK' && (await evaluate('location.hash')).includes('/learn/lsn-taylor'), openCard)
+
+  const detTxt = await bodyText()
+  check('详情页含核心思路 / 必背公式 / 易错红线', detTxt.includes('核心思路') && detTxt.includes('必背公式') && detTxt.includes('易错红线'), '')
+  check('公式表渲染出 8 行（KaTeX 表格）', await evaluate(`document.querySelectorAll('.q-table tbody tr').length`) >= 8, '')
+  check('两道例题都在（含经典陷阱题）', detTxt.includes('例 1（基础）') && detTxt.includes('例 2（经典陷阱）'), '')
+
+  // 例题折叠：初始收起，点开后出现步骤与结论
+  const solBefore = await evaluate(`document.querySelectorAll('.ex-sol').length`)
+  await clickButton('先自己写', 'includes')
+  const solAfter = await evaluate(`document.querySelectorAll('.ex-sol').length`)
+  const solTxt = await bodyText()
+  check('例题解法默认折叠', solBefore === 0, `n=${solBefore}`)
+  check('点开后出现解法步骤与结论', solAfter > 0 && solTxt.includes('要点：'), `n=${solAfter}`)
+  check('错误做法警示条展示', solTxt.includes('✗ 错误做法'), '')
+
+  // 练习联动：点「开始练习」进练习页作答第一题
+  const errsDetail = runtimeErrors()
+  check('考点详情无运行时报错', errsDetail.length === 0, errsDetail.join(' | '))
+
+  await clickButton('开始练习', 'startsWith')
+  const pracHash = await evaluate('location.hash')
+  const pracTxt = await bodyText()
+  check('成组练习进入练习页', pracHash.includes('/practice') && (pracTxt.includes('1 / 5') || pracTxt.includes('第 1 题')), pracHash)
+  // 作答：无论抽到单选还是填空，答第一题后前进
+  const answered = await evaluate(`(() => {
+    const opt = document.querySelector('.opt, .option, [class*=opt-]')
+    if (opt) { opt.click(); return 'OPT' }
+    const inp = document.querySelector('input[type=text]')
+    if (inp) { return 'BLANK' }
+    return 'NONE'
+  })()`)
+  check('练习页出现作答控件（单选或填空）', answered === 'OPT' || answered === 'BLANK', answered)
+
+  // 回考点列表验证进度联动
+  await goto('/learn')
+  const progTxt = await bodyText()
+  check(
+    '作答后考点进度联动（不再是未开始）',
+    progTxt.includes('已做 1/5') || progTxt.includes('已做 1/5 ·'),
+    excerpt(progTxt, 200),
+  )
+  const errsEnd = runtimeErrors()
+  check('考点进度联动无运行时报错', errsEnd.length === 0, errsEnd.join(' | '))
+}
+
 lines.push('', `RESULT: ${pass} pass / ${fail} fail`)
 writeFileSync(REPORT, lines.join('\n'), 'utf8')
 // 只在控制台打一行 ASCII 摘要：中文经 PowerShell 管道会变乱码，明细一律看报告文件

@@ -1,13 +1,15 @@
 import { useMemo } from 'react'
 import { NavLink, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
+import Learn from './pages/Learn'
+import LessonView from './pages/LessonView'
 import Practice from './pages/Practice'
 import WrongBook from './pages/WrongBook'
 import Stats from './pages/Stats'
 import MissingImg from './pages/MissingImg'
 import Archived from './pages/Archived'
 import Jishi from './pages/Jishi'
-import { BANK, archivedCount, availablePapers, useQuiz } from './store/quizStore'
+import { REAL_BANK, archivedCount, availablePapers, useQuiz } from './store/quizStore'
 
 export default function App() {
   const reported = useQuiz((s) => s.imgReports.length)
@@ -20,7 +22,7 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <div className="brand">
-          考研刷题<small>{BANK.length} 题 · {paperList}</small>
+          考研刷题<small>{REAL_BANK.length} 题 · {paperList}</small>
         </div>
         <nav className="tabs">
           <NavLink
@@ -29,6 +31,12 @@ export default function App() {
             className={({ isActive }) => 'tab' + (isActive ? ' active' : '')}
           >
             练习
+          </NavLink>
+          <NavLink
+            to="/learn"
+            className={({ isActive }) => 'tab' + (isActive ? ' active' : '')}
+          >
+            考点
           </NavLink>
           <NavLink
             to="/jishi"
@@ -65,6 +73,8 @@ export default function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/learn" element={<Learn />} />
+        <Route path="/learn/:id" element={<LessonView />} />
         <Route path="/practice" element={<Practice />} />
         <Route path="/jishi" element={<Jishi />} />
         <Route path="/wrong" element={<WrongBook />} />

@@ -910,3 +910,20 @@ a { color: inherit; text-decoration: none; }
 .prac-tag { font-size: 11px; padding: 1px 8px; border-radius: 999px; flex-shrink: 0; }
 .prac-item.ok .prac-tag { background: var(--ok-weak); color: var(--ok); }
 .prac-item.bad .prac-tag { background: var(--bad-weak); color: var(--bad); }
+
+/* 考点列表的学科分组标题 */
+.learn-group {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 18px 2px 8px;
+}
+.learn-group-n {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}

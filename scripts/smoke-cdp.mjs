@@ -945,6 +945,69 @@ await goto('/')
   check('考点进度联动无运行时报错', errsEnd.length === 0, errsEnd.join(' | '))
 }
 
+// [M2] 全部考点逐个打开：结构完整性 + 渲染无异常
+{
+  section('M2 · 全部考点逐个渲染校验')
+
+  await goto('/learn')
+  const titlesRaw = await evaluate(
+    `[...document.querySelectorAll('.lesson-card .lesson-title')].map(x => (x.innerText||'').trim()).join('|')`,
+  )
+  const titles = titlesRaw ? String(titlesRaw).split('|').filter(Boolean) : []
+  check('考点数量 = 8', titles.length === 8, titles.join(' / '))
+
+  const groupRaw = await evaluate(
+    `[...document.querySelectorAll('.learn-group')].map(x => (x.innerText||'').trim().split('\\n')[0]).join('|')`,
+  )
+  const groups = groupRaw ? String(groupRaw).split('|') : []
+  check(
+    '列表按学科分组（高等数学 / 线性代数 / 概率统计）',
+    groups.length === 3 &&
+      groups[0].includes('高等数学') &&
+      groups[1].includes('线性代数') &&
+      groups[2].includes('概率统计'),
+    groups.join(' / '),
+  )
+  const listOver = await bodyText()
+  check('列表页展示总览（考点数与练习总数）', listOver.includes('个考点') && listOver.includes('道原创练习'), excerpt(listOver, 160))
+
+  const bad = []
+  for (let i = 0; i < titles.length; i++) {
+    await goto('/learn')
+    const clicked = await evaluate(`(() => {
+      const cs = [...document.querySelectorAll('.lesson-card')]
+      if (!cs[${i}]) return 'NO_CARD'
+      cs[${i}].click()
+      return 'OK'
+    })()`)
+    await sleep(700)
+    const t = await bodyText()
+    const nEx = await evaluate(`document.querySelectorAll('.ex-block').length`)
+    const nPrac = await evaluate(`document.querySelectorAll('.prac-item').length`)
+    const nRows = await evaluate(`document.querySelectorAll('.q-table tbody tr').length`)
+    const errs = runtimeErrors()
+    const ok =
+      clicked === 'OK' &&
+      t.includes('核心思路') &&
+      t.includes('必背公式') &&
+      t.includes('易错红线') &&
+      t.includes('例题精讲') &&
+      t.includes('练习题') &&
+      nEx >= 2 &&
+      nPrac >= 5 &&
+      nRows >= 5 &&
+      errs.length === 0
+    if (!ok) {
+      bad.push(`${i}:${titles[i]} click=${clicked} ex=${nEx} prac=${nPrac} rows=${nRows} err=${errs.join('|')}`)
+    }
+  }
+  check(
+    '8 个考点详情页结构完整（公式表 ≥5 行 / 2 道例题 / 5 道练习）且无报错',
+    bad.length === 0,
+    bad.join(' ; '),
+  )
+}
+
 lines.push('', `RESULT: ${pass} pass / ${fail} fail`)
 writeFileSync(REPORT, lines.join('\n'), 'utf8')
 // 只在控制台打一行 ASCII 摘要：中文经 PowerShell 管道会变乱码，明细一律看报告文件

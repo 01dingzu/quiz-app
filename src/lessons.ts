@@ -9,6 +9,10 @@ import { LINEAR2_LESSONS } from './lessons/linear2'
 import { PROB_LESSONS } from './lessons/prob'
 import { PROB2_LESSONS } from './lessons/prob2'
 import { PROB3_LESSONS } from './lessons/prob3'
+import { DS_LESSONS } from './lessons/cs-ds'
+import { OS_LESSONS } from './lessons/cs-os'
+import { COA_LESSONS } from './lessons/cs-coa'
+import { NET_LESSONS } from './lessons/cs-net'
 
 // ============================================================
 // 考点卡片总入口
@@ -24,6 +28,10 @@ import { PROB3_LESSONS } from './lessons/prob3'
 //   lessons/prob.ts      概率：贝叶斯 / 矩估计与最大似然
 //   lessons/prob2.ts     概率：一维分布 / 二维分布 / 数字特征
 //   lessons/prob3.ts     概率：大数定律 / 抽样分布 / 估计与检验
+//   lessons/cs-ds.ts     408 数据结构：线性表栈队列 / 树 / 图 / 查找 / 排序
+//   lessons/cs-os.ts     408 操作系统：进程 / 调度 / PV / 死锁 / 内存 / 文件 / I/O
+//   lessons/cs-coa.ts    408 组成原理：数据运算 / Cache / 寻址 / 流水线 / 总线
+//   lessons/cs-net.ts    408 网络：链路层 / IP 子网 / 路由 / TCP / 应用层
 //
 // 新增考点：在对应学科文件里 push 一个 Lesson 对象，并在 ORDER 里登记
 // id 即可（未登记的会排在末尾），页面与题库联动全自动。
@@ -41,6 +49,10 @@ const ALL_LESSONS: Lesson[] = [
   ...PROB_LESSONS,
   ...PROB2_LESSONS,
   ...PROB3_LESSONS,
+  ...DS_LESSONS,
+  ...OS_LESSONS,
+  ...COA_LESSONS,
+  ...NET_LESSONS,
 ]
 
 /**
@@ -78,6 +90,35 @@ const ORDER: string[] = [
   'lsn-lln',
   'lsn-sample',
   'lsn-esttest',
+  // 408 · 数据结构
+  'lsn-ds-list',
+  'lsn-ds-tree',
+  'lsn-ds-graph',
+  'lsn-ds-search',
+  'lsn-ds-sort',
+  // 408 · 操作系统
+  'lsn-os-proc',
+  'lsn-os-sched',
+  'lsn-os-pv',
+  'lsn-os-prodcons',
+  'lsn-os-rw',
+  'lsn-os-phil',
+  'lsn-os-banker',
+  'lsn-os-mem',
+  'lsn-os-file',
+  'lsn-os-io',
+  // 408 · 计算机组成原理
+  'lsn-coa-num',
+  'lsn-coa-cache',
+  'lsn-coa-addr',
+  'lsn-coa-pipe',
+  'lsn-coa-bus',
+  // 408 · 计算机网络
+  'lsn-net-link',
+  'lsn-net-ip',
+  'lsn-net-route',
+  'lsn-net-tcp',
+  'lsn-net-app',
 ]
 
 /** 全部考点（按 ORDER 排序，未登记的排最后） */

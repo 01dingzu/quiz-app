@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useQuiz } from '../store/quizStore'
 import { LESSONS, lessonPracticeIds, type LessonExample } from '../lessons'
 import { Tex } from '../lib/tex'
+import { PAPER_GLYPH, PAPER_LABEL, paperClass } from '../lib/paper'
 
 /** 例题精讲块：题干 + 可选错误做法 + 可折叠解法 */
 function Example({ ex }: { ex: LessonExample }) {
@@ -76,7 +77,13 @@ export default function LessonView() {
         ← 考点列表
       </button>
 
-      <div className="card">
+      <div className={'card lesson-hero ' + paperClass(lesson.paper)}>
+        <div className="lesson-hero-tag">
+          <span className="lesson-hero-glyph">{PAPER_GLYPH[lesson.paper]}</span>
+          {PAPER_LABEL[lesson.paper]}
+          <span className="lesson-hero-sep">·</span>
+          {lesson.subject}
+        </div>
         <div className="lesson-top">
           <span className="lesson-title">{lesson.title}</span>
           <span className={'lesson-level lv-' + (lesson.level === '高频大题' ? 'hot' : lesson.level === '低频了解' ? 'low' : 'mid')}>
@@ -84,8 +91,7 @@ export default function LessonView() {
           </span>
         </div>
         <div className="lesson-sub">
-          {lesson.paper} · {lesson.subject} · 练习 {stats.total} 题 · 已做 {stats.done} / 正确{' '}
-          {stats.correct}
+          练习 {stats.total} 题 · 已做 {stats.done} / 正确 {stats.correct}
         </div>
         <div className="lesson-goal">掌握标准：{lesson.goal}</div>
       </div>
@@ -101,7 +107,8 @@ export default function LessonView() {
 
       {lesson.formulaTable && (
         <div className="card">
-          <div className="sec-title">必背公式</div>
+          {/* 政治的「公式表」装的是背诵条款，标签要跟着换 */}
+          <div className="sec-title">{lesson.paper === '政治' ? '必背条款' : '必背公式'}</div>
           <Tex text={lesson.formulaTable} />
         </div>
       )}
@@ -115,12 +122,14 @@ export default function LessonView() {
         </div>
       )}
 
-      <div className="card">
-        <div className="sec-title">例题精讲（{lesson.examples.length} 道）</div>
-        {lesson.examples.map((ex, i) => (
-          <Example key={i} ex={ex} />
-        ))}
-      </div>
+      {lesson.examples.length > 0 && (
+        <div className="card">
+          <div className="sec-title">例题精讲（{lesson.examples.length} 道）</div>
+          {lesson.examples.map((ex, i) => (
+            <Example key={i} ex={ex} />
+          ))}
+        </div>
+      )}
 
       <div className="card">
         <div className="sec-title">练习题（{stats.total} 道 · 走真实做题流程）</div>

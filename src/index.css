@@ -881,6 +881,32 @@ a { color: inherit; text-decoration: none; }
 .lesson-para { font-size: 14.5px; line-height: 1.8; margin: 10px 0; }
 .lesson-para .tex-block { overflow-x: auto; }
 
+/* 考点详情页头部：跟着试卷配色走 */
+.lesson-hero.paper-math,
+.lesson-hero.paper-cs,
+.lesson-hero.paper-pol,
+.lesson-hero.paper-eng {
+  border-left: 4px solid var(--paper);
+}
+.lesson-hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--paper);
+  background: var(--paper-weak);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 9px;
+}
+.lesson-hero-glyph {
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+}
+.lesson-hero-sep { color: var(--muted); font-weight: 400; }
+
 /* 易错红线 */
 .pitfall-card { border-color: var(--warn); background: var(--warn-weak); }
 .pitfall-card .sec-title { color: var(--warn); }
@@ -911,7 +937,7 @@ a { color: inherit; text-decoration: none; }
 .prac-item.ok .prac-tag { background: var(--ok-weak); color: var(--ok); }
 .prac-item.bad .prac-tag { background: var(--bad-weak); color: var(--bad); }
 
-/* 考点列表的学科分组标题 */
+/* ---------- 考点列表的学科分组标题 ---------- */
 .learn-group {
   display: flex;
   align-items: baseline;
@@ -922,8 +948,143 @@ a { color: inherit; text-decoration: none; }
   color: var(--ink);
   margin: 18px 2px 8px;
 }
+.learn-group-t { display: inline-flex; align-items: center; gap: 7px; }
+.learn-group-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--paper, var(--brand));
+  flex-shrink: 0;
+}
 .learn-group-n {
   font-size: 12px;
   font-weight: 400;
   color: var(--muted);
+}
+
+/* ---------- 试卷配色（数学=靛蓝，408=青绿，政治=绛红，英语=紫） ---------- */
+.paper-math { --paper: #4f46e5; --paper-weak: #eef2ff; }
+.paper-cs { --paper: #0d9488; --paper-weak: #ecfdf5; }
+.paper-pol { --paper: #be123c; --paper-weak: #fff1f5; }
+.paper-eng { --paper: #7c3aed; --paper-weak: #f5f3ff; }
+
+/* 顶部试卷筛选胶囊 */
+.paper-filter {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 14px 2px 2px;
+}
+.pf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--muted);
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.pf-chip:hover { color: var(--ink); border-color: var(--paper, var(--brand)); }
+.pf-glyph {
+  font-size: 11.5px;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--paper, var(--muted));
+}
+.pf-n {
+  font-size: 11px;
+  background: var(--line);
+  color: var(--muted);
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+.pf-chip.on {
+  background: var(--paper, var(--brand));
+  border-color: var(--paper, var(--brand));
+  color: #fff;
+}
+.pf-chip.on .pf-glyph { color: #fff; }
+.pf-chip.on .pf-n { background: rgba(255, 255, 255, 0.24); color: #fff; }
+
+/* 试卷区块：色条 + 标题 + 总进度 */
+.paper-block { margin-top: 20px; }
+.paper-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  background: var(--paper-weak);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--paper);
+  border-radius: var(--radius);
+}
+.paper-glyph {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--paper);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.paper-meta { min-width: 0; }
+.paper-name {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--paper);
+}
+.paper-count { font-size: 12px; font-weight: 400; color: var(--muted); }
+.paper-hint { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+.paper-bar-row { display: flex; align-items: center; gap: 10px; margin: 8px 2px 0; }
+.paper-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.paper-bar i { display: block; height: 100%; background: var(--paper); border-radius: 3px; transition: width 0.3s; }
+.paper-bar-t { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+
+/* 卡片按试卷着色：左侧色条 + 学科标签 */
+.lesson-card.paper-math,
+.lesson-card.paper-cs,
+.lesson-card.paper-pol,
+.lesson-card.paper-eng {
+  border-left: 3px solid var(--paper);
+}
+.lesson-card.paper-math:hover,
+.lesson-card.paper-cs:hover,
+.lesson-card.paper-pol:hover,
+.lesson-card.paper-eng:hover {
+  border-color: var(--paper);
+}
+.lesson-card.done.paper-math,
+.lesson-card.done.paper-cs,
+.lesson-card.done.paper-pol,
+.lesson-card.done.paper-eng {
+  border-color: var(--ok);
+  border-left-color: var(--paper);
+}
+.lesson-paper-tag {
+  display: inline-block;
+  background: var(--paper-weak);
+  color: var(--paper);
+  font-size: 11.5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-right: 8px;
 }

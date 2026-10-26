@@ -280,7 +280,7 @@ section('B · 切到政治')
   check('点击「政治」按钮成功', r === 'OK', r)
   const sub = await evaluate(`document.querySelector('.paper-sub')?.innerText || ''`)
   check('副标题切到思想政治理论', sub.includes('思想政治理论'), excerpt(sub, 120))
-  check('政治题库量 = 495 题', sub.includes('495 题'), excerpt(sub, 120))
+  check('政治题库量 = 552 题（495 真题 + 57 道 2027 模拟）', sub.includes('552 题'), excerpt(sub, 120))
   check('政治客观分 50/100', sub.includes('50/100'), excerpt(sub, 120))
   const t = await bodyText()
   check('多选题型在筛选中出现（政治特有）', t.includes('多选'), '')
@@ -365,8 +365,8 @@ await goto('/')
   check('练习进度条已渲染', hasProgress === true)
 
   const t = await bodyText()
-  check('题干已渲染', t.includes('第 1 / 495 题'), excerpt(t, 120))
-  check('分册信息正确（政治 · 495 题）', t.includes('马原') || t.includes('毛中特'), '')
+  check('题干已渲染', t.includes('第 1 / 552 题'), excerpt(t, 120))
+  check('分册信息正确（政治 · 552 题）', t.includes('马原') || t.includes('毛中特'), '')
 
   const optCount = await evaluate(`document.querySelectorAll('button.opt').length`)
   check('单选题渲染出 4 个选项', optCount === 4, `opts=${optCount}`)
@@ -535,7 +535,7 @@ await goto('/')
   // 顶部品牌副标题必须由题库实际覆盖的试卷推导（曾经硬编码漏掉英语一）
   const t2 = await bodyText()
   check('顶栏试卷列表包含英语一', t2.includes('408 / 政治 / 英语一 / 数学一'), excerpt(t2, 90))
-  check('顶栏题量为全库 1974 题', t2.includes('1974 题'), excerpt(t2, 90))
+  check('顶栏题量为全库 2031 题', t2.includes('2031 题'), excerpt(t2, 90))
   const errs = runtimeErrors()
   check('英语一练习页无运行时报错', errs.length === 0, errs.join(' | '))
 }
@@ -954,28 +954,34 @@ await goto('/')
     `[...document.querySelectorAll('.lesson-card .lesson-title')].map(x => (x.innerText||'').trim()).join('|')`,
   )
   const titles = titlesRaw ? String(titlesRaw).split('|').filter(Boolean) : []
-  check('考点数量 = 27（高数 14 / 线代 5 / 概率 8）', titles.length === 27, titles.length + ' 个：' + titles.join(' / '))
+  check(
+    '考点数量 = 65（数学 27 / 408 25 / 政治 13）',
+    titles.length === 65,
+    titles.length + ' 个',
+  )
 
   const groupRaw = await evaluate(
     `[...document.querySelectorAll('.learn-group')].map(x => (x.innerText||'').trim().split('\\n')[0]).join('|')`,
   )
   const groups = groupRaw ? String(groupRaw).split('|') : []
+  const wantGroups = [
+    '高等数学', '线性代数', '概率统计',
+    '数据结构', '操作系统', '计算机组成原理', '计算机网络',
+    '马原', '毛中特', '习思想', '史纲', '思修法纪', '时政',
+  ]
   check(
-    '列表按学科分组（高等数学 / 线性代数 / 概率统计）',
-    groups.length === 3 &&
-      groups[0].includes('高等数学') &&
-      groups[1].includes('线性代数') &&
-      groups[2].includes('概率统计'),
+    '列表按 13 个学科分组（数学 3 + 408 四科 + 政治六科）',
+    groups.length === 13 && wantGroups.every((g, i) => groups[i].includes(g)),
     groups.join(' / '),
   )
   const groupCounts = await evaluate(
     `[...document.querySelectorAll('.learn-group')].map(x => (x.innerText||'').trim().replace(/\\s+/g,' ')).join(' | ')`,
   )
   check(
-    '分组内考点数正确（高数 14 / 线代 5 / 概率 8）',
-    String(groupCounts).includes('14 个考点') &&
-      String(groupCounts).includes('5 个考点') &&
-      String(groupCounts).includes('8 个考点'),
+    '分组内考点数正确（高数 14 / 线代 5 / 概率 8 / 操作系统 10 / 马原 3 / 时政 1）',
+    ['14 个考点', '5 个考点', '8 个考点', '10 个考点', '3 个考点', '1 个考点'].every((s) =>
+      String(groupCounts).includes(s),
+    ),
     String(groupCounts),
   )
   const listOver = await bodyText()
@@ -996,26 +1002,124 @@ await goto('/')
     const nPrac = await evaluate(`document.querySelectorAll('.prac-item').length`)
     const nRows = await evaluate(`document.querySelectorAll('.q-table tbody tr').length`)
     const errs = runtimeErrors()
+    // 政治的背诵卡片没有例题（例题精讲整块不渲染），表格里装的是条款而不是公式；
+    // 408 的部分考点也没有公式表 —— 所以「有没有表」不写死，只在有表时校验行数
+    const isClause = t.includes('必背条款')
+    const hasFormula = isClause || t.includes('必背公式')
     const ok =
       clicked === 'OK' &&
       t.includes('核心思路') &&
-      t.includes('必背公式') &&
       t.includes('易错红线') &&
-      t.includes('例题精讲') &&
       t.includes('练习题') &&
-      nEx >= 2 &&
-      nPrac >= 5 &&
-      nRows >= 5 &&
+      nPrac >= 3 &&
+      (!hasFormula || nRows >= 4) &&
       errs.length === 0
     if (!ok) {
       bad.push(`${i}:${titles[i]} click=${clicked} ex=${nEx} prac=${nPrac} rows=${nRows} err=${errs.join('|')}`)
     }
   }
   check(
-    '27 个考点详情页结构完整（公式表 ≥5 行 / 2 道例题 / 5 道练习）且无报错',
+    '65 个考点详情页结构完整（核心思路/易错红线/练习 ≥3 道 · 有表则 ≥4 行 · 无报错）',
     bad.length === 0,
     bad.join(' ; '),
   )
+}
+
+// [M3] 2027 政治模拟题 + 习思想科目 + 政治背诵卡片
+{
+  section('M3 · 政治 2027 模拟题 / 习思想 / 背诵卡片')
+
+  await goto('/')
+  // 先把年份与科目都复位成「全部」，否则前面段落留下的筛选会污染计数
+  const resetAll = async () => {
+    await evaluate(`(() => {
+      [...document.querySelectorAll('button.chip')].filter(b => (b.innerText||'').trim() === '全部').forEach(b => b.click())
+      return 1
+    })()`)
+    await sleep(400)
+  }
+  await resetAll()
+  await clickButton('408', 'startsWith')
+  await sleep(400)
+  const chips408 = await evaluate(
+    `[...document.querySelectorAll('button.chip')].map(x => (x.innerText||'').trim()).join('|')`,
+  )
+  check(
+    '408 的年份筛选不含 2027（考点练习题的年份不该成为筛选项）',
+    !String(chips408).split('|').includes('2027'),
+    String(chips408).slice(0, 160),
+  )
+
+  await clickButton('政治', 'startsWith')
+  await sleep(500)
+
+  const chips = await evaluate(
+    `[...document.querySelectorAll('button.chip')].map(x => (x.innerText||'').trim()).join('|')`,
+  )
+  const chipList = String(chips).split('|')
+  check('年份筛选出现 2027（新增的 57 道模拟题）', chipList.includes('2027'), String(chips).slice(0, 200))
+  check('科目筛选出现「习思想」（2027 大纲单列 22%）', chipList.includes('习思想'), '')
+
+  // 只留 2027：把其余 15 个年份逐个排除（chip 语义：全选态下点某年 = 排除该年）
+  for (const y of [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]) {
+    await evaluate(`(() => {
+      const b = [...document.querySelectorAll('button.chip')].find(x => (x.innerText||'').trim() === ${JSON.stringify(String(y))})
+      if (b) b.click(); return 1
+    })()`)
+    await sleep(60)
+  }
+  await sleep(300)
+
+  const startTxt = await evaluate(
+    `([...document.querySelectorAll('.start-btn')].map(x => x.innerText.replace(/\\s+/g, ' ')).find(t => t.includes('开始练习')) || '')`,
+  )
+  check('只选 2027 时练习池 = 57 题（25 单选 + 18 多选 + 14 分析题自评）', String(startTxt).includes('共 57 题'), String(startTxt))
+
+  // 科目筛选：全选态下点「马原」= 排除马原，其余五科仍选中
+  const subState = await evaluate(`(() => {
+    const b = [...document.querySelectorAll('button.chip')].find(x => (x.innerText||'').trim() === '马原')
+    if (!b) return 'NOT_FOUND'
+    b.click()
+    return 'OK'
+  })()`)
+  await sleep(400)
+  const afterSub = await evaluate(`(() => {
+    const chips = [...document.querySelectorAll('button.chip')]
+    const mar = chips.find(x => (x.innerText||'').trim() === '马原')
+    const xs = chips.find(x => (x.innerText||'').trim() === '习思想')
+    return { mar: mar ? mar.className.includes('on') : null, xs: xs ? xs.className.includes('on') : null }
+  })()`)
+  check('点击科目 chip 生效（马原被排除、习思想仍选中）', subState === 'OK' && afterSub.mar === false && afterSub.xs === true, JSON.stringify(afterSub))
+
+  const started = await clickButton('开始练习', 'startsWith')
+  await sleep(900)
+  const pracTxt = await bodyText()
+  check('练习页渲染出 2027 年题目', started === 'OK' && /2027 年/.test(pracTxt), excerpt(pracTxt, 120))
+  check('题目带政治分科标记', ['马原', '毛中特', '习思想', '史纲', '思修法纪', '时政'].some((s) => pracTxt.includes(s)), '')
+  check('练习页无运行时报错', runtimeErrors().length === 0, runtimeErrors().join(' | '))
+
+  // 背诵卡片：政治的公式表应显示成「必背条款」
+  await goto('/learn')
+  const groupTxt = await evaluate(
+    `[...document.querySelectorAll('.learn-group')].map(x => (x.innerText||'').trim().replace(/\\s+/g,' ')).join(' | ')`,
+  )
+  check(
+    '政治分组带出练习数（时政 1 个考点 · 6 题 = 4 单选 + 2 分析题）',
+    String(groupTxt).includes('时政 1 个考点 · 6 题'),
+    String(groupTxt).slice(-160),
+  )
+  const openClause = await evaluate(`(() => {
+    const c = [...document.querySelectorAll('.lesson-card')].find(x => x.innerText.includes('唯物论与辩证法'))
+    if (!c) return 'NOT_FOUND'
+    c.click(); return 'OK'
+  })()`)
+  await sleep(900)
+  const det = await bodyText()
+  const rows = await evaluate(`document.querySelectorAll('.q-table tbody tr').length`)
+  check('政治背诵卡片可打开', openClause === 'OK' && (await evaluate('location.hash')).includes('/learn/lsn-zz-my-1'), openClause)
+  check('标签按学科切换：显示「必背条款」而不是「必背公式」', det.includes('必背条款') && !det.includes('必背公式'), '')
+  check('条款表 ≥ 12 行（马原唯物论＋辩证法 12 条）', rows >= 12, `rows=${rows}`)
+  check('背诵卡片无运行时报错', runtimeErrors().length === 0, runtimeErrors().join(' | '))
 }
 
 lines.push('', `RESULT: ${pass} pass / ${fail} fail`)

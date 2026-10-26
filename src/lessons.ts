@@ -13,6 +13,7 @@ import { DS_LESSONS } from './lessons/cs-ds'
 import { OS_LESSONS } from './lessons/cs-os'
 import { COA_LESSONS } from './lessons/cs-coa'
 import { NET_LESSONS } from './lessons/cs-net'
+import { POLITICS_LESSONS } from './lessons/politics'
 
 // ============================================================
 // 考点卡片总入口
@@ -32,6 +33,7 @@ import { NET_LESSONS } from './lessons/cs-net'
 //   lessons/cs-os.ts     408 操作系统：进程 / 调度 / PV / 死锁 / 内存 / 文件 / I/O
 //   lessons/cs-coa.ts    408 组成原理：数据运算 / Cache / 寻址 / 流水线 / 总线
 //   lessons/cs-net.ts    408 网络：链路层 / IP 子网 / 路由 / TCP / 应用层
+//   lessons/politics.ts  政治六科：背诵条款（自动生成，见 scripts/gen-politics-2027.mjs）
 //
 // 新增考点：在对应学科文件里 push 一个 Lesson 对象，并在 ORDER 里登记
 // id 即可（未登记的会排在末尾），页面与题库联动全自动。
@@ -53,6 +55,8 @@ const ALL_LESSONS: Lesson[] = [
   ...OS_LESSONS,
   ...COA_LESSONS,
   ...NET_LESSONS,
+  // 政治（2027 大纲六科）：背诵条款卡片，配套练习来自 politics.json 的 2027 模拟题
+  ...POLITICS_LESSONS,
 ]
 
 /**
@@ -119,6 +123,20 @@ const ORDER: string[] = [
   'lsn-net-route',
   'lsn-net-tcp',
   'lsn-net-app',
+  // 政治 · 背诵条款（2027 大纲六科）
+  'lsn-zz-my-1',
+  'lsn-zz-my-2',
+  'lsn-zz-my-3',
+  'lsn-zz-mz-1',
+  'lsn-zz-mz-2',
+  'lsn-zz-xs-1',
+  'lsn-zz-xs-2',
+  'lsn-zz-xs-3',
+  'lsn-zz-sg-1',
+  'lsn-zz-sg-2',
+  'lsn-zz-sx-1',
+  'lsn-zz-sx-2',
+  'lsn-zz-sz-1',
 ]
 
 /** 全部考点（按 ORDER 排序，未登记的排最后） */

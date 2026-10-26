@@ -78,10 +78,14 @@ export function paperOfFilter(f: SessionFilter): Paper {
   return f.paper ?? '408'
 }
 
-/** 某试卷在题库中实际有数据的年份（升序）—— 各试卷年份区间不同，不能共用 YEARS */
+/**
+ * 某试卷在题库中实际有数据的年份（升序）—— 各试卷年份区间不同，不能共用 YEARS。
+ * 只看真题（REAL_BANK）：考点练习题的 year 统一是 2027（内部分组排序用），
+ * 把它们算进年份筛选会让「408」凭空多出一个 2027 的筛选项，而那一项还筛不出东西。
+ */
 export function paperYears(paper: Paper): number[] {
   return Array.from(
-    new Set(BANK.filter((q) => paperOfQuestion(q) === paper).map((q) => q.year)),
+    new Set(REAL_BANK.filter((q) => paperOfQuestion(q) === paper).map((q) => q.year)),
   ).sort((a, b) => a - b)
 }
 
@@ -95,7 +99,7 @@ export function paperSubjects(paper: Paper): string[] {
 function paperSubjectsOrder(paper: Paper): string[] {
   switch (paper) {
     case '408': return [...SUBJECTS]
-    case '政治': return ['马原', '毛中特', '史纲', '思修法纪', '时政']
+    case '政治': return ['马原', '毛中特', '习思想', '史纲', '思修法纪', '时政']
     case '数学一': return ['高等数学', '线性代数', '概率统计']
     case '英语一': return ['完形填空', '阅读理解', '新题型']
   }

@@ -9,8 +9,8 @@ export const PAPERS: Paper[] = ['408', '政治', '英语一', '数学一']
 
 /** 408 四科（存量科目体系，保持既有语义 —— 不要改这四项的顺序与名称） */
 export type Subject408 = '数据结构' | '计算机组成原理' | '操作系统' | '计算机网络'
-/** 政治细分 */
-export type SubjectPolitics = '马原' | '毛中特' | '史纲' | '思修法纪' | '时政'
+/** 政治细分（2027 大纲把「习近平新时代中国特色社会主义思想概论」单列，分值约 22%） */
+export type SubjectPolitics = '马原' | '毛中特' | '习思想' | '史纲' | '思修法纪' | '时政'
 /** 数学一细分 */
 export type SubjectMath = '高等数学' | '线性代数' | '概率统计'
 /** 英语一细分 */
@@ -21,7 +21,7 @@ export type Subject = Subject408 | SubjectPolitics | SubjectMath | SubjectEnglis
 /** 试卷 → 细分科目 */
 export const PAPER_SUBJECTS: Record<Paper, readonly string[]> = {
   '408': ['数据结构', '计算机组成原理', '操作系统', '计算机网络'],
-  '政治': ['马原', '毛中特', '史纲', '思修法纪', '时政'],
+  '政治': ['马原', '毛中特', '习思想', '史纲', '思修法纪', '时政'],
   '数学一': ['高等数学', '线性代数', '概率统计'],
   '英语一': ['完形填空', '阅读理解', '新题型'],
 }

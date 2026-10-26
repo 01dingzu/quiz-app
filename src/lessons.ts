@@ -2,32 +2,90 @@ import type { Question } from './types'
 import type { Lesson } from './lessons/shared'
 import { CALCULUS1_LESSONS } from './lessons/calculus1'
 import { CALCULUS2_LESSONS } from './lessons/calculus2'
+import { CALCULUS3_LESSONS } from './lessons/calculus3'
+import { CALCULUS4_LESSONS } from './lessons/calculus4'
 import { LINEAR_LESSONS } from './lessons/linear'
+import { LINEAR2_LESSONS } from './lessons/linear2'
 import { PROB_LESSONS } from './lessons/prob'
+import { PROB2_LESSONS } from './lessons/prob2'
+import { PROB3_LESSONS } from './lessons/prob3'
 
 // ============================================================
 // 考点卡片总入口
 //
-// 内容按学科拆到 lessons/ 目录，这里只做汇总与对外 API：
+// 内容按学科拆到 lessons/ 目录，这里只做汇总、排序与对外 API：
 //   lessons/shared.ts    类型定义 + 练习题公共字段辅助
 //   lessons/calculus1.ts 高数：极限 / 中值定理 / 幂级数
 //   lessons/calculus2.ts 高数：重积分 / 微分方程
+//   lessons/calculus3.ts 高数：数列极限 / 性态 / 积分计算 / 积分应用
+//   lessons/calculus4.ts 高数：多元微分 / 多重积分 / 级数判别 / 一阶方程 / 傅里叶
 //   lessons/linear.ts    线代：特征值与相似对角化
-//   lessons/prob.ts      概率：全概率与贝叶斯 / 矩估计与最大似然
+//   lessons/linear2.ts   线代：矩阵 / 向量组 / 方程组 / 二次型
+//   lessons/prob.ts      概率：贝叶斯 / 矩估计与最大似然
+//   lessons/prob2.ts     概率：一维分布 / 二维分布 / 数字特征
+//   lessons/prob3.ts     概率：大数定律 / 抽样分布 / 估计与检验
 //
-// 新增考点：在对应学科文件里 push 一个 Lesson 对象即可，页面与题库
-// 联动全自动（列表、详情、练习题并入 BANK、进度统计）。
+// 新增考点：在对应学科文件里 push 一个 Lesson 对象，并在 ORDER 里登记
+// id 即可（未登记的会排在末尾），页面与题库联动全自动。
 // ============================================================
 
 export type { Lesson, LessonExample } from './lessons/shared'
 
-/** 全部考点（列表顺序 = 页面展示顺序：高数 → 线代 → 概率） */
-export const LESSONS: Lesson[] = [
+const ALL_LESSONS: Lesson[] = [
   ...CALCULUS1_LESSONS,
   ...CALCULUS2_LESSONS,
+  ...CALCULUS3_LESSONS,
+  ...CALCULUS4_LESSONS,
   ...LINEAR_LESSONS,
+  ...LINEAR2_LESSONS,
   ...PROB_LESSONS,
+  ...PROB2_LESSONS,
+  ...PROB3_LESSONS,
 ]
+
+/**
+ * 展示顺序：按大纲章节走，让学习路径连续
+ * （高数：极限 → 微分 → 积分 → 多元 → 级数 → 方程；线代；概率）
+ */
+const ORDER: string[] = [
+  // 高等数学
+  'lsn-seq',
+  'lsn-taylor',
+  'lsn-shape',
+  'lsn-mvt',
+  'lsn-int',
+  'lsn-intapp',
+  'lsn-mdiff',
+  'lsn-double',
+  'lsn-mint',
+  'lsn-stest',
+  'lsn-series',
+  'lsn-ode1',
+  'lsn-ode2',
+  'lsn-fourier',
+  // 线性代数
+  'lsn-matrix',
+  'lsn-vector',
+  'lsn-linsys',
+  'lsn-eigen',
+  'lsn-quad',
+  // 概率统计
+  'lsn-bayes',
+  'lsn-rv1',
+  'lsn-rv2',
+  'lsn-numfeat',
+  'lsn-mle',
+  'lsn-lln',
+  'lsn-sample',
+  'lsn-esttest',
+]
+
+/** 全部考点（按 ORDER 排序，未登记的排最后） */
+export const LESSONS: Lesson[] = [...ALL_LESSONS].sort((a, b) => {
+  const ia = ORDER.indexOf(a.id)
+  const ib = ORDER.indexOf(b.id)
+  return (ia < 0 ? ORDER.length : ia) - (ib < 0 ? ORDER.length : ib)
+})
 
 /** 全部考点练习题（quizStore 读入 BANK 时用） */
 export const LESSON_QUESTIONS: Question[] = LESSONS.flatMap((l) => l.practice)

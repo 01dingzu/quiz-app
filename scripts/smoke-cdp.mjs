@@ -954,7 +954,7 @@ await goto('/')
     `[...document.querySelectorAll('.lesson-card .lesson-title')].map(x => (x.innerText||'').trim()).join('|')`,
   )
   const titles = titlesRaw ? String(titlesRaw).split('|').filter(Boolean) : []
-  check('考点数量 = 8', titles.length === 8, titles.join(' / '))
+  check('考点数量 = 27（高数 14 / 线代 5 / 概率 8）', titles.length === 27, titles.length + ' 个：' + titles.join(' / '))
 
   const groupRaw = await evaluate(
     `[...document.querySelectorAll('.learn-group')].map(x => (x.innerText||'').trim().split('\\n')[0]).join('|')`,
@@ -967,6 +967,16 @@ await goto('/')
       groups[1].includes('线性代数') &&
       groups[2].includes('概率统计'),
     groups.join(' / '),
+  )
+  const groupCounts = await evaluate(
+    `[...document.querySelectorAll('.learn-group')].map(x => (x.innerText||'').trim().replace(/\\s+/g,' ')).join(' | ')`,
+  )
+  check(
+    '分组内考点数正确（高数 14 / 线代 5 / 概率 8）',
+    String(groupCounts).includes('14 个考点') &&
+      String(groupCounts).includes('5 个考点') &&
+      String(groupCounts).includes('8 个考点'),
+    String(groupCounts),
   )
   const listOver = await bodyText()
   check('列表页展示总览（考点数与练习总数）', listOver.includes('个考点') && listOver.includes('道原创练习'), excerpt(listOver, 160))
@@ -1002,7 +1012,7 @@ await goto('/')
     }
   }
   check(
-    '8 个考点详情页结构完整（公式表 ≥5 行 / 2 道例题 / 5 道练习）且无报错',
+    '27 个考点详情页结构完整（公式表 ≥5 行 / 2 道例题 / 5 道练习）且无报错',
     bad.length === 0,
     bad.join(' ; '),
   )

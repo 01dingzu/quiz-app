@@ -18,3 +18,5 @@ _*.txt
 _*.log
 _*.mjs
 *.json.bak
+
+vite.config.ts.timestamp-*.mjs

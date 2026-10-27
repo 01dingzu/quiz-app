@@ -264,7 +264,10 @@ await goto('/')
   check('英语一已是可选试卷（不再有「暂不纳入」占位）', !t.includes('暂不纳入'))
   check('默认落在 408 卷', t.includes('当前：计算机学科专业基础'))
   check('默认卷副标题含题目数与 KPI', /701 题 · 客观 80\/150 分 · 目标正确率 88%/.test(t), excerpt(t, 120))
-  check('机试入口卡片存在', t.includes('复试机试'))
+  check(
+    '机试入口存在（顶栏 tab，入口卡片已移除）',
+    await evaluate(`[...document.querySelectorAll('a')].some(a => (a.innerText || '').trim() === '机试')`),
+  )
   // 「说明」卡的题库构成必须是现算的：历史上这里是手写数字，
   // 补录 28 道综合应用题之后依然写着「408 综合应用题 77（2009-2024）」。
   check('说明卡题库构成随题库现算（含 105 道应用题 / 560 道英语）', t.includes('408 综合应用题 105') && t.includes('英语一 560'), excerpt(t, 200))
@@ -280,7 +283,7 @@ section('B · 切到政治')
   check('点击「政治」按钮成功', r === 'OK', r)
   const sub = await evaluate(`document.querySelector('.paper-sub')?.innerText || ''`)
   check('副标题切到思想政治理论', sub.includes('思想政治理论'), excerpt(sub, 120))
-  check('政治题库量 = 552 题（495 真题 + 57 道 2027 模拟）', sub.includes('552 题'), excerpt(sub, 120))
+  check('政治题库量 = 589 题（495 真题 + 94 道 2027 模拟）', sub.includes('589 题'), excerpt(sub, 120))
   check('政治客观分 50/100', sub.includes('50/100'), excerpt(sub, 120))
   const t = await bodyText()
   check('多选题型在筛选中出现（政治特有）', t.includes('多选'), '')
@@ -365,8 +368,8 @@ await goto('/')
   check('练习进度条已渲染', hasProgress === true)
 
   const t = await bodyText()
-  check('题干已渲染', t.includes('第 1 / 552 题'), excerpt(t, 120))
-  check('分册信息正确（政治 · 552 题）', t.includes('马原') || t.includes('毛中特'), '')
+  check('题干已渲染', t.includes('第 1 / 589 题'), excerpt(t, 120))
+  check('分册信息正确（政治 · 589 题）', t.includes('马原') || t.includes('毛中特'), '')
 
   const optCount = await evaluate(`document.querySelectorAll('button.opt').length`)
   check('单选题渲染出 4 个选项', optCount === 4, `opts=${optCount}`)
@@ -535,7 +538,7 @@ await goto('/')
   // 顶部品牌副标题必须由题库实际覆盖的试卷推导（曾经硬编码漏掉英语一）
   const t2 = await bodyText()
   check('顶栏试卷列表包含英语一', t2.includes('408 / 政治 / 英语一 / 数学一'), excerpt(t2, 90))
-  check('顶栏题量为全库 2031 题', t2.includes('2031 题'), excerpt(t2, 90))
+  check('顶栏题量为全库 2068 题', t2.includes('2068 题'), excerpt(t2, 90))
   const errs = runtimeErrors()
   check('英语一练习页无运行时报错', errs.length === 0, errs.join(' | '))
 }
@@ -955,8 +958,8 @@ await goto('/')
   )
   const titles = titlesRaw ? String(titlesRaw).split('|').filter(Boolean) : []
   check(
-    '考点数量 = 65（数学 27 / 408 25 / 政治 13）',
-    titles.length === 65,
+    '考点数量 = 76（数学 27 / 408 25 / 政治 24）',
+    titles.length === 76,
     titles.length + ' 个',
   )
 
@@ -978,8 +981,8 @@ await goto('/')
     `[...document.querySelectorAll('.learn-group')].map(x => (x.innerText||'').trim().replace(/\\s+/g,' ')).join(' | ')`,
   )
   check(
-    '分组内考点数正确（高数 14 / 线代 5 / 概率 8 / 操作系统 10 / 马原 3 / 时政 1）',
-    ['14 个考点', '5 个考点', '8 个考点', '10 个考点', '3 个考点', '1 个考点'].every((s) =>
+    '分组内考点数正确（高数 14 / 线代 5 / 概率 8 / 操作系统 10 / 马原 9 / 习思想 8 / 时政 1）',
+    ['14 个考点', '5 个考点', '8 个考点', '10 个考点', '9 个考点', '1 个考点'].every((s) =>
       String(groupCounts).includes(s),
     ),
     String(groupCounts),
@@ -1019,7 +1022,7 @@ await goto('/')
     }
   }
   check(
-    '65 个考点详情页结构完整（核心思路/易错红线/练习 ≥3 道 · 有表则 ≥4 行 · 无报错）',
+    '76 个考点详情页结构完整（核心思路/易错红线/练习 ≥3 道 · 有表则 ≥4 行 · 无报错）',
     bad.length === 0,
     bad.join(' ; '),
   )
@@ -1073,7 +1076,7 @@ await goto('/')
   const startTxt = await evaluate(
     `([...document.querySelectorAll('.start-btn')].map(x => x.innerText.replace(/\\s+/g, ' ')).find(t => t.includes('开始练习')) || '')`,
   )
-  check('只选 2027 时练习池 = 57 题（25 单选 + 18 多选 + 14 分析题自评）', String(startTxt).includes('共 57 题'), String(startTxt))
+  check('只选 2027 时练习池 = 94 题（42 单选 + 34 多选 + 18 分析题自评）', String(startTxt).includes('共 94 题'), String(startTxt))
 
   // 科目筛选：全选态下点「马原」= 排除马原，其余五科仍选中
   const subState = await evaluate(`(() => {
@@ -1120,6 +1123,64 @@ await goto('/')
   check('标签按学科切换：显示「必背条款」而不是「必背公式」', det.includes('必背条款') && !det.includes('必背公式'), '')
   check('条款表 ≥ 12 行（马原唯物论＋辩证法 12 条）', rows >= 12, `rows=${rows}`)
   check('背诵卡片无运行时报错', runtimeErrors().length === 0, runtimeErrors().join(' | '))
+}
+
+{
+  section('M4 · 按考点组题 /learn/compose（选考点 → 抽题 → 开局）')
+  await goto('/learn/compose')
+  const cTxt = await bodyText()
+  check('组题页打开（标题 + 说明）', cTxt.includes('按考点组题') && cTxt.includes('勾选考点自由组卷'))
+  const rows = await evaluate(`document.querySelectorAll('.compose-row').length`)
+  check('考点行渲染齐全（≥ 20）', rows >= 20, `rows=${rows}`)
+
+  // 切到「全部题」范围，保证计数与作答历史无关：全选高等数学组 = 14 考点 × 5 题 = 70
+  const scopeAll = await evaluate(`(() => {
+    const b = [...document.querySelectorAll('.compose-opts .pf-chip')].find(x => (x.innerText || '').trim() === '全部题')
+    if (!b) return 'NOT_FOUND'
+    b.click(); return 'OK'
+  })()`)
+  const pickGroup = await evaluate(`(() => {
+    const b = [...document.querySelectorAll('.compose-mini')].find(x => (x.innerText || '').includes('全选本组'))
+    if (!b) return 'NOT_FOUND'
+    b.click(); return 'OK'
+  })()`)
+  await sleep(150)
+  const bar1 = await evaluate(`document.querySelector('.compose-bar')?.innerText || ''`)
+  // M 段作答过 1 道泰勒题：答对会被归档（70→69），答错保留（70）
+  check(
+    '全选高等数学组（全部题范围）后底栏 = 已选 14 考点 · 69~70 题',
+    scopeAll === 'OK' && pickGroup === 'OK' && /已选 14 个考点 · 组出 (69|70) 道题/.test(bar1.replace(/\s+/g, ' ')),
+    bar1.replace(/\s+/g, ' ').slice(0, 120),
+  )
+
+  // 每考点限 3 题 → 42
+  const per3 = await evaluate(`(() => {
+    const b = [...document.querySelectorAll('.compose-opts .pf-chip')].find(x => (x.innerText || '').trim() === '每考点 3 题')
+    if (!b) return 'NOT_FOUND'
+    b.click(); return 'OK'
+  })()`)
+  await sleep(150)
+  const bar2 = await evaluate(`document.querySelector('.compose-bar')?.innerText || ''`)
+  check('每考点限 3 题后底栏 = 42 题', per3 === 'OK' && bar2.includes('组出 42 道题'), bar2.replace(/\s+/g, ' ').slice(0, 120))
+
+  // 范围切换生效（全新小节只验证 UI 联动，不断言具体数字 —— 作答历史因人而异）
+  const scopeWrong = await evaluate(`(() => {
+    const b = [...document.querySelectorAll('.compose-opts .pf-chip')].find(x => (x.innerText || '').includes('只做错题'))
+    if (!b) return 'NOT_FOUND'
+    b.click(); return 'OK'
+  })()`)
+  await sleep(150)
+  const bar3 = await evaluate(`document.querySelector('.compose-bar')?.innerText || ''`)
+  check('切到「只做错题」范围生效', scopeWrong === 'OK' && bar3.includes('只做错题'), bar3.replace(/\s+/g, ' ').slice(0, 120))
+
+  // 恢复范围并开局 → 真实练习页
+  await evaluate(`(() => { const b = [...document.querySelectorAll('.compose-opts .pf-chip')].find(x => (x.innerText || '').trim() === '全部题'); if (b) b.click(); return 'OK' })()`)
+  await sleep(150)
+  const go = await clickButton('开始练习', 'startsWith')
+  await sleep(900)
+  const prac = await bodyText()
+  check('组题开局进入练习页', go === 'OK' && prac.includes('42'), excerpt(prac, 120))
+  check('组题练习页无运行时报错', runtimeErrors().length === 0, runtimeErrors().join(' | '))
 }
 
 lines.push('', `RESULT: ${pass} pass / ${fail} fail`)

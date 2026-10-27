@@ -85,6 +85,11 @@ export default function Learn() {
           每个考点 = 核心思路 + 必背公式 + 易错红线 + 例题精讲 + 配套练习；
           练习走真实做题流程，错题自动进错题本与 SRS 队列，掌握度由正确率算出，不打卡。
         </div>
+        <div style={{ marginTop: 10 }}>
+          <button className="btn sol-btn" onClick={() => nav('/learn/compose')}>
+            按考点组题 →
+          </button>
+        </div>
       </div>
 
       <div className="paper-filter">

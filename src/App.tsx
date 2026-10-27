@@ -3,6 +3,7 @@ import { NavLink, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Learn from './pages/Learn'
 import LessonView from './pages/LessonView'
+import LessonCompose from './pages/LessonCompose'
 import Practice from './pages/Practice'
 import WrongBook from './pages/WrongBook'
 import Stats from './pages/Stats'
@@ -48,6 +49,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/learn" element={<Learn />} />
+        <Route path="/learn/compose" element={<LessonCompose />} />
         <Route path="/learn/:id" element={<LessonView />} />
         <Route path="/practice" element={<Practice />} />
         <Route path="/jishi" element={<Jishi />} />

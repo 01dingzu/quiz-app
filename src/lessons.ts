@@ -10,6 +10,7 @@ import { PROB_LESSONS } from './lessons/prob'
 import { PROB2_LESSONS } from './lessons/prob2'
 import { PROB3_LESSONS } from './lessons/prob3'
 import { DS_LESSONS } from './lessons/cs-ds'
+import { DS2_LESSONS } from './lessons/cs-ds2'
 import { OS_LESSONS } from './lessons/cs-os'
 import { COA_LESSONS } from './lessons/cs-coa'
 import { NET_LESSONS } from './lessons/cs-net'
@@ -30,6 +31,7 @@ import { POLITICS_LESSONS } from './lessons/politics'
 //   lessons/prob2.ts     概率：一维分布 / 二维分布 / 数字特征
 //   lessons/prob3.ts     概率：大数定律 / 抽样分布 / 估计与检验
 //   lessons/cs-ds.ts     408 数据结构：总纲（存/找/排）/ 线性表栈队列 / 树 / 图 / 查找 / 排序
+//   lessons/cs-ds2.ts    408 数据结构深水区：线索/存储/森林转换 · 遍历/拓扑/关键路径
 //   lessons/cs-os.ts     408 操作系统：总纲（三个幻觉）/ 进程 / 调度 / PV / 死锁 / 内存 / 文件 / I/O
 //   lessons/cs-coa.ts    408 组成原理：总纲（指令的一生）/ 数据运算 / Cache / 寻址 / 流水线 / 总线
 //   lessons/cs-net.ts    408 网络：总纲（数据包旅程）/ 规模主线 / 链路层 / IP 子网 / 路由 / TCP / 应用层
@@ -52,6 +54,7 @@ const ALL_LESSONS: Lesson[] = [
   ...PROB2_LESSONS,
   ...PROB3_LESSONS,
   ...DS_LESSONS,
+  ...DS2_LESSONS,
   ...OS_LESSONS,
   ...COA_LESSONS,
   ...NET_LESSONS,
@@ -98,7 +101,9 @@ const ORDER: string[] = [
   'lsn-ds-overview',
   'lsn-ds-list',
   'lsn-ds-tree',
+  'lsn-ds-tree2',
   'lsn-ds-graph',
+  'lsn-ds-graph2',
   'lsn-ds-search',
   'lsn-ds-sort',
   // 408 · 操作系统（第一张是总纲：三个幻觉与一个协调问题）

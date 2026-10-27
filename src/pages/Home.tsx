@@ -16,6 +16,7 @@ import {
   paperYears,
   practiceCount,
   resumeInfo,
+  isArchivedAttempt,
 } from '../store/quizStore'
 import {
   PAPER_EXAM,
@@ -25,6 +26,17 @@ import {
   type Subject,
 } from '../types'
 import { JISHI_DRILLS, JISHI_TEMPLATES } from '../data/jishi'
+import { LESSONS, type Lesson } from '../lessons'
+
+/** 本地洗牌（Fisher-Yates）：按考点组题时沿用「随机顺序」开关 */
+function shuffleArr<T>(arr: T[]): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
 
 /** 试卷切换器上的副标题：题库覆盖 / 客观题分值 / 正确率 KPI */
 function paperSubtitle(p: Paper): string {
@@ -74,6 +86,7 @@ export default function Home() {
     setFilter,
     setPaper,
     startSession,
+    startSessionWithIds,
     startExam,
     startReview,
     attempts,
@@ -116,6 +129,53 @@ export default function Home() {
   const available = useMemo(() => practiceCount(filter), [filter, attempts, unarchived])
   const missingCount = useMemo(() => missingImgQuestions(paper).length, [paper])
   const archN = useMemo(() => archivedCount(paper), [attempts, unarchived, paper])
+
+  // ===== 按考点组题：勾选考点 → 只刷这些考点的练习题 =====
+  const [pickedLessons, setPickedLessons] = useState<string[]>([])
+  useEffect(() => setPickedLessons([]), [paper])
+
+  const lessonsOfPaper = useMemo(() => LESSONS.filter((l) => l.paper === paper), [paper])
+
+  /** 某考点当前可刷题数（排除已归档） */
+  const availOf = (l: Lesson) =>
+    l.practice.filter(
+      (q) => !isArchivedAttempt(attempts[q.id]) || unarchived.includes(q.id),
+    ).length
+
+  /** 考点按科目分组（保持 LESSONS 原顺序） */
+  const lessonGroups = useMemo(() => {
+    const order: string[] = []
+    const map: Record<string, Lesson[]> = {}
+    for (const l of lessonsOfPaper) {
+      if (!map[l.subject]) map[l.subject] = []
+      map[l.subject].push(l)
+      if (!order.includes(l.subject)) order.push(l.subject)
+    }
+    return order.map((s) => [s, map[s]] as const)
+  }, [lessonsOfPaper])
+
+  /** 已选考点的题目 id（排除已归档 + 沿用「随机顺序」开关） */
+  const lessonQids = useMemo(() => {
+    const ids: string[] = []
+    for (const l of lessonsOfPaper) {
+      if (!pickedLessons.includes(l.id)) continue
+      for (const q of l.practice) {
+        if (!isArchivedAttempt(attempts[q.id]) || unarchived.includes(q.id)) ids.push(q.id)
+      }
+    }
+    return filter.shuffle ? shuffleArr(ids) : ids
+  }, [lessonsOfPaper, pickedLessons, attempts, unarchived, filter.shuffle])
+
+  const toggleLesson = (id: string) =>
+    setPickedLessons((cur) => (cur.includes(id) ? cur.filter((v) => v !== id) : [...cur, id]))
+
+  const allLessonsPicked =
+    lessonsOfPaper.length > 0 && pickedLessons.length === lessonsOfPaper.length
+
+  const startLessonPractice = () => {
+    startSessionWithIds(lessonQids)
+    nav('/practice')
+  }
 
   const slots = useMemo(() => examAvailability(filter), [filter])
   const examCanStart = slots.length > 0 && slots.every((s) => s.ok)
@@ -264,6 +324,51 @@ export default function Home() {
         )}
       </div>
 
+      <div className="card">
+        <div className="sec-title">按考点组题（当前试卷：{PAPER_INFO[paper].short}）</div>
+        <div className="review-sub" style={{ margin: '0 0 12px' }}>
+          勾选一个或多个考点，只刷这些考点的练习题；已归档（掌握）的题自动跳过，支持跨考点混编。
+        </div>
+        {lessonGroups.map(([subj, ls]) => (
+          <div key={subj}>
+            <div className="lesson-group-title">{subj}</div>
+            <div className="chips">
+              {ls.map((l) => {
+                const n = availOf(l)
+                return (
+                  <button
+                    key={l.id}
+                    className={'chip' + (pickedLessons.includes(l.id) ? ' on' : '')}
+                    onClick={() => toggleLesson(l.id)}
+                  >
+                    {l.title} · {n > 0 ? `${n} 题` : '已掌握'}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        ))}
+        <div className="chips" style={{ marginTop: 12 }}>
+          <button
+            className="chip"
+            onClick={() =>
+              setPickedLessons(allLessonsPicked ? [] : lessonsOfPaper.map((l) => l.id))
+            }
+          >
+            {allLessonsPicked ? '清空选择' : '全选本卷考点'}
+          </button>
+        </div>
+        <button
+          className="start-btn"
+          disabled={lessonQids.length === 0}
+          onClick={startLessonPractice}
+        >
+          {lessonQids.length === 0
+            ? '先勾选要刷的考点'
+            : `开始考点练习 · 共 ${lessonQids.length} 题`}
+        </button>
+      </div>
+
       <div className="card review-card">
         <div className="sec-title">今日复习（SRS 间隔重复 · 错题自动消化）</div>
         <div className="review-info">
@@ -392,6 +497,8 @@ export default function Home() {
         按方案 §6 明确不做；已收录的四张试卷之外暂未纳入。
         <br />
         · 自由练习：可任意选择年份 / 科目 / 顺序，答错自动入错题本，每题可手动「☆ 标记」。做过且从没错过的题自动归档，不再重复出现（可在「归档」页查看/移出）。
+        <br />
+        · 按考点组题：勾选考点即组卷，只出该考点的练习题（含各科自编题），已归档自动跳过；可与「随机顺序」开关配合使用。
         <br />
         · 模拟考试：按各试卷真实结构组卷（408 按 11/11/10/8 抽 40 单选；政治 16 单选 + 17 多选；
         数学一 10 选择 + 6 填空；英语一 20 完形 + 20 阅读），可选计时；始终使用完整题库（含已归档题）。

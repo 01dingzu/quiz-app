@@ -10,7 +10,6 @@ import {
   examAvailability,
   examFullScore,
   examQuestionCount,
-  missingImgQuestions,
   paperOfFilter,
   paperSubjects,
   paperYears,
@@ -25,7 +24,6 @@ import {
   type Paper,
   type Subject,
 } from '../types'
-import { JISHI_DRILLS, JISHI_TEMPLATES } from '../data/jishi'
 import { LESSONS, type Lesson } from '../lessons'
 
 /** 本地洗牌（Fisher-Yates）：按考点组题时沿用「随机顺序」开关 */
@@ -92,7 +90,6 @@ export default function Home() {
     attempts,
     flagged,
     resumeSession,
-    imgReports,
     unarchived,
   } = useQuiz()
   const nav = useNavigate()
@@ -127,7 +124,6 @@ export default function Home() {
   )
 
   const available = useMemo(() => practiceCount(filter), [filter, attempts, unarchived])
-  const missingCount = useMemo(() => missingImgQuestions(paper).length, [paper])
   const archN = useMemo(() => archivedCount(paper), [attempts, unarchived, paper])
 
   // ===== 按考点组题：勾选考点 → 只刷这些考点的练习题 =====
@@ -435,58 +431,6 @@ export default function Home() {
           </div>
         </div>
       )}
-
-      <div className="card jishi-entry">
-        <div className="sec-title" style={{ marginTop: 0 }}>
-          复试机试模块（独立赛道 · 不做在线判题）
-        </div>
-        <div className="review-info">
-          <div className="review-num">{JISHI_TEMPLATES.length}</div>
-          <div className="review-lbl">
-            个必默写模板 · 专题题单 {JISHI_DRILLS.length} 组
-            <div className="review-sub">
-              14 个模板的默写计时与掌握状态、高频错误速查表、180 分钟考场手册、
-              专题题单勾选（跳转牛客 / PAT / 洛谷，不抓取内容）。
-            </div>
-          </div>
-        </div>
-        <button className="start-btn exam" onClick={() => nav('/jishi')}>
-          进入机试模块 →
-        </button>
-      </div>
-
-      <div className="card missing-card">
-        <div className="sec-title">缺图反馈（当前试卷）</div>
-        <div className="review-info">
-          <div className="review-num">{missingCount}</div>
-          <div className="review-lbl">
-            道题引用了图/表但暂无图片
-            <div className="review-sub">
-              做题遇到「如图但没图」时，点题目卡片上的「⚠ 缺图 · 上报」即可收集；已上报{' '}
-              {imgReports.length} 道，可一键复制清单统一补图。
-            </div>
-          </div>
-        </div>
-        <button className="start-btn review" onClick={() => nav('/missing')}>
-          查看缺图反馈{imgReports.length > 0 ? ` · 已上报 ${imgReports.length} 道` : ''} →
-        </button>
-      </div>
-
-      <div className="card arch-card">
-        <div className="sec-title">答对题归档（当前试卷）</div>
-        <div className="review-info">
-          <div className="review-num">{archN}</div>
-          <div className="review-lbl">
-            道题已归档
-            <div className="review-sub">
-              做过且从没错过的题自动归档，自由练习不再重复出现；曾答错但已复习毕业的题也会归档。移出后可重新练习。
-            </div>
-          </div>
-        </div>
-        <button className="start-btn review" onClick={() => nav('/archived')}>
-          查看归档{archN > 0 ? ` · ${archN} 道` : ''} →
-        </button>
-      </div>
 
       <div className="card" style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.8 }}>
         <b style={{ color: 'var(--ink)' }}>说明</b>

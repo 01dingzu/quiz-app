@@ -61,6 +61,8 @@ function renderTok(t: RichTok, key: string): ReactNode {
     )
   }
   if (t.k === 'table') return <HtmlTable key={key} html={t.v} />
+  // 行内加粗：内容再走一遍内联管线，因此 <b> 里的公式也能渲染
+  if (t.k === 'bold') return <strong key={key}>{renderInline(t.v, key + 'b')}</strong>
   return <span key={key}>{t.v}</span>
 }
 

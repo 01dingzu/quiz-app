@@ -12,7 +12,7 @@
 // ============================================================
 
 export interface RichTok {
-  k: 'text' | 'math' | 'img' | 'table'
+  k: 'text' | 'math' | 'img' | 'table' | 'bold'
   v: string
   /** math：是否块级 */
   block?: boolean
@@ -33,12 +33,14 @@ export const IMG_RE = /^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/
 export const TABLE_HEAD_RE = /^<table\b/i
 /** 表格整体（非贪婪取到第一个 </table>） */
 export const TABLE_RE = /^<table\b[^>]*>([\s\S]*?)<\/table>/i
+/** 行内加粗：<b>…</b>（考点卡片语料里唯一使用的行内标签） */
+export const BOLD_RE = /^<b>([\s\S]*?)<\/b>/i
 const ROW_RE = /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi
 const CELL_RE = /<(td|th)\b[^>]*>([\s\S]*?)<\/\1>/gi
 const CAPTION_RE = /<caption\b[^>]*>([\s\S]*?)<\/caption>/i
 
 /** 文本是否需要走富文本管线（否则可零开销直接输出） */
-export const RICH_RE = /[$]|!\[|<table\b/i
+export const RICH_RE = /[$]|!\[|<table\b|<b>/i
 
 /** 该文本是否需要富文本处理 */
 export function needsRich(text: string): boolean {
@@ -92,6 +94,17 @@ export function parseRich(src: string): RichTok[] {
       if (m) {
         flush()
         out.push({ k: 'table', v: m[1] })
+        i += m[0].length
+        continue
+      }
+    }
+
+    // 行内加粗（白名单唯一标签，内容回到内联管线再解析一遍）
+    if (ch === '<' && src.slice(i, i + 3) === '<b>') {
+      const m = BOLD_RE.exec(src.slice(i))
+      if (m) {
+        flush()
+        out.push({ k: 'bold', v: m[1] })
         i += m[0].length
         continue
       }

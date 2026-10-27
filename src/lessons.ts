@@ -29,9 +29,9 @@ import { POLITICS_LESSONS } from './lessons/politics'
 //   lessons/prob.ts      概率：贝叶斯 / 矩估计与最大似然
 //   lessons/prob2.ts     概率：一维分布 / 二维分布 / 数字特征
 //   lessons/prob3.ts     概率：大数定律 / 抽样分布 / 估计与检验
-//   lessons/cs-ds.ts     408 数据结构：线性表栈队列 / 树 / 图 / 查找 / 排序
-//   lessons/cs-os.ts     408 操作系统：进程 / 调度 / PV / 死锁 / 内存 / 文件 / I/O
-//   lessons/cs-coa.ts    408 组成原理：数据运算 / Cache / 寻址 / 流水线 / 总线
+//   lessons/cs-ds.ts     408 数据结构：总纲（存/找/排）/ 线性表栈队列 / 树 / 图 / 查找 / 排序
+//   lessons/cs-os.ts     408 操作系统：总纲（三个幻觉）/ 进程 / 调度 / PV / 死锁 / 内存 / 文件 / I/O
+//   lessons/cs-coa.ts    408 组成原理：总纲（指令的一生）/ 数据运算 / Cache / 寻址 / 流水线 / 总线
 //   lessons/cs-net.ts    408 网络：总纲（数据包旅程）/ 链路层 / IP 子网 / 路由 / TCP / 应用层
 //   lessons/politics.ts  政治六科：背诵条款（自动生成，见 scripts/gen-politics-2027.mjs）
 //
@@ -94,13 +94,15 @@ const ORDER: string[] = [
   'lsn-lln',
   'lsn-sample',
   'lsn-esttest',
-  // 408 · 数据结构
+  // 408 · 数据结构（第一张是总纲：存得下、找得到、排得快）
+  'lsn-ds-overview',
   'lsn-ds-list',
   'lsn-ds-tree',
   'lsn-ds-graph',
   'lsn-ds-search',
   'lsn-ds-sort',
-  // 408 · 操作系统
+  // 408 · 操作系统（第一张是总纲：三个幻觉与一个协调问题）
+  'lsn-os-overview',
   'lsn-os-proc',
   'lsn-os-sched',
   'lsn-os-pv',
@@ -111,7 +113,8 @@ const ORDER: string[] = [
   'lsn-os-mem',
   'lsn-os-file',
   'lsn-os-io',
-  // 408 · 计算机组成原理
+  // 408 · 计算机组成原理（第一张是总纲：一条指令的一生）
+  'lsn-coa-overview',
   'lsn-coa-num',
   'lsn-coa-cache',
   'lsn-coa-addr',

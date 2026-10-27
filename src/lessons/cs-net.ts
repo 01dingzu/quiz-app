@@ -6,6 +6,7 @@ import { q } from './shared'
 // 内容为自编仿真题 + 自撰讲解，不含真题原文（版权纪律同全站）。
 // ============================================================
 
+const LSN_NET_OVERVIEW = 'lsn-net-overview'
 const LSN_NET_LINK = 'lsn-net-link'
 const LSN_NET_IP = 'lsn-net-ip'
 const LSN_NET_ROUTE = 'lsn-net-route'
@@ -13,6 +14,214 @@ const LSN_NET_TCP = 'lsn-net-tcp'
 const LSN_NET_APP = 'lsn-net-app'
 
 export const NET_LESSONS: Lesson[] = [
+  {
+    id: LSN_NET_OVERVIEW,
+    title: '总纲 · 一个数据包的完整旅程',
+    paper: '408',
+    subject: '计算机网络',
+    level: '高频选择填空',
+    goal: '能用「数据从 A 到 B」这条主线串起五层：分层封装、地址翻译、每跳转发、端到端可靠',
+    intro: [
+      '串起整张网只需要一条主线：跟着一个数据包从主机 A 走到服务器 B。分层模型、每种协议、设备归属、地址计算，全是这条路上的路标。先走通一遍，再回头看各章考点就有落脚点。',
+      '发送端（封装）：数据从应用层往下，每过一层加一个自己的首部——传输层加 TCP 头（端口、序号），网络层加 IP 头（源/目的 IP、TTL），链路层加以太网首部和 FCS，物理层变成比特流。关键在于：每一层加的头，都是写给对端同一层看的。',
+      '中途（转发）：交换机只拆到第 2 层，看目的 MAC 查转发表转出，不碰 IP；路由器拆到第 3 层，用目的 IP 做最长前缀匹配选出下一跳，然后重新封装一个新帧。这一拆一装，MAC 就被换掉了。',
+      '由此得两条地址规律：目的 IP 端到端全程不变（NAT 是唯一例外），目的 MAC 每过一跳重写一次。跨网段时 ARP 解析的是默认网关的 MAC 而不是目标主机的 MAC，原因就在这里。',
+      '接收端（解封装）：从物理层往上逐层剥头——链路层校验 FCS 后交给网络层，网络层看 IP 是不是自己的，传输层按端口号交给对应的进程，最后应用层拿到原始报文。',
+      '三条主线可以挂住全章考点。寻址：DNS 域名转 IP、ARP IP 转 MAC、交换机 MAC 转端口、路由表 IP 转下一跳、NAT 私网转公网。可靠：CRC 与海明检错纠错 → 滑动窗口（GBN / SR）→ TCP 的序号确认、重传、流量控制与拥塞控制——链路层和传输层的滑动窗口是同一套思想的两个实例。规模：地址不够用就有了子网划分与 CIDR 聚合，路由表太大就分自治域（AS 内 RIP / OSPF，AS 之间 BGP），广播太多就用 VLAN 隔开。',
+      '一句话收尾：分层是写信封，寻址是写地址，可靠是挂号信，路由是选路线。',
+    ],
+    formulaTable: [
+      '<table>',
+      '<tr><th>层次</th><th>PDU</th><th>首部里的关键字段</th><th>用的地址</th><th>中间设备</th></tr>',
+      '<tr><td>应用层</td><td>报文</td><td>请求行、首部行（HTTP）</td><td>域名（交给 DNS）</td><td>无</td></tr>',
+      '<tr><td>传输层</td><td>报文段 / 用户数据报</td><td>源目的端口、序号、确认号、窗口</td><td>端口号</td><td>无</td></tr>',
+      '<tr><td>网络层</td><td>IP 数据报</td><td>源目的 IP、TTL、协议字段</td><td>IP 地址</td><td>路由器</td></tr>',
+      '<tr><td>链路层</td><td>帧</td><td>源目的 MAC、类型、FCS</td><td>MAC 地址</td><td>交换机、网桥</td></tr>',
+      '<tr><td>物理层</td><td>比特</td><td>无首部（编码方式如曼彻斯特）</td><td>无</td><td>集线器、中继器</td></tr>',
+      '</table>',
+    ].join(''),
+    pitfall:
+      '<b>交换机不看 IP、路由器不看端口</b>——设备归属题的固定陷阱：集线器在物理层、不隔离冲突域；交换机在链路层、隔离冲突域但不隔离广播域；路由器在网络层、两者都隔离。另外，IP 首部里的地址全程不变，变的是帧首部的 MAC；NAT 因为既改 IP 又改端口，所以工作在 L3 与 L4 之间，不是纯三层设备。',
+    examples: [
+      {
+        title: '例 1（端到端旅程推演）',
+        stem: '主机 A（192.168.1.10/24，MAC 记作 A1）经交换机、路由器 R1、R2 向服务器 B（10.0.0.5，MAC 记作 B1）发送一个 IP 数据报。写出每一跳帧首部的地址，并说明数据报到达 B 时 TTL 与首部校验和发生了什么变化。',
+        steps: [
+          'A 判断 B 与自己不在同一网段 → 用 ARP 解析默认网关 R1 的 MAC（不是 B 的 MAC）→ 组帧：目的 MAC = R1 左口，源 MAC = A1；IP 首部写源 192.168.1.10、目的 10.0.0.5。',
+          '交换机收帧，只读目的 MAC 查转发表并从对应端口转出（查不到则向除入端口外的所有端口泛洪）；它不拆 IP 首部。',
+          'R1 拆到网络层，用目的 IP 做最长前缀匹配，查出下一跳是 R2；TTL 减 1、首部校验和重算，重新封装帧：目的 MAC = R2 左口，源 MAC = R1 右口。',
+          'R2 同样处理；最后一跳的帧为：目的 MAC = B1（由 ARP 解析得到），源 MAC = R2 右口。',
+          'B 逐层剥头：FCS 校验通过 → 看 IP 是自己的 → 按协议字段交给 TCP → TCP 按目的端口号交给对应进程。',
+        ],
+        result:
+          '目的 IP 全程是 10.0.0.5，一次没变；目的 MAC 换了三次（R1 → R2 → B）；TTL 每过一台路由器减 1，所以首部校验和每跳都要重算。',
+        note: '「IP 不变、MAC 变」是本章的总开关，ARP 跨网段解析网关 MAC 就是它的直接推论。',
+      },
+      {
+        title: '例 2（一次 Web 请求的耗时推演）',
+        stem: '主机到服务器的 RTT = 10ms，本地 DNS 无缓存（解析需 1 RTT），页面只有 1 个 HTML 对象，传输时间忽略。求从输入 URL 到收到完整 HTML 的最短时间；若改用持久连接、页面另有 2 个图片对象，总时间又是多少？',
+        steps: [
+          'DNS 解析：1 RTT = 10ms（若本地缓存命中则为 0）。',
+          'TCP 三次握手：SYN 去 + SYN-ACK 回 = 1 RTT = 10ms；第三个 ACK 可捎带 HTTP 请求，不另计。',
+          'HTTP 请求与响应：GET 发出到收到 200 OK = 1 RTT = 10ms。',
+          '单个对象合计 3 RTT = 30ms。',
+          '持久连接下 2 个图片复用同一条 TCP：每个对象 1 RTT，加 2 × 10 = 20ms，共 50ms。',
+        ],
+        result:
+          '单对象 30ms；持久连接 + 2 个图片共 50ms。若是非持久连接，每个对象都要重新握手（2 RTT），则为 30 + 2 × 20 = 70ms。',
+        note: '非持久每对象 2 RTT（握手 + 请求），持久每对象 1 RTT——这是 HTTP 耗时题唯一的分岔点。',
+      },
+    ],
+    practice: [
+      {
+        id: `${LSN_NET_OVERVIEW}-p1`,
+        ...q(LSN_NET_OVERVIEW, 1),
+        paper: '408',
+        subject: '计算机网络',
+        type: 'single',
+        stem: '主机 A 向不在同一网段的服务器 B 发送 IP 数据报，中途经过两台路由器。关于首部变化的说法正确的是（　）',
+        options: {
+          A: '源 IP 与目的 IP 每经过一台路由器都重写',
+          B: '源 MAC 与目的 MAC 全程保持不变',
+          C: '目的 IP 全程不变，目的 MAC 每过一跳重写一次',
+          D: '源端口号每经过一台路由器都要重新映射',
+        },
+        answer: 'C',
+        explanation:
+          'IP 是端到端地址，路由器只按目的 IP 查表选路，不改写它（NAT 是唯一例外）；MAC 只在一个链路段内有效，每跳都要重新封装成新帧。',
+        score: 2,
+      },
+      {
+        id: `${LSN_NET_OVERVIEW}-p2`,
+        ...q(LSN_NET_OVERVIEW, 2),
+        paper: '408',
+        subject: '计算机网络',
+        type: 'single',
+        stem: '主机 A 与服务器 B 不在同一网段，A 要发出第一个帧，其 ARP 请求解析的是（　）',
+        options: {
+          A: '服务器 B 的 MAC 地址',
+          B: '默认网关的 MAC 地址',
+          C: '交换机端口的 MAC 地址',
+          D: 'DNS 服务器的 MAC 地址',
+        },
+        answer: 'B',
+        explanation:
+          '跨网段时帧必须先交给默认网关，所以解析的是网关 IP 对应的 MAC。B 的 MAC 由最后一跳的路由器在目标网段内解析得到。',
+        score: 2,
+      },
+      {
+        id: `${LSN_NET_OVERVIEW}-p3`,
+        ...q(LSN_NET_OVERVIEW, 3),
+        paper: '408',
+        subject: '计算机网络',
+        type: 'single',
+        stem: '下列信息中，不会出现在 TCP 报文段首部的是（　）',
+        options: { A: '源端口号', B: '序号', C: '目的 MAC 地址', D: '校验和' },
+        answer: 'C',
+        explanation:
+          'MAC 地址属于链路层帧首部，传输层看不到也用不到——这正是分层封装的结果：每层只加自己那一层需要的字段。',
+        score: 2,
+      },
+      {
+        id: `${LSN_NET_OVERVIEW}-p4`,
+        ...q(LSN_NET_OVERVIEW, 4),
+        paper: '408',
+        subject: '计算机网络',
+        type: 'single',
+        stem: '交换机收到一个目的 MAC 不在转发表中的单播帧，会（　）',
+        options: {
+          A: '直接丢弃该帧',
+          B: '向除入端口外的所有端口转发该帧',
+          C: '向包含入端口在内的所有端口转发该帧',
+          D: '向源主机发回 ICMP 不可达报文',
+        },
+        answer: 'B',
+        explanation:
+          '未知单播帧做泛洪，但不会从入端口发回去。交换机同时用该帧的源 MAC 与入端口更新转发表，这就是自学习。',
+        score: 2,
+      },
+      {
+        id: `${LSN_NET_OVERVIEW}-p5`,
+        ...q(LSN_NET_OVERVIEW, 5),
+        paper: '408',
+        subject: '计算机网络',
+        type: 'single',
+        stem: '数据从应用层交付到物理层，各层 PDU 的正确顺序是（　）',
+        options: {
+          A: '报文 → 报文段 → 数据报 → 帧 → 比特',
+          B: '报文 → 数据报 → 报文段 → 帧 → 比特',
+          C: '比特 → 帧 → 数据报 → 报文段 → 报文',
+          D: '报文 → 帧 → 数据报 → 报文段 → 比特',
+        },
+        answer: 'A',
+        explanation:
+          '自上而下依次封装：应用层报文，传输层加 TCP/UDP 头成报文段，网络层加 IP 头成数据报，链路层加首尾成帧，物理层变成比特流。',
+        score: 2,
+      },
+      {
+        id: `${LSN_NET_OVERVIEW}-p6`,
+        ...q(LSN_NET_OVERVIEW, 6),
+        paper: '408',
+        subject: '计算机网络',
+        type: 'single',
+        stem: '关于网络设备与层次，正确的是（　）',
+        options: {
+          A: '交换机根据目的 IP 地址转发帧',
+          B: '路由器根据目的 MAC 地址转发分组',
+          C: '集线器工作在物理层，不隔离冲突域',
+          D: '路由器不隔离广播域',
+        },
+        answer: 'C',
+        explanation:
+          '交换机看 MAC、隔离冲突域但不隔离广播域；路由器看 IP、冲突域与广播域都隔离；集线器只是把信号广播到所有端口，冲突域反而被放大。',
+        score: 2,
+      },
+      {
+        id: `${LSN_NET_OVERVIEW}-p7`,
+        ...q(LSN_NET_OVERVIEW, 7),
+        paper: '408',
+        subject: '计算机网络',
+        type: 'single',
+        stem: '一个总长 4000 字节的 IP 数据报（首部 20 字节）经过 MTU = 1500 字节的链路，需要分成（　）',
+        options: { A: '2 片', B: '3 片', C: '4 片', D: '无需分片' },
+        answer: 'B',
+        explanation:
+          '数据部分 3980 字节，每片最多承载 1500 − 20 = 1480 字节，且 1480 是 8 的倍数满足片偏移要求。3980 ÷ 1480 = 2.69，故分 3 片（前两片各 1480，末片 1020）。',
+        score: 2,
+      },
+      {
+        id: `${LSN_NET_OVERVIEW}-p8`,
+        ...q(LSN_NET_OVERVIEW, 8),
+        paper: '408',
+        subject: '计算机网络',
+        type: 'single',
+        stem: '已知 RTT = 10ms，DNS 已缓存（0 RTT），采用非持久 HTTP 获取仅含 1 个对象的页面（传输时间忽略），最短耗时为（　）',
+        options: { A: '10ms', B: '20ms', C: '30ms', D: '40ms' },
+        answer: 'B',
+        explanation:
+          'TCP 三次握手 1 RTT + 请求响应 1 RTT = 2 RTT = 20ms。第三个握手的 ACK 可捎带 HTTP 请求，不多算一轮。若有 DNS 解析则再加 1 RTT。',
+        score: 2,
+      },
+      {
+        id: `${LSN_NET_OVERVIEW}-p9`,
+        ...q(LSN_NET_OVERVIEW, 9),
+        paper: '408',
+        subject: '计算机网络',
+        type: 'single',
+        stem: '关于网络层与传输层提供的服务，正确的是（　）',
+        options: {
+          A: '传输层提供进程到进程的通信，网络层提供主机到主机的通信',
+          B: '数据链路层提供端到端的可靠传输服务',
+          C: '网络层负责端到端的流量控制',
+          D: '物理层负责出错帧的重传',
+        },
+        answer: 'A',
+        explanation:
+          '传输层的「端到端」指进程到进程（靠端口号区分），网络层是主机到主机（靠 IP 区分），链路层只管一跳之内。流量控制与重传由传输层（或链路层的可靠传输机制）负责。',
+        score: 2,
+      },
+    ],
+  },
   {
     id: LSN_NET_LINK,
     title: '体系结构与数据链路层',

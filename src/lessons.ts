@@ -32,7 +32,7 @@ import { POLITICS_LESSONS } from './lessons/politics'
 //   lessons/cs-ds.ts     408 数据结构：线性表栈队列 / 树 / 图 / 查找 / 排序
 //   lessons/cs-os.ts     408 操作系统：进程 / 调度 / PV / 死锁 / 内存 / 文件 / I/O
 //   lessons/cs-coa.ts    408 组成原理：数据运算 / Cache / 寻址 / 流水线 / 总线
-//   lessons/cs-net.ts    408 网络：链路层 / IP 子网 / 路由 / TCP / 应用层
+//   lessons/cs-net.ts    408 网络：总纲（数据包旅程）/ 链路层 / IP 子网 / 路由 / TCP / 应用层
 //   lessons/politics.ts  政治六科：背诵条款（自动生成，见 scripts/gen-politics-2027.mjs）
 //
 // 新增考点：在对应学科文件里 push 一个 Lesson 对象，并在 ORDER 里登记
@@ -117,7 +117,8 @@ const ORDER: string[] = [
   'lsn-coa-addr',
   'lsn-coa-pipe',
   'lsn-coa-bus',
-  // 408 · 计算机网络
+  // 408 · 计算机网络（第一张是总纲：一个数据包的完整旅程）
+  'lsn-net-overview',
   'lsn-net-link',
   'lsn-net-ip',
   'lsn-net-route',

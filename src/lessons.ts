@@ -115,6 +115,7 @@ const ORDER: string[] = [
   'lsn-os-io',
   // 408 · 计算机组成原理（第一张是总纲：一条指令的一生）
   'lsn-coa-overview',
+  'lsn-coa-arch',
   'lsn-coa-num',
   'lsn-coa-cache',
   'lsn-coa-addr',

@@ -184,6 +184,43 @@ export const CALCULUS4_LESSONS: Lesson[] = [
         result: '$0$',
         note: '判据：<b>原点在不在闭曲线内部</b>。在 → 用参数化得 $2\\pi$（或 $-2\\pi$，看方向）；不在 → 格林公式得 0。这两种情形每年都考。',
       },
+      {
+        title: '例 3（提速：差值为常数 = 常数 × 面积）',
+        stem: '计算 $\\displaystyle\\oint_L(x^2-y)\\,\\mathrm{d}x+(x+\\sin y)\\,\\mathrm{d}y$，其中 $L$ 为椭圆 $\\dfrac{x^2}{4}+\\dfrac{y^2}{9}=1$ 取逆时针方向。',
+        steps: [
+          '闭曲线、被积函数处处有定义，直接用格林公式。',
+          '$\\dfrac{\\partial Q}{\\partial x}=1$，$\\dfrac{\\partial P}{\\partial y}=-1$，故 $Q_x-P_y=1-(-1)=2$。',
+          '<b>差值是常数</b>，二重积分退化为面积：$\\oint_L=2\\iint_D\\mathrm{d}\\sigma=2S_D=2\\cdot\\pi\\cdot2\\cdot3=12\\pi$。',
+        ],
+        result: '$12\\pi$',
+        note: '只要算出 $Q_x-P_y$ 是常数 $k$，答案就是 $k\\times$ 区域面积，不必再算二重积分；椭圆面积 $S=\\pi ab$。',
+      },
+      {
+        title: '例 4（补线：曲线不闭 + 方向判断）',
+        stem: '计算 $I=\\displaystyle\\int_L(\\mathrm{e}^x\\sin y-2y+x)\\,\\mathrm{d}x+(\\mathrm{e}^x\\cos y-2+y)\\,\\mathrm{d}y$，$L$ 为上半圆弧 $(x-1)^2+y^2=1\\ (y\\ge0)$ 上从 $O(0,0)$ 到 $A(2,0)$ 的一段。',
+        wrong:
+          '直接套格林公式（曲线不闭），或补线后忘记减掉补线段上的积分。更隐蔽的一个错：把 $O\\to A$ 的上半圆弧当成逆时针 —— 沿行走方向区域在<b>右手边</b>，实际是顺时针。',
+        steps: [
+          '算差值：$Q_x=\\mathrm{e}^x\\cos y$，$P_y=\\mathrm{e}^x\\cos y-1$，故 $Q_x-P_y=1$。',
+          '补线段 $\\overline{AO}$（沿 $x$ 轴回到原点）凑成闭路。闭路为<b>顺时针</b>（负向），故 $\\oint=-\\iint_D1\\,\\mathrm{d}\\sigma=-\\dfrac{\\pi}{2}$。',
+          '算补线段：其上 $y=0$，$\\mathrm{d}y=0$，$P=x$，故 $\\displaystyle\\int_{A\\to O}=\\int_2^0x\\,\\mathrm{d}x=-2$。',
+          '移项：$\\oint=\\int_L+\\int_{A\\to O}$，所以 $I=-\\dfrac{\\pi}{2}-(-2)=2-\\dfrac{\\pi}{2}$。',
+        ],
+        result: '$2-\\dfrac{\\pi}{2}$',
+        note: '动笔先把 $\\oint=\\int_L+\\int_{补}$ 这一行写下来再移项，符号就不容易错；补线要挑好算的（坐标轴上的直线段）。',
+      },
+      {
+        title: '例 5（斯托克斯：Σ 换平面片）',
+        stem: '计算 $\\displaystyle\\oint_\\Gamma(y-z)\\,\\mathrm{d}x+(z-x)\\,\\mathrm{d}y+(x-y)\\,\\mathrm{d}z$，其中 $\\Gamma$ 为柱面 $x^2+y^2=1$ 与平面 $x+y+z=1$ 的交线，从 $z$ 轴正向看为逆时针。',
+        steps: [
+          '$\\Sigma$ <b>可任取</b>以 $\\Gamma$ 为边界的曲面，取平面 $x+y+z=1$ 上的圆盘 —— 不要取柱面片，它的法向量逐点变化，会算不下去。',
+          '旋度：$\\operatorname{rot}\\vec F=(R_y-Q_z,\\;P_z-R_x,\\;Q_x-P_y)=(-2,\\;-2,\\;-2)$。',
+          '定法向：从 $z$ 轴正向看逆时针 → 法向朝上。由 $z=1-x-y$ 得上侧 $\\vec n\\,\\mathrm{d}S=(-z_x,-z_y,1)\\mathrm{d}x\\mathrm{d}y=(1,1,1)\\mathrm{d}x\\mathrm{d}y$。',
+          '点积并积分：$\\operatorname{rot}\\vec F\\cdot\\vec n\\,\\mathrm{d}S=-6\\,\\mathrm{d}x\\mathrm{d}y$，投影域 $x^2+y^2\\le1$ 面积为 $\\pi$，故原式 $=-6\\pi$。',
+        ],
+        result: '$-6\\pi$',
+        note: '若题目改成"从 $z$ 轴正向看顺时针"，答案变为 $+6\\pi$ —— 方向反了就差一个负号，这是斯托克斯丢分第一名。',
+      },
     ],
     practice: [
       {
@@ -246,6 +283,44 @@ export const CALCULUS4_LESSONS: Lesson[] = [
         answer: 'A',
         explanation:
           '单连通区域上 $Q_x=P_y$ 等价于积分与路径无关，存在原函数。B 只在闭曲线时成立；方向反转要变号，故 C 错。',
+        score: 5,
+      },
+      {
+        id: `${LSN_MINT}-p6`,
+        ...q(LSN_MINT, 6),
+        paper: '数学一',
+        subject: '高等数学',
+        type: 'blank',
+        stem: '设 $L$ 为椭圆 $\\dfrac{x^2}{4}+\\dfrac{y^2}{9}=1$ 取逆时针方向，则 $\\displaystyle\\oint_L(x^2-y)\\mathrm{d}x+(x+\\sin y)\\mathrm{d}y=\\underline{\\quad}\\pi$',
+        blanks: [{ answer: '12', accept: ['12.0'] }],
+        explanation:
+          '$Q_x-P_y=1-(-1)=2$ 为常数，故 $\\oint_L=2S_D=2\\cdot\\pi\\cdot2\\cdot3=12\\pi$，填 $12$。',
+        score: 5,
+      },
+      {
+        id: `${LSN_MINT}-p7`,
+        ...q(LSN_MINT, 7),
+        paper: '数学一',
+        subject: '高等数学',
+        type: 'single',
+        stem: '设 $L$ 为上半圆弧 $(x-1)^2+y^2=1\\ (y\\ge0)$ 上从 $O(0,0)$ 到 $A(2,0)$ 的一段，则 $\\displaystyle\\int_L(\\mathrm{e}^x\\sin y-2y+x)\\mathrm{d}x+(\\mathrm{e}^x\\cos y-2+y)\\mathrm{d}y=$（　）',
+        options: { A: '$2-\\dfrac{\\pi}{2}$', B: '$2+\\dfrac{\\pi}{2}$', C: '$\\dfrac{\\pi}{2}-2$', D: '$-2-\\dfrac{\\pi}{2}$' },
+        answer: 'A',
+        explanation:
+          '$Q_x-P_y=1$。补 $x$ 轴上 $A\\to O$ 的线段成闭路，该闭路为顺时针（负向），故 $\\oint=-\\dfrac{\\pi}{2}$；补线段 $y=0,\\mathrm{d}y=0$，积分 $=\\int_2^0x\\mathrm{d}x=-2$。于是 $\\int_L=-\\dfrac{\\pi}{2}-(-2)=2-\\dfrac{\\pi}{2}$。',
+        score: 5,
+      },
+      {
+        id: `${LSN_MINT}-p8`,
+        ...q(LSN_MINT, 8),
+        paper: '数学一',
+        subject: '高等数学',
+        type: 'single',
+        stem: '设 $\\Gamma$ 为柱面 $x^2+y^2=1$ 与平面 $x+y+z=1$ 的交线，从 $z$ 轴正向看为逆时针，则 $\\displaystyle\\oint_\\Gamma(y-z)\\mathrm{d}x+(z-x)\\mathrm{d}y+(x-y)\\mathrm{d}z=$（　）',
+        options: { A: '$-6\\pi$', B: '$6\\pi$', C: '$-2\\pi$', D: '$0$' },
+        answer: 'A',
+        explanation:
+          '取平面 $z=1-x-y$ 上的圆盘为 $\\Sigma$，上侧 $\\vec n\\,\\mathrm{d}S=(1,1,1)\\mathrm{d}x\\mathrm{d}y$；$\\operatorname{rot}\\vec F=(-2,-2,-2)$，点积 $=-6$，投影域面积 $\\pi$，故积分 $=-6\\pi$。',
         score: 5,
       },
     ],

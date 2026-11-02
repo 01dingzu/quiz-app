@@ -957,12 +957,6 @@ await goto('/')
     `[...document.querySelectorAll('.lesson-card .lesson-title')].map(x => (x.innerText||'').trim()).join('|')`,
   )
   const titles = titlesRaw ? String(titlesRaw).split('|').filter(Boolean) : []
-  check(
-    '考点数量 = 76（数学 27 / 408 25 / 政治 24）',
-    titles.length === 76,
-    titles.length + ' 个',
-  )
-
   const groupRaw = await evaluate(
     `[...document.querySelectorAll('.learn-group')].map(x => (x.innerText||'').trim().split('\\n')[0]).join('|')`,
   )
@@ -980,17 +974,29 @@ await goto('/')
   const groupCounts = await evaluate(
     `[...document.querySelectorAll('.learn-group')].map(x => (x.innerText||'').trim().replace(/\\s+/g,' ')).join(' | ')`,
   )
+  // 卡片总数与各分组明细里的「N 个考点」之和必须一致；不写死总数，新增考点卡片无需改这条
+  const perGroup = [...String(groupCounts).matchAll(/(\d+)\s*个考点/g)].map((m) => Number(m[1]))
+  const sumFromGroups = perGroup.reduce((s, n) => s + n, 0)
   check(
-    '分组内考点数正确（高数 14 / 线代 5 / 概率 8 / 操作系统 10 / 马原 9 / 习思想 8 / 时政 1）',
-    ['14 个考点', '5 个考点', '8 个考点', '10 个考点', '9 个考点', '1 个考点'].every((s) =>
-      String(groupCounts).includes(s),
-    ),
+    '考点卡片数与分组明细自洽',
+    titles.length > 0 && sumFromGroups === titles.length,
+    `卡片 ${titles.length} 个 / 分组合计 ${sumFromGroups} 个`,
+  )
+  check(
+    '数学三科分组考点数正确（高数 14 / 线代 5 / 概率 8）且所有分组非空',
+    perGroup.length >= 13 &&
+      perGroup[0] === 14 &&
+      perGroup[1] === 5 &&
+      perGroup[2] === 8 &&
+      perGroup.every((n) => n > 0),
     String(groupCounts),
   )
   const listOver = await bodyText()
   check('列表页展示总览（考点数与练习总数）', listOver.includes('个考点') && listOver.includes('道原创练习'), excerpt(listOver, 160))
 
   const bad = []
+  const kerrBad = []
+  let nExTotal = 0
   for (let i = 0; i < titles.length; i++) {
     await goto('/learn')
     const clicked = await evaluate(`(() => {
@@ -1005,6 +1011,11 @@ await goto('/')
     const nPrac = await evaluate(`document.querySelectorAll('.prac-item').length`)
     const nRows = await evaluate(`document.querySelectorAll('.q-table tbody tr').length`)
     const errs = runtimeErrors()
+    // KaTeX 开了 throwOnError:false —— 公式写错不会抛异常，只会渲染成带 .katex-error 的红字，
+    // 所以必须单独数一遍，否则语料里的 LaTeX 语法错误会静默上线
+    const kerr = await evaluate(`document.querySelectorAll('.katex-error').length`)
+    nExTotal += Number(nEx) || 0
+    if (kerr > 0) kerrBad.push(`${i}:${titles[i]} katex-error=${kerr}`)
     // 政治的背诵卡片没有例题（例题精讲整块不渲染），表格里装的是条款而不是公式；
     // 408 的部分考点也没有公式表 —— 所以「有没有表」不写死，只在有表时校验行数
     const isClause = t.includes('必背条款')
@@ -1022,9 +1033,14 @@ await goto('/')
     }
   }
   check(
-    '76 个考点详情页结构完整（核心思路/易错红线/练习 ≥3 道 · 有表则 ≥4 行 · 无报错）',
+    `${titles.length} 个考点详情页结构完整（核心思路/易错红线/练习 ≥3 道 · 有表则 ≥4 行 · 无报错）`,
     bad.length === 0,
     bad.join(' ; '),
+  )
+  check(
+    `全部考点详情页无 KaTeX 解析错误（共 ${nExTotal} 道例题）`,
+    kerrBad.length === 0,
+    kerrBad.slice(0, 6).join(' ; '),
   )
 }
 
@@ -1134,6 +1150,7 @@ await goto('/')
   check('考点行渲染齐全（≥ 20）', rows >= 20, `rows=${rows}`)
 
   // 切到「全部题」范围，保证计数与作答历史无关：全选高等数学组 = 14 考点 × 5 题 = 70
+  //（高数部分考点带了额外练习题，实际为 73；M 段作答过 1 道泰勒题，答对会归档 → 72~73）
   const scopeAll = await evaluate(`(() => {
     const b = [...document.querySelectorAll('.compose-opts .pf-chip')].find(x => (x.innerText || '').trim() === '全部题')
     if (!b) return 'NOT_FOUND'
@@ -1148,8 +1165,8 @@ await goto('/')
   const bar1 = await evaluate(`document.querySelector('.compose-bar')?.innerText || ''`)
   // M 段作答过 1 道泰勒题：答对会被归档（70→69），答错保留（70）
   check(
-    '全选高等数学组（全部题范围）后底栏 = 已选 14 考点 · 69~70 题',
-    scopeAll === 'OK' && pickGroup === 'OK' && /已选 14 个考点 · 组出 (69|70) 道题/.test(bar1.replace(/\s+/g, ' ')),
+    '全选高等数学组（全部题范围）后底栏 = 已选 14 考点 · 72~73 题',
+    scopeAll === 'OK' && pickGroup === 'OK' && /已选 14 个考点 · 组出 (72|73) 道题/.test(bar1.replace(/\s+/g, ' ')),
     bar1.replace(/\s+/g, ' ').slice(0, 120),
   )
 

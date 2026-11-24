@@ -1,0 +1,26 @@
+{
+  "2023-33": {
+    "status": "answer-conflict",
+    "reason": "解析自称答案 A，与题库 answer=D 冲突（「本题答案选 A」，位置 330）"
+  },
+  "2023-34": {
+    "status": "content-mismatch",
+    "reason": "解析与题干内容不同源：解析 54 个特征词中仅 2 个与题干/选项重合（占比 3.7%），判为错位解析，不得作为锚定源"
+  },
+  "2023-35": {
+    "status": "content-mismatch",
+    "reason": "错位嫌疑（high）：解析中的特征数字 24/15/16/512/768 均未出现在题干或选项中"
+  },
+  "2023-36": {
+    "status": "answer-conflict",
+    "reason": "解析自称答案 D，与题库 answer=C 冲突（「本题的正确选项 为 D」，位置 206）"
+  },
+  "2023-37": {
+    "status": "dirty",
+    "reason": "含 10 个非法字符（PDF 提取残留）：U+0098   U+00FF ÿ  U+0082   U+009D   U+00EB ë  U+008B   U+00A1 ¡  U+0097 "
+  },
+  "2023-39": {
+    "status": "dirty",
+    "reason": "含 30 个非法字符（PDF 提取残留）：U+0098   U+00FF ÿ  U+0082   U+009D   U+00EB ë  U+008B   U+00A1 ¡  U+0097 "
+  }
+}

@@ -95,7 +95,7 @@ export default function AiGuide({ question, revealed, allowPeek = true }: Props)
   // 静默降级：没有指引数据就不渲染任何东西（连标题都不留）
   if (loading || !view) return null
 
-  const { topic, prereqs, mother, entry, expWarn } = view
+  const { topic, prereqs, mother, entry, expWarn, hasDiag } = view
   const hasAny = topic || mother || entry || expWarn
   if (!hasAny) return null
 
@@ -186,8 +186,8 @@ export default function AiGuide({ question, revealed, allowPeek = true }: Props)
         </div>
       )}
 
-      {revealed && diags.length === 0 && (
-        <div className="guide-block guide-empty">本题暂无指引数据（指引按科目分批生成中）。</div>
+      {revealed && hasDiag && diags.length === 0 && (
+        <div className="guide-block guide-empty">本题暂无逐项诊断；上方的前置知识链与解题骨架可照常使用。</div>
       )}
     </div>
   )

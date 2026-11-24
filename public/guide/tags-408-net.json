@@ -1,0 +1,562 @@
+{
+  "2009-33": {
+    "topic": "net-1.1.1",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2009-34": {
+    "topic": "net-2.1.1",
+    "mt": "mt-net-002",
+    "by": "override"
+  },
+  "2009-35": {
+    "topic": "net-3.2.1",
+    "mt": "mt-net-005",
+    "by": "rule"
+  },
+  "2009-36": {
+    "topic": "net-3.4.1",
+    "mt": "mt-net-008",
+    "by": "override"
+  },
+  "2009-37": {
+    "topic": "net-3.3.1",
+    "mt": "mt-net-007",
+    "by": "rule"
+  },
+  "2009-38": {
+    "topic": "net-5.2.1",
+    "mt": "mt-net-013",
+    "by": "rule"
+  },
+  "2009-39": {
+    "topic": "net-5.3.1",
+    "mt": "mt-net-015",
+    "by": "rule"
+  },
+  "2009-40": {
+    "topic": "net-6.2.1",
+    "mt": "mt-net-019",
+    "by": "override"
+  },
+  "2010-33": {
+    "topic": "net-1.1.1",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2010-35": {
+    "topic": "net-4.3.1",
+    "mt": "mt-net-012",
+    "by": "override"
+  },
+  "2010-36": {
+    "topic": "net-4.2.2",
+    "mt": "mt-net-011",
+    "by": "override"
+  },
+  "2010-37": {
+    "topic": "net-4.2.1",
+    "mt": "mt-net-010",
+    "by": "rule"
+  },
+  "2010-38": {
+    "topic": "net-1.4.1",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2010-39": {
+    "topic": "net-5.3.2",
+    "mt": "mt-net-016",
+    "by": "rule"
+  },
+  "2010-40": {
+    "topic": "net-6.1.1",
+    "mt": "mt-net-018",
+    "by": "override"
+  },
+  "2011-33": {
+    "topic": "net-1.1.1",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2011-34": {
+    "topic": "net-2.1.2",
+    "mt": "mt-net-002",
+    "by": "override"
+  },
+  "2011-35": {
+    "topic": "net-3.2.1",
+    "mt": "mt-net-005",
+    "by": "rule"
+  },
+  "2011-36": {
+    "topic": "net-3.3.2",
+    "mt": "mt-net-007",
+    "by": "override"
+  },
+  "2011-37": {
+    "topic": "net-4.2.1",
+    "mt": "mt-net-010",
+    "by": "rule"
+  },
+  "2011-38": {
+    "topic": "net-4.2.1",
+    "mt": "mt-net-010",
+    "by": "override"
+  },
+  "2011-39": {
+    "topic": "net-5.2.1",
+    "mt": "mt-net-013",
+    "by": "override"
+  },
+  "2011-40": {
+    "topic": "net-5.2.1",
+    "mt": "mt-net-013",
+    "by": "rule"
+  },
+  "2012-33": {
+    "topic": "net-4.2.2",
+    "mt": "mt-net-011",
+    "by": "override"
+  },
+  "2012-34": {
+    "topic": "net-2.1.2",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2012-35": {
+    "topic": "net-3.3.1",
+    "mt": "mt-net-007",
+    "by": "override"
+  },
+  "2012-36": {
+    "topic": "net-3.2.2",
+    "mt": "mt-net-006",
+    "by": "override"
+  },
+  "2012-37": {
+    "topic": "net-4.3.2",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2012-38": {
+    "topic": "net-3.4.2",
+    "mt": "mt-net-008",
+    "by": "override"
+  },
+  "2012-39": {
+    "topic": "net-4.2.1",
+    "mt": "mt-net-010",
+    "by": "rule"
+  },
+  "2013-33": {
+    "topic": "net-1.1.1",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2013-35": {
+    "topic": "net-1.2.1",
+    "mt": "mt-net-003",
+    "by": "override"
+  },
+  "2013-36": {
+    "topic": "net-3.3.1",
+    "mt": "mt-net-007",
+    "by": "override"
+  },
+  "2013-37": {
+    "topic": "net-3.1.1",
+    "mt": "mt-net-004",
+    "by": "override"
+  },
+  "2013-38": {
+    "topic": "net-3.4.1",
+    "mt": "mt-net-008",
+    "by": "override"
+  },
+  "2013-39": {
+    "topic": "net-5.2.1",
+    "mt": "mt-net-013",
+    "by": "rule"
+  },
+  "2013-40": {
+    "topic": "net-6.2.1",
+    "mt": "mt-net-019",
+    "by": "override"
+  },
+  "2014-33": {
+    "topic": "net-1.1.1",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2014-35": {
+    "topic": "net-2.1.1",
+    "mt": "mt-net-002",
+    "by": "override"
+  },
+  "2014-36": {
+    "topic": "net-3.2.1",
+    "mt": "mt-net-005",
+    "by": "rule"
+  },
+  "2014-37": {
+    "topic": "net-2.1.2",
+    "mt": "mt-net-002",
+    "by": "override"
+  },
+  "2014-38": {
+    "topic": "net-5.3.1",
+    "mt": "mt-net-015",
+    "by": "override"
+  },
+  "2014-39": {
+    "topic": "net-5.1.1",
+    "mt": "mt-net-017",
+    "by": "override"
+  },
+  "2014-40": {
+    "topic": "net-6.2.1",
+    "mt": "mt-net-019",
+    "by": "override"
+  },
+  "2015-33": {
+    "topic": "net-6.2.1",
+    "mt": "mt-net-019",
+    "by": "override"
+  },
+  "2015-35": {
+    "topic": "net-3.2.2",
+    "mt": "mt-net-006",
+    "by": "rule"
+  },
+  "2015-36": {
+    "topic": "net-3.3.1",
+    "mt": "mt-net-007",
+    "by": "rule"
+  },
+  "2015-37": {
+    "topic": "net-3.4.1",
+    "mt": "mt-net-008",
+    "by": "override"
+  },
+  "2015-38": {
+    "topic": "net-4.2.1",
+    "mt": "mt-net-010",
+    "by": "rule"
+  },
+  "2015-39": {
+    "topic": "net-5.3.1",
+    "mt": "mt-net-015",
+    "by": "override"
+  },
+  "2015-40": {
+    "topic": "net-6.2.1",
+    "mt": "mt-net-019",
+    "by": "override"
+  },
+  "2016-33": {
+    "topic": "net-1.4.1",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2016-35": {
+    "topic": "net-3.4.1",
+    "mt": "mt-net-008",
+    "by": "override"
+  },
+  "2016-36": {
+    "topic": "net-3.3.1",
+    "mt": "mt-net-007",
+    "by": "override"
+  },
+  "2016-37": {
+    "topic": "net-4.3.1",
+    "mt": "mt-net-012",
+    "by": "rule"
+  },
+  "2016-38": {
+    "topic": "net-3.4.2",
+    "mt": "mt-net-008",
+    "by": "override"
+  },
+  "2016-39": {
+    "topic": "net-4.2.1",
+    "mt": "mt-net-010",
+    "by": "override"
+  },
+  "2016-40": {
+    "topic": "net-6.1.1",
+    "mt": "mt-net-018",
+    "by": "override"
+  },
+  "2017-33": {
+    "topic": "net-1.2.1",
+    "mt": "mt-net-003",
+    "by": "override"
+  },
+  "2017-34": {
+    "topic": "net-2.1.1",
+    "mt": "mt-net-002",
+    "by": "rule"
+  },
+  "2017-36": {
+    "topic": "net-4.2.2",
+    "mt": "mt-net-010",
+    "by": "override"
+  },
+  "2017-37": {
+    "topic": "net-4.3.1",
+    "mt": "mt-net-012",
+    "by": "override"
+  },
+  "2017-38": {
+    "topic": "net-4.2.1",
+    "mt": "mt-net-010",
+    "by": "rule"
+  },
+  "2017-39": {
+    "topic": "net-5.3.2",
+    "mt": "mt-net-016",
+    "by": "rule"
+  },
+  "2017-40": {
+    "topic": "net-6.2.1",
+    "mt": "mt-net-019",
+    "by": "override"
+  },
+  "2018-33": {
+    "topic": "net-5.1.1",
+    "mt": "mt-net-017",
+    "by": "override"
+  },
+  "2018-34": {
+    "topic": "net-2.1.2",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2018-35": {
+    "topic": "net-3.3.2",
+    "mt": "mt-net-007",
+    "by": "override"
+  },
+  "2018-36": {
+    "topic": "net-3.2.2",
+    "mt": "mt-net-006",
+    "by": "override"
+  },
+  "2018-38": {
+    "topic": "net-4.2.1",
+    "mt": "mt-net-010",
+    "by": "rule"
+  },
+  "2018-39": {
+    "topic": "net-5.1.1",
+    "mt": "mt-net-017",
+    "by": "override"
+  },
+  "2018-40": {
+    "topic": "net-6.2.1",
+    "mt": "mt-net-019",
+    "by": "override"
+  },
+  "2019-33": {
+    "topic": "net-1.1.1",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2019-34": {
+    "topic": "net-2.2.1",
+    "mt": "mt-net-002",
+    "by": "override"
+  },
+  "2019-35": {
+    "topic": "net-3.2.1",
+    "mt": "mt-net-005",
+    "by": "override"
+  },
+  "2019-36": {
+    "topic": "net-3.3.1",
+    "mt": "mt-net-007",
+    "by": "rule"
+  },
+  "2019-37": {
+    "topic": "net-4.2.1",
+    "mt": "mt-net-010",
+    "by": "rule"
+  },
+  "2019-39": {
+    "topic": "net-5.2.2",
+    "mt": "mt-net-014",
+    "by": "override"
+  },
+  "2019-40": {
+    "topic": "net-6.2.2",
+    "mt": "mt-net-020",
+    "by": "override"
+  },
+  "2020-34": {
+    "topic": "net-4.3.2",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2020-36": {
+    "topic": "net-3.2.2",
+    "mt": "mt-net-006",
+    "by": "override"
+  },
+  "2020-38": {
+    "topic": "net-5.3.1",
+    "mt": "mt-net-015",
+    "by": "override"
+  },
+  "2020-39": {
+    "topic": "net-5.2.2",
+    "mt": "mt-net-014",
+    "by": "rule"
+  },
+  "2021-33": {
+    "topic": "net-1.1.1",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2021-35": {
+    "topic": "net-4.2.1",
+    "mt": "mt-net-010",
+    "by": "rule"
+  },
+  "2021-36": {
+    "topic": "net-4.1.1",
+    "mt": "mt-net-009",
+    "by": "rule"
+  },
+  "2021-37": {
+    "topic": "net-4.3.1",
+    "mt": "mt-net-012",
+    "by": "override"
+  },
+  "2021-38": {
+    "topic": "net-5.2.2",
+    "mt": "mt-net-014",
+    "by": "rule"
+  },
+  "2021-39": {
+    "topic": "net-5.3.3",
+    "mt": "mt-net-017",
+    "by": "override"
+  },
+  "2022-33": {
+    "topic": "net-1.1.1",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2022-34": {
+    "topic": "net-2.1.1",
+    "mt": "mt-net-002",
+    "by": "rule"
+  },
+  "2022-35": {
+    "topic": "net-4.2.1",
+    "mt": "mt-net-010",
+    "by": "rule"
+  },
+  "2022-36": {
+    "topic": "net-4.2.1",
+    "mt": "mt-net-010",
+    "by": "rule"
+  },
+  "2022-37": {
+    "topic": "net-1.4.1",
+    "mt": "mt-net-001",
+    "by": "override"
+  },
+  "2022-38": {
+    "topic": "net-5.3.1",
+    "mt": "mt-net-015",
+    "by": "rule"
+  },
+  "2022-39": {
+    "topic": "net-5.2.2",
+    "mt": "mt-net-014",
+    "by": "rule"
+  },
+  "2022-40": {
+    "topic": "net-6.2.2",
+    "mt": "mt-net-020",
+    "by": "override"
+  },
+  "2023-33": {
+    "topic": "net-1.3.1",
+    "mt": "mt-net-003",
+    "by": "override"
+  },
+  "2023-34": {
+    "topic": "net-2.1.1",
+    "mt": "mt-net-002",
+    "by": "override"
+  },
+  "2023-35": {
+    "topic": "net-3.2.1",
+    "mt": "mt-net-005",
+    "by": "rule"
+  },
+  "2023-36": {
+    "topic": "net-3.3.1",
+    "mt": "mt-net-007",
+    "by": "override"
+  },
+  "2023-37": {
+    "topic": "net-3.1.1",
+    "mt": "mt-net-004",
+    "by": "override"
+  },
+  "2023-38": {
+    "topic": "net-4.2.2",
+    "mt": "mt-net-011",
+    "by": "rule"
+  },
+  "2023-39": {
+    "topic": "net-4.2.1",
+    "mt": "mt-net-010",
+    "by": "rule"
+  },
+  "2023-40": {
+    "topic": "net-4.2.2",
+    "mt": "mt-net-011",
+    "by": "override"
+  },
+  "2024-34": {
+    "topic": "net-2.1.2",
+    "mt": "mt-net-002",
+    "by": "override"
+  },
+  "2024-35": {
+    "topic": "net-3.4.2",
+    "mt": "mt-net-008",
+    "by": "override"
+  },
+  "2024-36": {
+    "topic": "net-3.3.1",
+    "mt": "mt-net-007",
+    "by": "rule"
+  },
+  "2024-37": {
+    "topic": "net-3.2.1",
+    "mt": "mt-net-005",
+    "by": "rule"
+  },
+  "2024-38": {
+    "topic": "net-5.2.2",
+    "mt": "mt-net-014",
+    "by": "rule"
+  },
+  "2024-39": {
+    "topic": "net-5.1.1",
+    "mt": "mt-net-004",
+    "by": "override"
+  },
+  "2024-40": {
+    "topic": "net-6.2.2",
+    "mt": "mt-net-020",
+    "by": "override"
+  }
+}

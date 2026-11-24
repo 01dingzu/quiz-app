@@ -1,0 +1,42 @@
+{
+  "2023-23": {
+    "status": "dirty",
+    "reason": "选项含非法字符，输入不可靠：B"
+  },
+  "2023-24": {
+    "status": "content-mismatch",
+    "reason": "错位嫌疑（high）：解析中的特征数字 16/234/212/222/219/512 均未出现在题干或选项中"
+  },
+  "2023-25": {
+    "status": "content-mismatch",
+    "reason": "解析与题干内容不同源：解析 63 个特征词中仅 1 个与题干/选项重合（占比 1.6%），判为错位解析，不得作为锚定源"
+  },
+  "2023-26": {
+    "status": "dirty",
+    "reason": "含 10 个非法字符（PDF 提取残留）：U+0098   U+00FF ÿ  U+0082   U+009D   U+00EB ë  U+008B   U+00A1 ¡  U+0097 "
+  },
+  "2023-27": {
+    "status": "content-mismatch",
+    "reason": "解析与题干内容不同源：解析 121 个特征词中仅 2 个与题干/选项重合（占比 1.7%），判为错位解析，不得作为锚定源"
+  },
+  "2023-28": {
+    "status": "content-mismatch",
+    "reason": "解析引用了不存在的配图（题目无 images）"
+  },
+  "2023-29": {
+    "status": "answer-conflict",
+    "reason": "解析自称答案 C，与题库 answer=B 冲突（「本题的正确选项为 C」，位置 225）"
+  },
+  "2023-30": {
+    "status": "answer-conflict",
+    "reason": "选项含非法字符，输入不可靠：A"
+  },
+  "2023-31": {
+    "status": "answer-conflict",
+    "reason": "解析自称答案 D，与题库 answer=B 冲突（「本题的正确选项为 D」，位置 332）"
+  },
+  "2023-32": {
+    "status": "dirty",
+    "reason": "含 10 个非法字符（PDF 提取残留）：U+0098   U+00FF ÿ  U+0082   U+009D   U+00EB ë  U+008B   U+00A1 ¡  U+0097 "
+  }
+}

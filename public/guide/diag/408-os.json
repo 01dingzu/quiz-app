@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "paper": "408",
+  "subject": "操作系统",
+  "generator": "none",
+  "note": "本科目诊断按科目分批生成中；三科真题解析大量为空或带水印，暂无可逐字锚定的诊断条目。",
+  "stats": {
+    "questions": 0,
+    "items": 0,
+    "grounded": 0,
+    "probe": 0,
+    "conclusion": 0,
+    "criterion": 0,
+    "topics": 0,
+    "mothers": 0
+  },
+  "questions": {}
+}

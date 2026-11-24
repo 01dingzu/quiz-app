@@ -113,8 +113,13 @@ interface GuideResource {
 }
 
 /**
- * 目前只做了数据结构一科（试点）。
- * 其他科目没有对应文件，加载器会静默返回 null，界面上不出现指引区块。
+ * 资源表：每科一行，四科齐平。
+ *   · 数据结构：2026-10 试点，含 30 题逐字锚定的干扰项诊断。
+ *   · 组原 / OS / 网络：由 scripts/ai-guide/3-build-multi.mjs 生成，知识图谱、
+ *     母题库、标注表都是全量覆盖（真题 100% 标注）。这三科的真题解析大多缺失
+ *     或带水印，无法逐字锚定，因此**不生成干扰项诊断**（诊断分片 questions 为空），
+ *     但「知识点 + 前置知识链 + 母题骨架」三项不受影响，仍是完整交付。
+ * 新增科目只需在这里加一行；缺文件的加载器会静默返回 null。
  */
 const RESOURCES: GuideResource[] = [
   {
@@ -124,6 +129,30 @@ const RESOURCES: GuideResource[] = [
     mothers: 'guide/mothers-408-ds.json',
     warn: 'guide/exp-warn-408-ds.json',
     tags: 'guide/tags-408-ds.json',
+  },
+  {
+    subject: '计算机组成原理',
+    kg: 'guide/kg-408-coa.json',
+    diag: 'guide/diag/408-coa.json',
+    mothers: 'guide/mothers-408-coa.json',
+    warn: 'guide/exp-warn-408-coa.json',
+    tags: 'guide/tags-408-coa.json',
+  },
+  {
+    subject: '操作系统',
+    kg: 'guide/kg-408-os.json',
+    diag: 'guide/diag/408-os.json',
+    mothers: 'guide/mothers-408-os.json',
+    warn: 'guide/exp-warn-408-os.json',
+    tags: 'guide/tags-408-os.json',
+  },
+  {
+    subject: '计算机网络',
+    kg: 'guide/kg-408-net.json',
+    diag: 'guide/diag/408-net.json',
+    mothers: 'guide/mothers-408-net.json',
+    warn: 'guide/exp-warn-408-net.json',
+    tags: 'guide/tags-408-net.json',
   },
 ]
 
@@ -229,6 +258,8 @@ export interface GuideView {
   entry: GuideEntry | null
   /** 该题解析被体检判为不可用时的原因（用于在解析旁给出提示） */
   expWarn: ExpWarn | null
+  /** 本科目诊断分片里是否真有诊断数据（用于决定「暂无逐项诊断」要不要出现） */
+  hasDiag: boolean
 }
 
 /**
@@ -299,5 +330,6 @@ export async function loadGuideFor(q: Question): Promise<GuideView | null> {
     mother,
     entry,
     expWarn,
+    hasDiag: !!shard && Object.keys(shard.questions || {}).length > 0,
   }
 }

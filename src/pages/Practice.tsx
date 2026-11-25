@@ -37,6 +37,7 @@ export default function Practice() {
     index,
     picked,
     go,
+    goTo,
     submitAnswer,
     toggleFlag,
     flagged,
@@ -57,6 +58,8 @@ export default function Practice() {
   } = useQuiz()
   const nav = useNavigate()
   const [quitArmed, setQuitArmed] = useState(false)
+  /** 题号导航面板是否展开 */
+  const [jumpOpen, setJumpOpen] = useState(false)
   /** 刚答对并触发归档的题（显示"下次不再出现"提示，4 秒后消失） */
   const [archivedTip, setArchivedTip] = useState<string | null>(null)
 
@@ -290,6 +293,41 @@ export default function Practice() {
       </div>
       <div className="progress-bar">
         <div className="progress-fill" style={{ width: `${((index + 1) / total) * 100}%` }} />
+      </div>
+
+      {/* 题号导航：板块题多时可直接点进任意一题，不必从头逐题作答 */}
+      <div className="jump-bar">
+        <button className="jump-toggle" onClick={() => setJumpOpen((v) => !v)}>
+          {jumpOpen ? '收起题号 ▲' : `跳到任意题（共 ${total} 题）▾`}
+        </button>
+        {jumpOpen && (
+          <div className="jump-panel">
+            <div className="jump-legend">
+              <span><i className="lg-cur" />当前</span>
+              <span><i className="lg-done" />已答</span>
+              <span><i className="lg-skip" />已跳过</span>
+              <span><i />未答</span>
+              <span>点题号直接开始该题，已答记录不受影响</span>
+            </div>
+            <div className="jump-grid">
+              {session.map((id, i) => {
+                const done = !!picked[id]
+                const skippedQ = skipped.includes(id) && !done
+                const cur = i === index
+                return (
+                  <button
+                    key={id}
+                    className={'jump-cell' + (cur ? ' cur' : skippedQ ? ' skip' : done ? ' done' : '')}
+                    onClick={() => { goTo(i); setJumpOpen(false) }}
+                    title={`第 ${i + 1} 题${done ? ' · 已答' : skippedQ ? ' · 已跳过' : ''}`}
+                  >
+                    {i + 1}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       <QuestionCard

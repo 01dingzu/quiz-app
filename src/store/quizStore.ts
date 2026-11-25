@@ -278,6 +278,8 @@ interface QuizState {
   tickExam: () => void
   submitAnswer: (qid: string, a: Answer) => void
   go: (delta: number) => void
+  /** 直接跳到会话内指定位置（题号导航用，不受「先作答才能翻页」限制） */
+  goTo: (i: number) => void
   /** 跳过当前题：标记 + 前进到下一题 */
   skipCurrent: () => void
   /** 恢复会话时重排：跳过的题排到最前，并定位到第一道未答的跳过题（无跳过题则不动） */
@@ -493,6 +495,15 @@ export const useQuiz = create<QuizState>()(
         const { session, index } = get()
         if (!session) return
         const ni = Math.min(Math.max(index + delta, 0), session.length - 1)
+        set({ index: ni })
+      },
+
+      /** 题号导航：直接定位到会话内任意一题，不改动 picked / attempts / skipped。
+       *  翻页按钮仍保留「先作答才能往后」的约束，这里只是给用户一个自选起点。 */
+      goTo: (i) => {
+        const { session } = get()
+        if (!session || session.length === 0) return
+        const ni = Math.min(Math.max(Math.trunc(i), 0), session.length - 1)
         set({ index: ni })
       },
 

@@ -5,25 +5,59 @@ import { loadGuideFor, type GuideView, type DiagItem } from '../lib/guide'
 /**
  * AI 指引面板
  * ============================================================
- * 内容是构建期预生成、且经逐字引用校验的。这里最重要的不是排版，而是**信息披露的时机**：
+ * 内容是构建期预生成、且经逐字引用校验的。信息披露的时机：
  *
- *   · 前置知识链  —— 随时可看。它讲的是别的基础知识点，不泄露本题答案。
- *   · 母题 + 解题骨架 —— 作答前折叠、作答后自动展开。骨架是解法recipe，
- *                       作答前摊开会把题目变成填空题。想不出来时可以主动点开（提示）。
- *   · 干扰项诊断   —— **只在作答后出现**。它逐条说明每个错误选项错在哪，
- *                       提前看到等于直接排除掉三个选项。
+ *   · 前置知识链  —— 随时可看（details 折叠），讲别的基础知识点，不泄露答案。
+ *   · 知识点      —— 默认展开，可用按钮自己收起/展开，选择会记住。
+ *   · 母题 + 解题骨架 —— 默认「作答前折叠、作答后自动展开」，避免提前把题目
+ *                       变成填空题；但随时可以用按钮自己切换显隐，**手动选过
+ *                       之后就不再随作答状态自动变化**。
+ *   · 干扰项诊断   —— **只在作答后出现**，逐条说明每个错误选项错在哪。
  *
- * 另外每条诊断都带**来源徽标**，这是这套机制的核心价值：
- *   引用原文（结论型）> 依判据推得（判据型）> 请你自查（提问式）
- * 三档可信度对学生是可见的，学生可以自己点开逐字原文核对，而不是盲信一段黑箱文字。
+ * 显隐偏好存 localStorage（quiz-app:guide-pref），跨题、跨会话保持 ——
+ * 否则每换一道题都要重新点一次，移动端尤其烦。
+ *
+ * 每条诊断都带来源徽标（引用原文 > 依判据推得 > 请你自查），
+ * 三档可信度对学生可见，可展开逐字原文核对，而不是盲信一段黑箱文字。
  */
 
 interface Props {
   question: Question
-  /** 是否已作答 —— 决定干扰项诊断可否展示 */
+  /** 是否已作答 —— 决定干扰项诊断可否展示、以及母题骨架的自动展开时机 */
   revealed: boolean
-  /** 作答前是否允许主动展开母题骨架（提示） */
-  allowPeek?: boolean
+}
+
+/** 用户自己选的显隐状态（跨题保持） */
+type GuidePref = {
+  /** 知识点区块是否展开 */
+  topic: boolean
+  /** 母题骨架：'auto' = 跟随作答时机；true / false = 用户手动固定 */
+  mother: boolean | 'auto'
+}
+
+const PREF_KEY = 'quiz-app:guide-pref'
+const DEFAULT_PREF: GuidePref = { topic: true, mother: 'auto' }
+
+function loadPref(): GuidePref {
+  try {
+    const raw = localStorage.getItem(PREF_KEY)
+    if (!raw) return DEFAULT_PREF
+    const v = JSON.parse(raw) as Partial<GuidePref>
+    return {
+      topic: typeof v.topic === 'boolean' ? v.topic : true,
+      mother: typeof v.mother === 'boolean' ? v.mother : 'auto',
+    }
+  } catch {
+    return DEFAULT_PREF
+  }
+}
+
+function savePref(p: GuidePref): void {
+  try {
+    localStorage.setItem(PREF_KEY, JSON.stringify(p))
+  } catch {
+    // 隐私模式 / 存储被禁用：不影响做题，本次会话内 state 仍然生效
+  }
 }
 
 const KIND_LABEL: Record<'conclusion' | 'criterion', { text: string; title: string }> = {
@@ -77,10 +111,10 @@ function DiagLine({ k, item, traps }: { k: string; item: DiagItem; traps?: Recor
   )
 }
 
-export default function AiGuide({ question, revealed, allowPeek = true }: Props) {
+export default function AiGuide({ question, revealed }: Props) {
   const [view, setView] = useState<GuideView | null>(null)
   const [loading, setLoading] = useState(true)
-  const [peek, setPeek] = useState(false)
+  const [pref, setPref] = useState<GuidePref>(loadPref)
 
   useEffect(() => {
     let alive = true
@@ -100,8 +134,21 @@ export default function AiGuide({ question, revealed, allowPeek = true }: Props)
   if (!hasAny) return null
 
   const diags = entry ? Object.entries(entry.d) : []
-  const showMother = revealed || peek
+  // 'auto' 时保留原来的「作答前折叠、作答后展开」时机；手动选过则以用户选择为准
+  const topicOpen = pref.topic
+  const motherOpen = pref.mother === 'auto' ? revealed : pref.mother
   const showDiag = revealed && diags.length > 0
+
+  const toggleTopic = () => {
+    const next = { ...pref, topic: !topicOpen }
+    setPref(next)
+    savePref(next)
+  }
+  const toggleMother = () => {
+    const next = { ...pref, mother: !motherOpen }
+    setPref(next)
+    savePref(next)
+  }
 
   return (
     <div className="guide">
@@ -120,13 +167,24 @@ export default function AiGuide({ question, revealed, allowPeek = true }: Props)
           <div className="guide-h">
             <span className="guide-h-t">知识点</span>
             <span className="guide-chapter">{topic.chapter}</span>
+            <button
+              className={'guide-toggle' + (topicOpen ? ' on' : '')}
+              onClick={toggleTopic}
+              title="显示 / 隐藏知识点讲解；此选择会被记住，之后每道题都按此显示"
+            >
+              {topicOpen ? '隐藏 ▲' : '展开 ▼'}
+            </button>
           </div>
-          <div className="guide-topic-name">{topic.name}</div>
-          <p className="guide-summary">{topic.summary}</p>
-          {topic.keywords.length > 0 && (
-            <div className="guide-kw">
-              {topic.keywords.map((k) => <span key={k} className="guide-kw-item">{k}</span>)}
-            </div>
+          {topicOpen && (
+            <>
+              <div className="guide-topic-name">{topic.name}</div>
+              <p className="guide-summary">{topic.summary}</p>
+              {topic.keywords.length > 0 && (
+                <div className="guide-kw">
+                  {topic.keywords.map((k) => <span key={k} className="guide-kw-item">{k}</span>)}
+                </div>
+              )}
+            </>
           )}
         </div>
       )}
@@ -153,15 +211,21 @@ export default function AiGuide({ question, revealed, allowPeek = true }: Props)
         <div className="guide-block">
           <div className="guide-h">
             <span className="guide-h-t">母题</span>
-            {!showMother && allowPeek && (
-              <button className="guide-peek" onClick={() => setPeek(true)}>想不出来？看解题骨架</button>
-            )}
+            <button
+              className={'guide-toggle' + (motherOpen ? ' on' : '')}
+              onClick={toggleMother}
+              title="显示 / 隐藏解题骨架；此选择会被记住，手动选过后不再随作答自动展开"
+            >
+              {motherOpen ? '隐藏骨架 ▲' : revealed ? '显示骨架 ▼' : '想不出来？看骨架 ▼'}
+            </button>
           </div>
-          <div className="guide-mt-name">{mother.name}</div>
-          {showMother ? (
-            <ol className="guide-skel">
-              {mother.skeleton.map((s, i) => <li key={i}>{s}</li>)}
-            </ol>
+          {motherOpen ? (
+            <>
+              <div className="guide-mt-name">{mother.name}</div>
+              <ol className="guide-skel">
+                {mother.skeleton.map((s, i) => <li key={i}>{s}</li>)}
+              </ol>
+            </>
           ) : (
             <div className="guide-hidden">解题骨架已折叠 —— 先自己走一遍，再看它怎么走。</div>
           )}

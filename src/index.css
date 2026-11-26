@@ -14,9 +14,12 @@
   --warn-weak: #fffbeb;
   --radius: 12px;
   --shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+  /* 移动端左右/底部留白，配合 env(safe-area-inset-*) 避开刘海与底部横条 */
+  --app-pad: 16px;
+  --app-pad-bottom: 64px;
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 html, body, #root { height: 100%; }
 
@@ -35,7 +38,9 @@ a { color: inherit; text-decoration: none; }
 .app {
   max-width: 860px;
   margin: 0 auto;
-  padding: 0 16px 64px;
+  padding: 0 calc(var(--app-pad) + env(safe-area-inset-right))
+    calc(var(--app-pad-bottom) + env(safe-area-inset-bottom))
+    calc(var(--app-pad) + env(safe-area-inset-left));
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -50,7 +55,8 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 0 10px;
+  /* standalone 全屏时 iOS 状态栏会压住顶部，补安全区 */
+  padding: calc(14px + env(safe-area-inset-top)) 0 10px;
   border-bottom: 1px solid var(--line);
   margin-bottom: 16px;
 }
@@ -88,6 +94,7 @@ a { color: inherit; text-decoration: none; }
 }
 .foot-link { color: var(--muted); transition: color 0.15s; }
 .foot-link:hover { color: var(--brand); }
+.foot-btn { background: none; border: none; padding: 0; font: inherit; cursor: pointer; }
 .foot-sep { color: var(--line); }
 
 .card {
@@ -770,7 +777,8 @@ a { color: inherit; text-decoration: none; }
 .jishi-school-detail { flex: 1; color: var(--muted); }
 
 @media (max-width: 560px) {
-  .app { padding: 0 12px 48px; }
+  /* 只改留白变量；.app 的 padding 里还叠着 env(safe-area-inset-*)，不要整条覆盖 */
+  :root { --app-pad: 12px; --app-pad-bottom: 48px; }
   .q-stem { font-size: 15px; }
   .stat-grid { grid-template-columns: 1fr 1fr; }
   .applied-tools { justify-content: flex-start; }
@@ -915,6 +923,14 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 640px) {
   .guide-toggle { margin-left: 0; }
   .jump-grid { grid-template-columns: repeat(auto-fill, minmax(34px, 1fr)); max-height: 180px; }
+
+  /* 触控目标：手指点击建议 >= 44px，原先选项约 40px、跳题格 32px 偏小 */
+  .tab { min-height: 40px; padding: 9px 14px; }
+  .opt { min-height: 48px; padding: 12px 14px; }
+  .nav-btn, .skip-btn { min-height: 44px; }
+  .jump-cell { height: 42px; }
+  .guide-toggle { min-height: 34px; }
+  .foot-link { padding: 8px 2px; }
 }
 
 @media (max-width: 640px) {
@@ -1171,3 +1187,74 @@ a { color: inherit; text-decoration: none; }
 .compose-bar-info small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
 .compose-start { border: none; background: var(--brand); color: #fff; font-size: 14.5px; font-weight: 700; padding: 10px 22px; border-radius: 10px; cursor: pointer; flex-shrink: 0; }
 .compose-start:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ============================================================
+   手机安装引导（PWA 添加到主屏幕）
+   手机上贴底抽屉，桌面居中卡片；fixed 浮层不受 .app 限宽影响。
+   ============================================================ */
+.install-mask {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex; align-items: flex-end; justify-content: center;
+  animation: install-fade 0.18s ease-out;
+}
+@keyframes install-fade { from { opacity: 0; } to { opacity: 1; } }
+.install-sheet {
+  width: 100%; max-width: 480px;
+  background: var(--card);
+  border-radius: 18px 18px 0 0;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+  box-shadow: 0 -8px 30px rgba(15, 23, 42, 0.18);
+  animation: install-rise 0.22s ease-out;
+}
+@keyframes install-rise {
+  from { transform: translateY(16px); opacity: 0.6; }
+  to { transform: none; opacity: 1; }
+}
+@media (min-width: 641px) {
+  .install-mask { align-items: center; }
+  .install-sheet {
+    border-radius: 16px; padding-bottom: 20px;
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.22);
+  }
+}
+.install-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.install-title { font-size: 17px; font-weight: 700; }
+.install-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.install-x {
+  border: none; background: var(--bg); color: var(--muted);
+  width: 32px; height: 32px; border-radius: 50%;
+  font-size: 20px; line-height: 1; cursor: pointer; flex-shrink: 0;
+}
+.install-x:hover { color: var(--ink); }
+.install-body { margin-top: 16px; }
+.install-hint { font-size: 13.5px; line-height: 1.7; color: var(--ink); margin: 0 0 8px; }
+.install-hint-sub { color: var(--muted); font-size: 12.5px; }
+.install-steps {
+  margin: 0; padding-left: 22px;
+  font-size: 13.5px; line-height: 1.85; color: var(--ink);
+}
+.install-steps li { padding-left: 2px; }
+.install-steps strong { color: var(--brand); }
+.install-note {
+  margin-top: 10px; padding: 10px 12px;
+  background: var(--brand-weak); border-radius: 9px;
+  font-size: 12.5px; line-height: 1.7; color: var(--ink);
+}
+.install-url {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px; word-break: break-all;
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 9px; padding: 10px 12px; color: var(--brand);
+}
+.install-more { margin-top: 10px; font-size: 12.5px; color: var(--brand); }
+.install-more summary { cursor: pointer; }
+.install-more-inner { margin-top: 6px; }
+.install-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+.install-primary, .install-ghost, .install-later {
+  min-height: 44px; border-radius: 10px;
+  font-size: 14px; font-weight: 600; cursor: pointer; padding: 0 16px;
+}
+.install-primary { border: 1px solid var(--brand); background: var(--brand); color: #fff; flex: 1; }
+.install-ghost { border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+.install-later { border: none; background: transparent; color: var(--muted); font-weight: 400; }

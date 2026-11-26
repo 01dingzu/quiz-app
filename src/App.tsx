@@ -10,6 +10,7 @@ import Stats from './pages/Stats'
 import MissingImg from './pages/MissingImg'
 import Archived from './pages/Archived'
 import Jishi from './pages/Jishi'
+import InstallPrompt, { OPEN_INSTALL_EVENT } from './components/InstallPrompt'
 import { REAL_BANK, archivedCount, availablePapers, useQuiz } from './store/quizStore'
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
   const paperList = useMemo(() => availablePapers().join(' / '), [])
   const tab = ({ isActive }: { isActive: boolean }) => 'tab' + (isActive ? ' active' : '')
   return (
+    <>
     <div className="app">
       <header className="topbar">
         <div className="brand">
@@ -68,7 +70,17 @@ export default function App() {
         <NavLink to="/archived" className="foot-link">
           已归档{archN > 0 ? ` ${archN}` : ''}
         </NavLink>
+        <span className="foot-sep">·</span>
+        <button
+          className="foot-link foot-btn"
+          onClick={() => window.dispatchEvent(new Event(OPEN_INSTALL_EVENT))}
+        >
+          装到手机
+        </button>
       </footer>
     </div>
+    {/* 手机安装引导：fixed 浮层，放在 .app 之外避免受容器宽度影响 */}
+    <InstallPrompt />
+    </>
   )
 }

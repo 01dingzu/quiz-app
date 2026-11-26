@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 复习站 · 计算机组成原理</title>
+<style>
+:root{
+  --bg:#F6F5F1; --card:#FFFFFF; --border:rgba(0,0,0,0.15);
+  --text:#2C2C2A; --muted:#6B6A65;
+  --purple-50:#EEEDFE; --purple-600:#534AB7; --purple-800:#3C3489;
+  --teal-50:#E1F5EE; --teal-600:#0F6E56;
+  --red-50:#FCEBEB; --red-600:#A32D2D;
+  --green-50:#EAF3DE; --green-600:#3B6D11;
+  --amber-50:#FAEEDA; --amber-600:#854F0B;
+  --blue-50:#E6F1FB; --blue-600:#185FA5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.7}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+header.top{position:sticky;top:0;z-index:10;background:rgba(246,245,241,0.95);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header.top h1{font-size:15px;font-weight:500}
+header.top .stat{font-size:12px;color:var(--muted)}
+header.top .stat b{color:var(--red-600)}
+header.top .spacer{flex:1}
+.btn{border:1px solid var(--border);background:var(--card);border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;color:var(--text)}
+.btn:hover{background:var(--purple-50);border-color:var(--purple-600)}
+.btn.active{background:var(--purple-50);border-color:var(--purple-600);color:var(--purple-800)}
+nav.side{position:fixed;top:56px;left:0;bottom:0;width:216px;padding:18px 14px;border-right:1px solid var(--border);overflow-y:auto}
+nav.side a{display:block;padding:6px 10px;border-radius:8px;color:var(--text);text-decoration:none;font-size:13px;margin-bottom:2px}
+nav.side a:hover{background:var(--purple-50);color:var(--purple-800)}
+nav.side .grp{font-size:11px;color:var(--muted);margin:12px 0 4px 10px}
+main{margin-left:216px;padding:24px 32px 80px;max-width:920px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;margin-bottom:22px}
+.card h2{font-size:15px;font-weight:500;margin-bottom:4px}
+.card .sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.learn{background:var(--purple-50);border-radius:10px;padding:14px 16px;margin:10px 0}
+.learn p{margin-bottom:8px}
+.learn p:last-child{margin-bottom:0}
+.learn code,.exa code,.q code{font-family:Consolas,monospace;font-size:13px;background:rgba(0,0,0,0.05);padding:1px 5px;border-radius:4px}
+.exa{background:var(--teal-50);border-radius:10px;padding:14px 16px;margin:10px 0}
+.exa .tag{display:inline-block;font-size:11px;color:var(--teal-600);margin-bottom:6px}
+.exa .stem{margin-bottom:8px}
+.exa details{margin-top:8px}
+.exa summary{cursor:pointer;font-size:13px;font-weight:500;color:var(--teal-600)}
+.exa pre{background:#FFFFFF;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:13px;overflow-x:auto;margin:8px 0;white-space:pre}
+.tip{font-size:12px;color:var(--muted);margin-top:6px}
+.tip b{color:var(--red-600);font-weight:500}
+.qz-head{display:flex;align-items:center;gap:10px;margin:18px 0 10px}
+.qz-head .num{font-size:12px;color:var(--muted)}
+.q{border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;background:#FDFCFA}
+.q .meta{font-size:11px;color:var(--muted);margin-bottom:6px}
+.q .meta .diff{color:var(--amber-600)}
+.q .stem{margin-bottom:10px}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--border);background:#FFFFFF;border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer;margin-bottom:6px;color:var(--text);font-family:inherit}
+.opt:hover{border-color:var(--purple-600)}
+.opt.correct{background:var(--green-50);border-color:var(--green-600);color:var(--green-600)}
+.opt.wrong{background:var(--red-50);border-color:var(--red-600);color:var(--red-600)}
+.q.done .opt{cursor:default;opacity:0.85}
+.q .exp{display:none;margin-top:8px;font-size:13px;background:var(--blue-50);border-radius:8px;padding:10px 12px}
+.q.done .exp{display:block}
+.q .exp b{color:var(--blue-600);font-weight:500}
+.essay{background:var(--amber-50);border-radius:10px;padding:14px 16px;margin:10px 0}
+.essay summary{cursor:pointer;font-size:13px;font-weight:500;color:var(--amber-600)}
+.essay pre{background:#FFFFFF;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:13px;overflow-x:auto;margin:8px 0;white-space:pre}
+body.wrongonly .q:not(.wrong){display:none}
+body.wrongonly .learn,body.wrongonly .exa,body.wrongonly .essay,body.wrongonly .qz-head{display:none}
+body.wrongonly .card h2,body.wrongonly .card .sub{opacity:0.5}
+.banner{display:none;background:var(--red-50);border-radius:8px;padding:8px 14px;font-size:12px;color:var(--red-600);margin-bottom:16px}
+body.wrongonly .banner{display:block}
+</style>
+</head>
+<body>
+<h2 class="sr-only">408 计算机组成原理复习：数据运算、Cache、寻址、流水线与总线的考点讲解、例题与练习</h2>
+
+<header class="top">
+  <h1>408 复习站 · 计算机组成原理（45 分）</h1>
+  <span class="stat">已做 <span id="doneNum">0</span>/<span id="totalNum">0</span> · 错题 <b id="wrongNum">0</b> 道</span>
+  <span class="spacer"></span>
+  <a class="btn" href="index.html">返回总览</a>
+  <button class="btn" id="btnWrong">只看错题</button>
+  <button class="btn" id="btnReset">重置记录</button>
+</header>
+
+<nav class="side">
+  <div class="grp">本章内容</div>
+  <a href="#sec1">考点 1 · 数据表示与运算</a>
+  <a href="#sec2">考点 2 · 存储系统（Cache 与虚存）</a>
+  <a href="#sec3">考点 3 · 指令系统与寻址</a>
+  <a href="#sec4">考点 4 · CPU 与指令流水线</a>
+  <a href="#sec5">考点 5 · 总线与 I/O</a>
+  <a href="#sec6">综合大题（Cache 地址划分）</a>
+</nav>
+
+<main>
+<div class="banner" id="banner"></div>
+
+<section class="card" id="sec1">
+  <h2>考点 1 · 数据表示与运算</h2>
+  <div class="sub">补码范围、溢出判断、IEEE 754 三件套</div>
+
+  <div class="learn">
+    <p><b>补码</b>：n 位补码表示范围 <code>[−2<sup>n−1</sup>, 2<sup>n−1</sup>−1]</code>（比原码/反码多表示一个最小负数）。补码加减统一为加法，符号位参与运算。</p>
+    <p><b>溢出判断</b>：双符号位 00 正、11 负；结果符号位为 <b>01 → 正溢</b>，<b>10 → 负溢</b>。也可用"最高数值位进位 ⊕ 符号位进位 = 1 则溢出"。</p>
+    <p><b>IEEE 754 单精度</b>：1 位符号 + 8 位阶码（偏置 127）+ 23 位尾数（隐含最高位 1）。真值 = (−1)<sup>s</sup> × 1.M × 2<sup>E−127</sup>。</p>
+    <p><b>类型转换</b>：int（32 位）→ float（尾数有效位 24 含隐含 1）可能<b>损失精度</b>；float → int 截断小数。</p>
+    <p><b>移码</b>：常用于阶码，便于直观比较大小与对阶。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · IEEE 754 编码推演</span>
+    <div class="stem">将十进制数 178.125 表示为 IEEE 754 单精度浮点数（用二进制写出）。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>① 整数部分: 178 = 10110010B
+   小数部分: 0.125 = 0.001B
+   → 178.125 = 10110010.001B
+② 规格化: 1.0110010001 × 2⁷
+③ 符号位 s = 0
+④ 阶码 = 7 + 127 = 134 = 10000110B
+⑤ 尾数 = 0110010001 后补 0 至 23 位
+
+结果: 0 10000110 01100100010000000000000</pre>
+      <p class="tip"><b>自查：</b>把编码按 1.M×2^(E−127) 反算回去应得原数。0.125 = 1/8 是好记的小数位样例：0.001。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec1"></span></div>
+  <div id="qz-sec1"></div>
+</section>
+
+<section class="card" id="sec2">
+  <h2>考点 2 · 存储系统（Cache 与虚存）</h2>
+  <div class="sub">大题最稳定的出题点：映射 + 命中率 + 地址划分</div>
+
+  <div class="learn">
+    <p><b>三种映射</b>：直接映射——主存块号 mod Cache 行数，硬件简单、冲突率高；全相联——任意放，命中率高、比较电路贵；组相联——折中，主存块号 mod 组数定组，组内任意放。</p>
+    <p><b>平均访问时间</b>：顺序访问式 EAT = h×t_c + (1−h)×(t_c + t_m)；并行访问式 EAT = h×t_c + (1−h)×t_m——看清题目约定用哪种。</p>
+    <p><b>写策略</b>：全写法（write-through，同时写主存，简单但访存多）；回写法（write-back，只写 Cache，用脏位标记，换出时才写回）。</p>
+    <p><b>虚存</b>：虚拟地址 → 页表 → 物理地址；TLB 命中则省一次访存查页表；TLB、Cache、页表的三级配合是综合大题背景。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 直接映射定位推演</span>
+    <div class="stem">主存按 16B 分块，Cache 有 8 行（直接映射）。主存地址 0x1234 所访问的主存块应放入 Cache 的哪一行？标记（Tag）是多少？</div>
+    <details><summary>展开完整推演</summary>
+      <pre>主存块号 = 0x1234 / 16 = 0x123 = 291
+Cache 行号 = 291 mod 8 = 3（291 = 36×8 + 3）
+标记 Tag = 291 / 8（取整）= 36
+
+访问时：用地址低 4 位找块内字节，
+中间 3 位找行，高位与 Tag 比较。</pre>
+      <p class="tip"><b>答：</b>放入第 3 行，Tag = 36。直接映射所有题都是"块号 mod 行数 + Tag = 块号 div 行数"两步。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec2"></span></div>
+  <div id="qz-sec2"></div>
+</section>
+
+<section class="card" id="sec3">
+  <h2>考点 3 · 指令系统与寻址方式</h2>
+  <div class="sub">扩展操作码 + 各寻址方式"为谁服务"</div>
+
+  <div class="learn">
+    <p><b>扩展操作码</b>：短操作码留出一种编码做扩展前缀，逐级加长。总原则：每种长度留一个"逃生口"。</p>
+    <p><b>寻址方式速记</b>：立即——操作数在指令中，最快；直接——EA=A，访存 1 次；间接——EA=(A)，访存 2 次起；寄存器——不访存；<b>基址——基址寄存器由 OS 管理，面向系统（重定位）</b>；<b>变址——变址寄存器由用户改，面向数组/循环</b>；相对——EA=(PC)+A，支持程序整体浮动。</p>
+    <p><b>RISC 特征</b>：指令定长、种类少，只有 Load/Store 访存，大量通用寄存器，组合逻辑（硬布线）控制器，便于流水线。CISC 反之，多用微程序控制。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 扩展操作码设计推演</span>
+    <div class="stem">指令字长 16 位，地址码每个 4 位。需设计：15 条三地址、15 条二地址、15 条一地址、16 条零地址指令。给出扩展方案。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>三地址: 操作码 4 位，0000~1110 共 15 条
+        留 1111 作扩展前缀
+二地址: 操作码 8 位，1111 0000 ~ 1111 1110
+        共 15 条，留 1111 1111
+一地址: 操作码 12 位，
+        1111 1111 0000 ~ 1111 1111 1110
+        共 15 条，留 1111 1111 1111
+零地址: 操作码 16 位，用剩余编码
+        1111 1111 1111 0000~1111 共 16 条</pre>
+      <p class="tip"><b>核心：</b>每级都留一个前缀给下一级；检验时数一数各级条数是否恰好用完、不越界。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec3"></span></div>
+  <div id="qz-sec3"></div>
+</section>
+
+<section class="card" id="sec4">
+  <h2>考点 4 · CPU 与指令流水线</h2>
+  <div class="sub">流水线公式题是送分题，别丢</div>
+
+  <div class="learn">
+    <p><b>控制器</b>：硬布线——组合逻辑，速度快，RISC 常用；微程序——<b>一条机器指令对应一段微程序</b>（若干微指令），灵活、CISC 常用。</p>
+    <p><b>流水线执行时间</b> = (k + n − 1)×Δt（k 段流水线、n 条指令）；最大吞吐率 = 1/Δt；加速比 = n×k×Δt / ((k+n−1)Δt)。</p>
+    <p><b>三种冒险</b>：结构冒险——资源冲突（加缓冲寄存器/资源重复）；<b>数据冒险——RAW（后一条要用前一条结果）</b>，解决：转发/旁路、停顿；控制冒险——转移指令，解决：分支预测、延迟槽。</p>
+    <p><b>中断隐指令</b>（硬件自动完成）：关中断、保存断点、引出中断服务程序入口。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 流水线时间与加速比</span>
+    <div class="stem">5 段流水线，每段耗时 1ns。执行 12 条指令共需多少时间？相对串行执行的加速比是多少？</div>
+    <details><summary>展开完整推演</summary>
+      <pre>流水线: (k + n − 1) × Δt
+      = (5 + 12 − 1) × 1ns = 16ns
+串行:   12 × 5 × 1ns = 60ns
+加速比 = 60 / 16 = 3.75</pre>
+      <p class="tip"><b>记忆：</b>第一条指令走完全程 k×Δt，之后每个 Δt 出一条——总共 (k+n−1)Δt。n→∞ 时加速比趋近 k=5。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec4"></span></div>
+  <div id="qz-sec4"></div>
+</section>
+
+<section class="card" id="sec5">
+  <h2>考点 5 · 总线与 I/O</h2>
+  <div class="sub">带宽计算 + 仲裁方式对比</div>
+
+  <div class="learn">
+    <p><b>总线带宽</b> = 总线工作频率 × 每周期传输的字节数（数据线位数/8）。地址线 n 根 → 寻址空间 2<sup>n</sup> 个单元。</p>
+    <p><b>集中式仲裁</b>：链式查询——优先级固定、离控制器近者高、对故障敏感、只需 1 根总线请求线；计数器定时查询——优先级可改；独立请求——速度快、线最多。</p>
+    <p><b>异步定时</b>：不互锁最快最不可靠，<b>全互锁最可靠最慢</b>，半互锁居中。</p>
+    <p><b>DMA 与 CPU 争用主存</b>：停止 CPU 访问、<b>周期挪用（窃取，最常用）</b>、交替访问。</p>
+    <p><b>总线复用</b>：地址线与数据线分时复用，减少芯片引脚。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 总线带宽计算</span>
+    <div class="stem">某同步总线频率 133MHz，数据线 32 位，每个时钟周期传送一次数据。求总线带宽。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>每周期传输 = 32 位 = 4B
+带宽 = 133M 次/秒 × 4B/次 = 532 MB/s</pre>
+      <p class="tip"><b>变体：</b>若每周期传 2 次（DDR），带宽翻倍；数据线 64 位也翻倍。带宽题就是把这两个倍数乘进去。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec5"></span></div>
+  <div id="qz-sec5"></div>
+</section>
+
+<section class="card" id="sec6">
+  <h2>综合大题（Cache 地址划分）</h2>
+  <div class="sub">限时 15 分钟 · 组相联地址划分是历年真题的原型题</div>
+
+  <div class="essay">
+    <b>题目：</b>某计算机主存地址 24 位，按字节编址。Cache 数据区 8KB，块大小 64B，采用 2 路组相联。① 给出主存地址的划分（标记 / 组号 / 块内偏移各多少位）；② 对主存地址 0xABCDEF，写出其组号与标记的十六进制值。
+  </div>
+  <div class="essay">
+    <details><summary>展开参考答案与推演</summary>
+      <pre>① 划分:
+   块内偏移 = log₂64 = 6 位
+   行数 = 8KB / 64B = 128 行 → 组数 = 128/2 = 64
+   组号 = log₂64 = 6 位
+   标记 = 24 − 6 − 6 = 12 位
+
+② 0xABCDEF = 1010 1011 1100 1101 1110 1111
+   块内偏移 = 低 6 位 = 10 1111 = 0x2F
+   组号   = 中间 6 位 = 110111 = 55 = 0x37
+   标记   = 高 12 位 = 1010 1011 1100 = 0xABC
+
+验算: 块号 = 0xABCDEF / 64 = 175927
+      组号 = 175927 mod 64 = 55 ✓</pre>
+      <p><b>评分点自查：</b>① 行数→组数的除法（2 路）；② 三段位数之和 = 24；③ 从低位往高位切分地址（偏移永远在最低位）；④ 用 mod 64 验算组号。</p>
+    </details>
+  </div>
+</section>
+
+</main>
+
+<script>
+const QS = [
+  {id:"c1q1", sec:"sec1", diff:"★", stem:"8 位补码能表示的整数范围是：",
+   opts:["−128 ~ 127","−127 ~ 127","−128 ~ 128","−127 ~ 128"], ans:0,
+   exp:"补码范围 [−2⁷, 2⁷−1] = [−128, 127]。最小负数 10000000 没有对应的原码——这是补码多表示一个数的原因。"},
+  {id:"c1q2", sec:"sec1", diff:"★★", stem:"已知 [x]补 = 1011（4 位），则真值 x 为：",
+   opts:["−5","−3","−11","5"], ans:0,
+   exp:"符号位 1 为负，数值 = 取反加一还原：1011 → 0100+1 = 0101 = 5，故 x = −5。验证：−5 的 4 位补码恰为 1011。"},
+  {id:"c1q3", sec:"sec1", diff:"★★", stem:"采用双符号位判断溢出，若运算结果两个符号位为 01，表示：",
+   opts:["正溢出","负溢出","结果正确","无法判断"], ans:0,
+   exp:"00 正数未溢，11 负数未溢；01 正溢，10 负溢。记忆：'1 出头'（第一位为 0 第二位 1）说明数值冲进了符号区。"},
+  {id:"c1q4", sec:"sec1", diff:"★★", stem:"关于 C 语言中 int 与 float 的转换，正确的说法是：",
+   opts:["int（32 位）转 float 可能损失精度","float 转 int 不会损失信息","int 与 float 相互转换都是精确的","float 的表示范围比 int 小"], ans:0,
+   exp:"float 尾数有效位 24（含隐含 1），装不下 int 的 32 位有效数字，大整数转 float 丢低位；float→int 直接截断小数且可能溢出。float 的'表示范围'远大于 int，但连续性差。"},
+  {id:"c1q5", sec:"sec1", diff:"★★", stem:"浮点数阶码采用移码表示的主要目的是：",
+   opts:["便于比较阶码大小、简化对阶操作","增大尾数范围","消除浮点运算误差","便于十进制显示"], ans:0,
+   exp:"移码 = 真值 + 偏置，编码大小与真值大小顺序一致，可直接按无符号数比较——对阶时快速判断谁大谁小。"},
+
+  {id:"c2q1", sec:"sec2", diff:"★", stem:"2 路组相联 Cache，主存块映射到哪一组由什么决定？",
+   opts:["主存块号 mod 组数","主存块号 mod 行数","主存块号 mod 2","由替换算法决定"], ans:0,
+   exp:"组相联：组间直接映射（块号 mod 组数），组内全相联（放哪一行由命中/替换决定）。'路数'只影响组内，不影响组间。"},
+  {id:"c2q2", sec:"sec2", diff:"★★", stem:"三种映射方式中，命中率最高但硬件代价最大的是：",
+   opts:["全相联映射","直接映射","2 路组相联","随机映射"], ans:0,
+   exp:"全相联任意放置、无冲突失效，但需同时与所有行的 Tag 比较（相联存储器），电路最贵。直接映射最便宜冲突最多。组相联是折中——现代 CPU 用 8~16 路。"},
+  {id:"c2q3", sec:"sec2", diff:"★★", stem:"Cache 存取 20ns，主存存取 200ns，命中率 95%（未命中先查 Cache 再访主存）。平均访问时间为：",
+   opts:["30ns","20ns","29ns","220ns"], ans:0,
+   exp:"EAT = 0.95×20 + 0.05×(20+200) = 19 + 11 = 30ns。注意'顺序访问式'未命中要把查 Cache 的 20ns 也算进去。"},
+  {id:"c2q4", sec:"sec2", diff:"★★", stem:"与全写法（write-through）相比，回写法（write-back）的特点是：",
+   opts:["减少访存次数，但需要脏位标记、换出时才写回主存","每次写操作都立即写主存","不需要任何标志位","Cache 与主存永远一致"], ans:0,
+   exp:"回写法把多次写积累在 Cache 里，靠脏位（modified bit）记录'是否改过'，行被替换时才写回。代价是一致性管理复杂、多一位开销。"},
+  {id:"c2q5", sec:"sec2", diff:"★", stem:"虚存系统中，TLB 命中时：",
+   opts:["可省去访问主存中页表的过程","页表查询仍必须进行","必须进行页面置换","直接访问硬盘"], ans:0,
+   exp:"TLB（快表）是页表项的高速缓存，命中即得物理帧号，省一次访存。TLB 未命中才去主存查页表（有的系统还会把该项装入 TLB）。"},
+
+  {id:"c3q1", sec:"sec3", diff:"★★", stem:"相对寻址的有效地址为 EA = (PC) + A，其主要作用是：",
+   opts:["支持程序在内存中整体浮动（ relocation ）","加快指令执行速度","扩大操作数范围","便于处理数组"], ans:0,
+   exp:"操作数位置相对当前指令偏移，程序搬到哪都成立——这是程序浮动的关键，也常用于转移指令。"},
+  {id:"c3q2", sec:"sec3", diff:"★★", stem:"最适合用于处理数组问题和循环程序的寻址方式是：",
+   opts:["变址寻址","立即寻址","直接寻址","基址寻址"], ans:0,
+   exp:"变址：形式地址 A 是数组首址（不变），变址寄存器 IX 由用户修改（0,1,2,…），EA = A + (IX)，循环中只需递增 IX。基址面向系统重定位，别混。"},
+  {id:"c3q3", sec:"sec3", diff:"★★", stem:"基址寻址中，基址寄存器的内容通常由谁管理？",
+   opts:["操作系统","用户程序","编译器随机设置","硬件自动清零"], ans:0,
+   exp:"基址寄存器面向操作系统，用于程序重定位与存储保护，用户不能修改；变址寄存器面向用户。'系统管基址、用户管变址'是标准考法。"},
+  {id:"c3q4", sec:"sec3", diff:"★", stem:"执行速度最快的寻址方式是：",
+   opts:["立即寻址","直接寻址","间接寻址","寄存器间接寻址"], ans:0,
+   exp:"立即寻址的操作数就在指令里，取指令时一并取出，不需要再访存。间接寻址最慢（至少多访存一次）。"},
+  {id:"c3q5", sec:"sec3", diff:"★★", stem:"下列属于 RISC 机器特征的是：",
+   opts:["指令长度固定、只有 Load/Store 指令访存、组合逻辑控制器","指令种类丰富、多用微程序控制","指令长度可变、寻址方式复杂","强调用硬件实现复杂指令"], ans:0,
+   exp:"RISC 四件套：定长指令、Load/Store 结构、大量寄存器、硬布线控制——全部为了流水线效率。B/C/D 都是 CISC 特征。"},
+
+  {id:"c4q1", sec:"sec4", diff:"★★", stem:"流水线中，后一条指令需要用到前一条指令的运算结果（RAW）属于：",
+   opts:["数据冒险","结构冒险","控制冒险","中断冒险"], ans:0,
+   exp:"RAW（写后读）是最典型的数据冒险。结构冒险是硬件资源冲突；控制冒险由转移指令引起。三类冒险的归类是选择题高频点。"},
+  {id:"c4q2", sec:"sec4", diff:"★★", stem:"转发（旁路，forwarding）技术主要用来解决：",
+   opts:["部分数据冒险，把上一条指令的结果直接送到需要它的功能部件","结构冒险","控制冒险","所有类型的数据冒险"], ans:0,
+   exp:"转发解决'结果还没写回但下游已要用'的大多数 RAW；load-use（取数型 RAW）转发也救不了，必须停顿一拍——'部分'二字是考点。"},
+  {id:"c4q3", sec:"sec4", diff:"★★", stem:"微程序控制器中，一条机器指令对应：",
+   opts:["一段微程序","一个微指令","一个机器周期","一条宏指令"], ans:0,
+   exp:"机器指令 → 微程序（解释执行该指令的全部微命令序列）→ 由若干微指令组成，每条微指令发出一组微命令。层次：微命令 < 微指令 < 微程序 < 机器指令。"},
+  {id:"c4q4", sec:"sec4", diff:"★", stem:"k 段流水线（每段时间 Δt）连续运行时，最大吞吐率为：",
+   opts:["1/Δt","k/Δt","1/(kΔt)","k×Δt"], ans:0,
+   exp:"满负荷时每个 Δt 流出一条指令，最大吞吐率 1/Δt。实际吞吐率因填充排空阶段低于该值。"},
+  {id:"c4q5", sec:"sec4", diff:"★★", stem:"CPU 响应中断后由硬件自动完成的操作（中断隐指令）包括：",
+   opts:["关中断、保存断点、引出中断服务程序","执行中断服务程序的全部内容","恢复现场并返回","向设备发出中断请求"], ans:0,
+   exp:"隐指令 = 硬件自动三件事：关中断（防嵌套打断保存过程）、存断点（PC 压栈）、取服务程序入口。保护现场、恢复现场属于服务程序（软件）干的事——这是最经典混淆点。"},
+
+  {id:"c5q1", sec:"sec5", diff:"★", stem:"某机地址总线 20 根，按字节编址，可寻址空间为：",
+   opts:["1MB","2MB","512KB","1GB"], ans:0,
+   exp:"2²⁰ = 1M 个单元，按字节编址即 1MB。地址线决定寻址范围，数据线决定一次传多少位——两者经常故意混淆出题。"},
+  {id:"c5q2", sec:"sec5", diff:"★★", stem:"链式查询方式的总线仲裁，其特点是：",
+   opts:["优先级固定，离总线控制器近的设备优先级高，对电路故障敏感","优先级可以动态改变","所需控制线最多","各设备优先级相等"], ans:0,
+   exp:"总线授权信号 BG 串行穿过各设备——近者先拿到，BG 链上一处断，后面全瘫痪。独立请求线最多但最快，计数器查询优先级可循环。"},
+  {id:"c5q3", sec:"sec5", diff:"★", stem:"异步通信的三种定时方式中，最可靠但速度最慢的是：",
+   opts:["全互锁","不互锁","半互锁","同步方式"], ans:0,
+   exp:"全互锁：请求与回答互相确认后双方才撤销信号，最稳但等待最多。不互锁发完就撤、最快最险。同步方式不属于异步通信三兄弟。"},
+  {id:"c5q4", sec:"sec5", diff:"★★", stem:"DMA 与 CPU 争用主存的三种方式中，最常用、兼顾双方效率的是：",
+   opts:["周期挪用（周期窃取）","停止 CPU 访问主存","交替访问主存","全部由 CPU 代理"], ans:0,
+   exp:"周期挪用：DMA 需要时'偷'一个存取周期，CPU 大部分时间照常访存。停止 CPU 最简单但浪费 CPU；交替访问硬件最复杂。"},
+  {id:"c5q5", sec:"sec5", diff:"★", stem:"总线复用（如地址线与数据线分时复用）的主要好处是：",
+   opts:["减少芯片引脚数量","提高总线带宽","增加可靠性","简化总线仲裁"], ans:0,
+   exp:"分时复用同一组线传地址和数据，引脚省一半，代价是需要时序配合、速度略降。'复用省引脚'是标准答案。"}
+];
+
+const KEY = "408-coa-v1";
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e) { state = {}; }
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+
+function renderQ(q, no){
+  const el = document.createElement("div");
+  el.className = "q";
+  el.id = "q-" + q.id;
+  const st = state[q.id];
+  el.innerHTML =
+    '<div class="meta">练习 ' + no + ' · 难度 <span class="diff">' + q.diff + "</span></div>" +
+    '<div class="stem">' + q.stem + "</div>" +
+    q.opts.map(function(o, i){ return '<button class="opt" data-i="' + i + '">' + String.fromCharCode(65+i) + ". " + o + "</button>"; }).join("") +
+    '<div class="exp"><b>解析：</b>' + q.exp + "</div>";
+  if (st !== undefined) {
+    el.classList.add("done");
+    if (!st.correct) el.classList.add("wrong");
+    el.querySelectorAll(".opt").forEach(function(b){
+      const i = parseInt(b.dataset.i);
+      if (i === q.ans) b.classList.add("correct");
+      else if (i === st.sel) b.classList.add("wrong");
+    });
+  }
+  el.addEventListener("click", function(ev){
+    const b = ev.target.closest(".opt");
+    if (!b || el.classList.contains("done")) return;
+    const sel = parseInt(b.dataset.i);
+    const correct = sel === q.ans;
+    state[q.id] = { sel: sel, correct: correct };
+    save();
+    el.classList.add("done");
+    if (!correct) el.classList.add("wrong");
+    el.querySelectorAll(".opt").forEach(function(x){
+      const i = parseInt(x.dataset.i);
+      x.disabled = true;
+      if (i === q.ans) x.classList.add("correct");
+      else if (i === sel) x.classList.add("wrong");
+    });
+    updateStats();
+  });
+  return el;
+}
+
+const secs = [];
+QS.forEach(function(q){ if (secs.indexOf(q.sec) < 0) secs.push(q.sec); });
+secs.forEach(function(sec){
+  const box = document.getElementById("qz-" + sec);
+  const mine = QS.filter(function(q){ return q.sec === sec; });
+  mine.forEach(function(q, i){ box.appendChild(renderQ(q, i + 1)); });
+});
+document.getElementById("totalNum").textContent = QS.length;
+
+function updateStats(){
+  const ids = Object.keys(state);
+  const wrong = ids.filter(function(k){ return !state[k].correct; });
+  document.getElementById("doneNum").textContent = ids.length;
+  document.getElementById("wrongNum").textContent = wrong.length;
+  secs.forEach(function(sec){
+    const el = document.getElementById("num-" + sec);
+    if (!el) return;
+    const mine = QS.filter(function(q){ return q.sec === sec; });
+    const done = mine.filter(function(q){ return state[q.id] !== undefined; }).length;
+    const w = mine.filter(function(q){ return state[q.id] && !state[q.id].correct; }).length;
+    el.textContent = "已做 " + done + "/" + mine.length + (w ? " · 错 " + w : "");
+  });
+  QS.forEach(function(q){
+    const cell = document.getElementById("q-" + q.id);
+    if (cell) cell.classList.toggle("wrong", state[q.id] !== undefined && !state[q.id].correct);
+  });
+  document.getElementById("banner").textContent =
+    "错题模式 · 共 " + wrong.length + " 道错题。重做一遍做对的题会自动移出错题本。";
+}
+updateStats();
+
+const btnW = document.getElementById("btnWrong");
+btnW.addEventListener("click", function(){
+  document.body.classList.toggle("wrongonly");
+  btnW.classList.toggle("active", document.body.classList.contains("wrongonly"));
+});
+document.getElementById("btnReset").addEventListener("click", function(){
+  if (confirm("确定清空本课程所有做题记录吗？")) {
+    localStorage.removeItem(KEY);
+    location.reload();
+  }
+});
+</script>
+</body>
+</html>

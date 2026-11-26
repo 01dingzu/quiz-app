@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 长线练习计划 · 56 周</title>
+<style>
+:root{
+  --bg:#F6F5F1; --card:#FFFFFF; --border:rgba(0,0,0,0.14); --border2:rgba(0,0,0,0.26);
+  --text:#2C2C2A; --muted:#6B6A65; --faint:#9A9992;
+  --purple-50:#EEEDFE; --purple-600:#534AB7; --purple-800:#3C3489;
+  --teal-50:#E1F5EE; --teal-600:#0F6E56;
+  --red-50:#FCEBEB; --red-600:#A32D2D;
+  --green-50:#EAF3DE; --green-600:#3B6D11;
+  --amber-50:#FAEEDA; --amber-600:#854F0B;
+  --blue-50:#E6F1FB; --blue-600:#185FA5;
+  --gray-50:#F1EFE8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.7}
+main{max-width:920px;margin:0 auto;padding:36px 26px 90px}
+h1{font-size:20px;font-weight:500;margin-bottom:6px}
+.sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.pill{font-size:12px;padding:4px 11px;border-radius:999px;background:var(--gray-50);color:var(--muted)}
+.pill b{color:var(--text);font-weight:500}
+.prog{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:18px}
+.prog-top{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:9px}
+.prog-top b{font-size:17px;font-weight:500;color:var(--purple-800)}
+.bar{height:8px;background:rgba(0,0,0,0.07);border-radius:4px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--purple-600);border-radius:4px;transition:width .25s}
+.rounds{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+@media(max-width:700px){.rounds{grid-template-columns:repeat(2,1fr)}}
+.round{font-size:12px;color:var(--muted)}
+.round .rb{height:5px;background:rgba(0,0,0,0.07);border-radius:3px;overflow:hidden;margin:5px 0 3px}
+.round .rb i{display:block;height:100%;background:var(--blue-600)}
+.round .rn{font-size:11px;color:var(--faint)}
+.note{background:var(--purple-50);border-radius:12px;padding:16px 20px;margin-bottom:18px;font-size:13px}
+.note h3{font-size:13px;font-weight:500;color:var(--purple-800);margin-bottom:7px}
+.note p{margin-bottom:5px}
+.note p:last-child{margin-bottom:0}
+.note b{color:var(--purple-800)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px;font-size:12px}
+.btn{font:inherit;font-size:12px;padding:6px 13px;border:1px solid var(--border2);border-radius:8px;background:var(--card);color:var(--text);cursor:pointer}
+.btn:hover{border-color:var(--purple-600);color:var(--purple-800)}
+.btn.on{background:var(--purple-50);border-color:var(--purple-600);color:var(--purple-800)}
+.toolbar .hint{color:var(--faint)}
+.block{margin-bottom:26px}
+.block-h{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border2)}
+.block-h .bn{font-size:13px;font-weight:500;color:var(--purple-800)}
+.block-h .bd{font-size:12px;color:var(--faint)}
+.block-h .bt{font-size:12px;color:var(--muted);margin-left:auto}
+.weeks{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:760px){.weeks{grid-template-columns:1fr}}
+.wk{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 15px;display:flex;gap:12px;break-inside:avoid}
+.wk.review{background:var(--teal-50);border-color:rgba(15,110,86,0.22)}
+.wk.check{background:var(--amber-50);border-color:rgba(133,79,11,0.24)}
+.wk.done{opacity:.52}
+.wk .chk{flex:0 0 auto;margin-top:3px;width:17px;height:17px;cursor:pointer;accent-color:var(--purple-600)}
+.wk .body{flex:1;min-width:0}
+.wk .wh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+.wk .wn{font-size:15px;font-weight:500;color:var(--purple-800)}
+.wk.review .wn{color:var(--teal-600)}
+.wk.check .wn{color:var(--amber-600)}
+.wk .wd{font-size:11px;color:var(--faint)}
+.tag{font-size:10px;padding:1px 7px;border-radius:999px;background:var(--gray-50);color:var(--muted)}
+.tag.r2{background:var(--blue-50);color:var(--blue-600)}
+.tag.r3{background:var(--green-50);color:var(--green-600)}
+.tag.r4{background:var(--red-50);color:var(--red-600)}
+.tag.rv{background:rgba(15,110,86,0.13);color:var(--teal-600)}
+.tag.cp{background:rgba(133,79,11,0.15);color:var(--amber-600)}
+.wk .t{font-size:13px;font-weight:500;margin-bottom:5px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px}
+.chip{font-size:11px;padding:2px 8px;border-radius:6px;text-decoration:none;border:1px solid var(--border)}
+a.chip{background:var(--blue-50);border-color:rgba(24,95,165,0.22);color:var(--blue-600)}
+a.chip:hover{border-color:var(--blue-600)}
+a.chip.local{background:var(--green-50);border-color:rgba(59,109,17,0.22);color:var(--green-600)}
+a.chip.local:hover{border-color:var(--green-600)}
+span.chip{background:var(--gray-50);color:var(--muted)}
+.wk .q{font-size:12px;color:var(--text);margin-bottom:3px}
+.wk .f{font-size:12px;color:var(--muted)}
+.wk .f b{font-weight:500;color:var(--purple-800)}
+.wk.review .f b{color:var(--teal-600)}
+.wk.check .f b{color:var(--amber-600)}
+.foot{margin-top:30px;padding-top:16px;border-top:1px solid var(--border2);font-size:12px;color:var(--faint)}
+.rhythm{background:var(--blue-50);border-radius:12px;padding:16px 20px;margin-bottom:18px;font-size:12px}
+.rhythm h3{font-size:13px;font-weight:500;color:var(--blue-600);margin-bottom:9px}
+.days{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px}
+@media(max-width:700px){.days{grid-template-columns:1fr}}
+.days div{color:var(--muted)}
+.days b{color:var(--text);font-weight:500;display:inline-block;min-width:44px}
+.foot a{color:var(--purple-600);text-decoration:none}
+@media print{
+  body{background:#fff}
+  .toolbar{display:none}
+  .wk.done{opacity:1}
+  .block{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">408 长线练习计划：56 周分四轮递进，每 4 周一个回炉周，可勾选记录进度</h2>
+<main>
+  <h1>408 长线练习计划</h1>
+  <div class="sub">计算机学科专业基础综合 · 2028 考研（预计 2027 年 12 月下旬初试，以官方公告为准）· 轻量长线档</div>
+
+  <div class="meta">
+    <span class="pill">周期 <b>56 周</b> · 2026/11/23 起</span>
+    <span class="pill">投入 <b>每天约 1h</b> · 周有效 6h</span>
+    <span class="pill">资产 <b>33 张考点卡 / 192 题 / 45 例题 / 115 题分卷</b></span>
+    <span class="pill">节奏 <b>3 周推进 + 1 周回炉</b></span>
+  </div>
+
+  <div class="prog">
+    <div class="prog-top"><span>总进度</span><span><b id="pct">0%</b> &nbsp;<span id="cnt" style="color:var(--muted)">0 / 56 周</span></span></div>
+    <div class="bar"><span id="pbar" style="width:0%"></span></div>
+    <div class="rounds" id="rounds"></div>
+  </div>
+
+  <div class="note">
+    <h3>执行规则（比计划本身更重要）</h3>
+    <p><b>不设闹钟，不追进度。</b>每天 1h 是参考量不是考勤；某周没做就空着，下周接着走，不用补、不用往前赶。这个看板只做记录，不提醒、不催促、不标红。</p>
+    <p><b>回炉周不能跳。</b>长线最大的敌人不是题做得少，是前 3 周刷完第 5 周全忘。每 4 周那一张回炉周不进新卡，只清错题与二刷——推进周可以减量，回炉周不能省。</p>
+    <p><b>每周固定三件套：</b>考点精读（讲解 + 例题推演）→ 按考点组题（判分后逐题看解析）→ 错题本到期题二刷。周日留白，不安排任务。</p>
+    <p><b>错题不手抄、不另建表。</b>刷题程序的错题本 + 间隔复习会自动把到期题推回来，回炉周照着清就行。连续两轮做对才归档。</p>
+    <p><b>真题不入库。</b>本计划里的题都是自编仿真题；真题请走官方渠道与正版教材（王道、天勤等），放在第 3 轮之后当尺子用。</p>
+    <p><b>单线轻量档。</b>本计划按 408 一条线排；若某段时间另有主线任务占时间，推进周自然减量即可，回炉周照常保留，不必补进度。</p>
+  </div>
+
+  <div class="rhythm">
+    <h3>一周 6 小时怎么放（参考摆放，不是考勤）</h3>
+    <div class="days">
+      <div><b>周一</b>考点精读：讲解 + 例题推演，先不动笔做题</div>
+      <div><b>周二</b>按考点组题，做一半题量，判分后逐题看解析</div>
+      <div><b>周三</b>做完另一半，给每道错题标错因（概念 / 计算 / 审题）</div>
+      <div><b>周四</b>错题本到期题二刷，交给间隔复习安排</div>
+      <div><b>周五</b>机动：补进度，或重做本周最卡的一道例题</div>
+      <div><b>周六</b>15 分钟周复盘 + 手写一张本周卡片地图</div>
+      <div><b>周日</b>留白，不安排任务</div>
+      <div><b>回炉周</b>换成「清错题 + 只看错题二刷」，不进新卡</div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn" id="filterBtn" type="button">只看未完成</button>
+    <button class="btn" id="resetBtn" type="button">重置进度</button>
+    <span class="hint">勾选状态保存在本浏览器（localStorage），换设备或清缓存会清零</span>
+  </div>
+
+  <div id="blocks"></div>
+
+  <div class="foot">
+    考点卡链接指向线上刷题程序 <a href="https://01dingzu.github.io/quiz-app/#/learn" target="_blank">quiz-app</a>；四科分卷为本目录本地文件。计算题卡住时查 <a href="formulas.html">408 公式速查</a>（W54 默写周会用到）。
+    <a href="index.html">← 返回 408 复习站总览</a>
+  </div>
+</main>
+
+<script>
+var APP = 'https://01dingzu.github.io/quiz-app/#/learn/'
+var C = {
+  'lsn-ds-overview':['数据结构总纲','数据结构',9],
+  'lsn-ds-list':['线性表、栈与队列','数据结构',5],
+  'lsn-ds-tree':['树与二叉树','数据结构',5],
+  'lsn-ds-tree2':['树的深水区·线索/森林','数据结构',8],
+  'lsn-ds-graph':['图','数据结构',5],
+  'lsn-ds-graph2':['图的深水区·遍历/关键路径','数据结构',8],
+  'lsn-ds-search':['查找','数据结构',5],
+  'lsn-ds-sort':['排序','数据结构',5],
+  'lsn-os-overview':['操作系统总纲','操作系统',9],
+  'lsn-os-proc':['进程与线程','操作系统',4],
+  'lsn-os-sched':['处理机调度','操作系统',4],
+  'lsn-os-pv':['信号量与 PV 基础','操作系统',4],
+  'lsn-os-prodcons':['生产者-消费者','操作系统',4],
+  'lsn-os-rw':['读者-写者','操作系统',4],
+  'lsn-os-phil':['哲学家进餐与死锁预防','操作系统',4],
+  'lsn-os-banker':['死锁与银行家算法','操作系统',4],
+  'lsn-os-mem':['内存管理与页面置换','操作系统',4],
+  'lsn-os-file':['文件管理','操作系统',4],
+  'lsn-os-io':['I/O 管理','操作系统',4],
+  'lsn-coa-overview':['组原总纲·一条指令的一生','组原',9],
+  'lsn-coa-arch':['主机骨架与指令执行','组原',9],
+  'lsn-coa-num':['数据表示与运算','组原',5],
+  'lsn-coa-cache':['存储系统 Cache 与虚存','组原',5],
+  'lsn-coa-addr':['指令系统与寻址方式','组原',5],
+  'lsn-coa-pipe':['CPU 与指令流水线','组原',5],
+  'lsn-coa-bus':['总线与 I/O','组原',5],
+  'lsn-net-overview':['网络总纲·数据包旅程','网络',9],
+  'lsn-net-scale':['规模主线·地址/路由/广播','网络',16],
+  'lsn-net-link':['体系结构与数据链路层','网络',5],
+  'lsn-net-ip':['IP 地址与子网划分','网络',5],
+  'lsn-net-route':['路由协议','网络',5],
+  'lsn-net-tcp':['TCP','网络',5],
+  'lsn-net-app':['应用层','网络',5]
+}
+
+var PUSH = {
+  1:{t:'起步 · 数据结构总纲',c:['lsn-ds-overview'],q:'总纲 9 题取 5 + 2 道例题精读',f:'先建流程：熟悉按考点组题、错题本、每周固定时段'},
+  2:{t:'组原总纲',c:['lsn-coa-overview'],q:'总纲 9 题取 5 + 2 例题',f:'把「一条指令的一生」六站画成一条线'},
+  3:{t:'OS + 网络总纲',c:['lsn-os-overview','lsn-net-overview'],q:'各取 3 题 + 只读讲解',f:'不求做完，先把四科地图挂起来'},
+  5:{t:'线性表、栈与队列',c:['lsn-ds-list'],q:'5 题 + 2 例题',f:'出入栈序列合法性、算法设计三步套路'},
+  6:{t:'树与二叉树',c:['lsn-ds-tree'],q:'5 题 + 1 例题',f:'n₀=n₂+1、完全二叉树高度、AVL 四旋'},
+  7:{t:'树的深水区',c:['lsn-ds-tree2'],q:'8 题 + 2 例题',f:'ltag/rtag、左孩子右兄弟、WPL 两种算法'},
+  9:{t:'图',c:['lsn-ds-graph'],q:'5 题 + 1 例题',f:'Dijkstra 逐步推演、MST 选型、关键路径三不一定'},
+  10:{t:'图的深水区',c:['lsn-ds-graph2'],q:'8 题 + 2 例题',f:'ve/vl/e/l 四步、邻接表遍历序列唯一性'},
+  11:{t:'查找 + 排序',c:['lsn-ds-search','lsn-ds-sort'],q:'10 题 + 2 例题',f:'ASL 成功/失败分开算；稳定性四条线'},
+  13:{t:'主机骨架与指令执行',c:['lsn-coa-arch'],q:'9 题 + 2 例题',f:'六节拍微操作、MAR/MDR 归属 CPU'},
+  14:{t:'数据表示与运算',c:['lsn-coa-num'],q:'5 题 + 1 例题',f:'IEEE 754、校验三件套、大端与边界对齐'},
+  15:{t:'存储系统 Cache 与虚存',c:['lsn-coa-cache'],q:'5 题 + 2 例题',f:'三映射地址拆分、命中率敏感度、四要素取舍'},
+  17:{t:'指令系统与寻址方式',c:['lsn-coa-addr'],q:'5 题 + 1 例题',f:'九种寻址 EA 与访存次数表'},
+  18:{t:'CPU 与指令流水线',c:['lsn-coa-pipe'],q:'5 题 + 1 例题',f:'三类冒险、load-use 必阻塞、加速比公式'},
+  19:{t:'总线与 I/O',c:['lsn-coa-bus'],q:'5 题 + 1 例题',f:'查询/中断/DMA 三方式、中断响应时机'},
+  21:{t:'进程与线程 + 处理机调度',c:['lsn-os-proc','lsn-os-sched'],q:'8 题 + 2 例题',f:'状态转换六次、调度算法指标手算'},
+  22:{t:'信号量与 PV 操作基础',c:['lsn-os-pv'],q:'4 题 + 1 例题',f:'P/V 语义、信号量四代、互斥与同步的写法'},
+  23:{t:'生产者-消费者',c:['lsn-os-prodcons'],q:'4 题 + 2 例题',f:'三个信号量的顺序不能换，先画前驱图'},
+  25:{t:'读者-写者',c:['lsn-os-rw'],q:'4 题 + 1 例题',f:'读优先 / 写优先 / 公平三种变形'},
+  26:{t:'哲学家进餐 + 死锁与银行家',c:['lsn-os-phil','lsn-os-banker'],q:'8 题 + 2 例题',f:'死锁四必要条件、安全状态推演表'},
+  27:{t:'内存管理与页面置换',c:['lsn-os-mem'],q:'4 题 + 1 例题',f:'FIFO/LRU/Clock 手推、Belady 异常'},
+  29:{t:'文件管理 + I/O 管理',c:['lsn-os-file','lsn-os-io'],q:'8 题 + 2 例题',f:'索引分配、磁盘调度、SPOOLing'},
+  30:{t:'网络规模主线（大卡，做前半）',c:['lsn-net-scale'],q:'16 题分两周做，本周 8 题 + 1 例题',f:'地址不够用：子网划分 / CIDR 聚合 / 最长前缀匹配'},
+  31:{t:'网络规模主线（后半）',c:['lsn-net-scale'],q:'剩余 8 题 + 1 例题',f:'路由表太大与广播太多：AS 分工 / RIP-OSPF-BGP / VLAN'},
+  33:{t:'链路层 + IP 子网划分',c:['lsn-net-link','lsn-net-ip'],q:'10 题 + 2 例题',f:'滑动窗口、CRC、两域隔离；VLSM 先大后小'},
+  34:{t:'路由协议',c:['lsn-net-route'],q:'5 题 + 1 例题',f:'RIP/OSPF/BGP 对比与坏消息传得慢'},
+  35:{t:'TCP + 应用层',c:['lsn-net-tcp','lsn-net-app'],q:'10 题 + 3 例题',f:'拥塞控制四阶段、三次握手、DNS/HTTP'},
+  37:{t:'DS 综合大题',c:['lsn-ds-tree2','lsn-ds-graph2'],q:'ds.html「考场同款」限时 45 分钟',f:'算法设计三步：定结构 → 定遍历 → 补边界',l:[['ds.html','数据结构分卷']]},
+  38:{t:'组原综合大题',c:['lsn-coa-cache','lsn-coa-pipe'],q:'coa.html「考场同款」限时 45 分钟',f:'Cache 地址拆分 + 流水线时空图必考',l:[['coa.html','组原分卷']]},
+  39:{t:'OS 综合大题',c:['lsn-os-banker','lsn-os-mem'],q:'os.html「考场同款」限时 45 分钟',f:'银行家推演表 + 页面置换 + PV 综合',l:[['os.html','OS 分卷']]},
+  41:{t:'网络综合大题',c:['lsn-net-ip','lsn-net-tcp'],q:'net.html「考场同款」限时 40 分钟',f:'子网划分 + TCP 拥塞曲线计算',l:[['net.html','网络分卷']]},
+  42:{t:'跨科串联 ① 一次访存',c:['lsn-coa-cache','lsn-os-mem'],q:'不做新题，画一张贯通图',f:'Cache ↔ 页表 ↔ 虚存 ↔ DMA，各自在哪一层'},
+  43:{t:'跨科串联 ② 一次请求',c:['lsn-net-overview','lsn-os-io','lsn-coa-bus'],q:'不做新题，画一张贯通图',f:'从系统调用到数据包：中断、DMA、协议栈'},
+  45:{t:'限时套卷 ① 选择题专项',c:[],q:'四科分卷 40 题 / 80 分钟',f:'练取舍：卡住先跳过，标记回看',l:[['ds.html','DS'],['os.html','OS'],['coa.html','组原'],['net.html','网络']]},
+  46:{t:'限时套卷 ② 应用题专项',c:[],q:'四科综合大题各 1 道 / 100 分钟',f:'对照评分点自查，只看思路与边界完整性',l:[['ds.html','DS'],['os.html','OS'],['coa.html','组原'],['net.html','网络']]},
+  47:{t:'整卷 150 分模拟',c:[],q:'3 小时整卷，严格计时',f:'记录时间分配：选择题控制在 60 分钟内'},
+  49:{t:'全真模拟 ①',c:[],q:'3 小时整卷',f:'评分点自查 + 错因归类（概念 / 计算 / 审题）'},
+  50:{t:'全真模拟 ②',c:[],q:'3 小时整卷',f:'重点看时间分配与放弃策略'},
+  51:{t:'错题本清零 ①',c:['lsn-ds-overview','lsn-coa-overview'],q:'DS + COA 剩余错题全过一遍',f:'只做错题，做对的不再碰'},
+  53:{t:'错题本清零 ②',c:['lsn-os-overview','lsn-net-overview'],q:'OS + NET 剩余错题全过一遍',f:'连续两轮做对才归档'},
+  54:{t:'高频结论默写',c:[],q:'不刷题，只看四科总纲表',f:'公式 / 结论 / 边界条件默写一遍，卡住的回原卡'},
+  55:{t:'考前保温',c:['lsn-ds-overview','lsn-os-overview','lsn-coa-overview','lsn-net-overview'],q:'每天 1h：只看错题 + 4 张总纲',f:'不进新题，保持手感'}
+}
+
+var CHECK = {
+  20:'检查点 · DS 8 张 + 组原 7 张共 15 张卡首轮过完，错题率应降到 30% 以下',
+  36:'检查点 · 33 张考点卡首轮闭环，四科都能脱稿说出主干',
+  44:'检查点 · 四科综合大题 + 两张跨科贯通图完成',
+  48:'检查点 · 整卷能在 3 小时内做完，选择题 ≤ 60 分钟',
+  55:'检查点 · 错题本剩余 < 20 道，高频结论能默写'
+}
+
+var ROUNDS = [
+  {n:'第 1 轮 · 体系骨架',a:1,b:4,cls:'r1'},
+  {n:'第 2 轮 · 分科刷透',a:5,b:36,cls:'r2'},
+  {n:'第 3 轮 · 综合与套卷',a:37,b:48,cls:'r3'},
+  {n:'第 4 轮 · 冲刺保温',a:49,b:56,cls:'r4'}
+]
+
+var KEY = '408-plan-v1'
+var state = {}
+try { state = JSON.parse(localStorage.getItem(KEY) || '{}') } catch (e) { state = {} }
+var filterOn = false
+
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)) } catch (e) {}
+}
+
+function roundOf(w) {
+  for (var i = 0; i < ROUNDS.length; i++) if (w >= ROUNDS[i].a && w <= ROUNDS[i].b) return i
+  return 3
+}
+
+var START = new Date(2026, 10, 23)
+function fmt(d) { return (d.getMonth() + 1) + '/' + d.getDate() }
+function monday(w) { var d = new Date(START); d.setDate(d.getDate() + (w - 1) * 7); return d }
+function range(w) {
+  var a = monday(w), b = new Date(a); b.setDate(b.getDate() + 6)
+  return fmt(a) + '–' + fmt(b)
+}
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+function chipHtml(id) {
+  var c = C[id]
+  if (!c) return ''
+  return '<a class="chip" href="' + APP + id + '" target="_blank" title="' + esc(c[1]) + ' · ' + c[2] + ' 题">' + esc(c[0]) + '</a>'
+}
+function localHtml(l) {
+  return '<a class="chip local" href="' + l[0] + '">' + esc(l[1]) + '</a>'
+}
+
+function reviewCards(w) {
+  var ids = []
+  for (var i = w - 3; i <= w - 1; i++) {
+    var p = PUSH[i]
+    if (p && p.c) for (var j = 0; j < p.c.length; j++) if (ids.indexOf(p.c[j]) < 0) ids.push(p.c[j])
+  }
+  return ids
+}
+
+function weekHtml(w) {
+  var isReview = (w % 4 === 0)
+  var isCheck = !!CHECK[w]
+  var p = PUSH[w]
+  var r = roundOf(w)
+  var cls = 'wk' + (isReview ? ' review' : '') + (isCheck ? ' check' : '') + (state[w] ? ' done' : '')
+  var h = '<div class="' + cls + '" data-w="' + w + '">'
+  h += '<input class="chk" type="checkbox" ' + (state[w] ? 'checked' : '') + ' aria-label="第 ' + w + ' 周完成">'
+  h += '<div class="body"><div class="wh">'
+  h += '<span class="wn">W' + w + '</span><span class="wd">' + range(w) + '</span>'
+  h += '<span class="tag ' + ROUNDS[r].cls + '">' + ROUNDS[r].n.split(' · ')[0] + '</span>'
+  if (isReview) h += '<span class="tag rv">回炉周</span>'
+  if (isCheck) h += '<span class="tag cp">检查点</span>'
+  h += '</div>'
+
+  if (isReview) {
+    var special = (w === 56)
+    h += '<div class="t">' + (special ? '考前周' : '回炉 · 不进新卡') + '</div>'
+    h += '<div class="chips">'
+    if (special) {
+      h += '<span class="chip">轻量保温</span><span class="chip">作息调整</span>'
+    } else {
+      var rc = reviewCards(w)
+      for (var k = 0; k < rc.length; k++) h += chipHtml(rc[k])
+      if (!rc.length) h += '<span class="chip">本块无新卡，清整轮错题</span>'
+    }
+    h += '</div>'
+    if (special) {
+      h += '<div class="q">每天 1h 以内，只看错题与四科总纲</div>'
+      h += '<div class="f"><b>考试约在 12 月下旬</b>（以官方公告为准）；这周不做新题、不熬夜</div>'
+    } else {
+      h += '<div class="q">① 错题本到期题全清　② 本块考点「只看错题」二刷</div>'
+      h += '<div class="f"><b>推进周可以减量，回炉周不能省。</b>顺手记一句本周卡在哪</div>'
+    }
+    if (isCheck) h += '<div class="q" style="margin-top:6px;color:var(--amber-600)">' + esc(CHECK[w]) + '</div>'
+  } else {
+    h += '<div class="t">' + esc(p.t) + '</div>'
+    h += '<div class="chips">'
+    for (var m = 0; m < p.c.length; m++) h += chipHtml(p.c[m])
+    if (p.l) for (var n = 0; n < p.l.length; n++) h += localHtml(p.l[n])
+    h += '</div>'
+    h += '<div class="q">' + esc(p.q) + '</div>'
+    h += '<div class="f"><b>聚焦：</b>' + esc(p.f) + '</div>'
+    if (isCheck) h += '<div class="q" style="margin-top:6px;color:var(--amber-600)">' + esc(CHECK[w]) + '</div>'
+  }
+  h += '</div></div>'
+  return h
+}
+
+function render() {
+  var html = ''
+  for (var b = 1; b <= 14; b++) {
+    var a = (b - 1) * 4 + 1, z = b * 4
+    var r = roundOf(a)
+    html += '<section class="block" data-block="' + b + '">'
+    html += '<div class="block-h"><span class="bn">第 ' + b + ' 块</span>'
+    html += '<span class="bd">W' + a + '–W' + z + ' · ' + range(a) + ' 起</span>'
+    html += '<span class="bt">' + esc(ROUNDS[r].n) + '</span></div>'
+    html += '<div class="weeks">'
+    for (var w = a; w <= z; w++) html += weekHtml(w)
+    html += '</div></section>'
+  }
+  document.getElementById('blocks').innerHTML = html
+
+  var boxes = document.querySelectorAll('.chk')
+  for (var i = 0; i < boxes.length; i++) {
+    boxes[i].addEventListener('change', function () {
+      var w = this.closest('.wk').getAttribute('data-w')
+      if (this.checked) state[w] = true; else delete state[w]
+      save(); renderProgress(); applyFilter()
+      this.closest('.wk').classList.toggle('done', this.checked)
+    })
+  }
+  renderProgress()
+  applyFilter()
+}
+
+function renderProgress() {
+  var done = 0
+  for (var w = 1; w <= 56; w++) if (state[w]) done++
+  var pct = Math.round(done / 56 * 100)
+  document.getElementById('pct').textContent = pct + '%'
+  document.getElementById('cnt').textContent = done + ' / 56 周'
+  document.getElementById('pbar').style.width = pct + '%'
+  var rh = ''
+  for (var i = 0; i < ROUNDS.length; i++) {
+    var R = ROUNDS[i], d = 0
+    for (var w = R.a; w <= R.b; w++) if (state[w]) d++
+    var tot = R.b - R.a + 1, p = Math.round(d / tot * 100)
+    rh += '<div class="round"><div>' + esc(R.n) + '</div>'
+    rh += '<div class="rb"><i style="width:' + p + '%"></i></div>'
+    rh += '<div class="rn">' + d + ' / ' + tot + ' 周 · ' + p + '%</div></div>'
+  }
+  document.getElementById('rounds').innerHTML = rh
+}
+
+function applyFilter() {
+  var cards = document.querySelectorAll('.wk')
+  for (var i = 0; i < cards.length; i++) {
+    var w = cards[i].getAttribute('data-w')
+    cards[i].style.display = (filterOn && state[w]) ? 'none' : 'flex'
+  }
+  var blocks = document.querySelectorAll('.block')
+  for (var j = 0; j < blocks.length; j++) {
+    var vis = blocks[j].querySelectorAll('.wk')
+    var any = false
+    for (var k = 0; k < vis.length; k++) if (vis[k].style.display !== 'none') any = true
+    blocks[j].style.display = any ? 'block' : 'none'
+  }
+}
+
+document.getElementById('filterBtn').addEventListener('click', function () {
+  filterOn = !filterOn
+  this.classList.toggle('on', filterOn)
+  this.textContent = filterOn ? '显示全部' : '只看未完成'
+  applyFilter()
+})
+document.getElementById('resetBtn').addEventListener('click', function () {
+  if (!confirm('确定清空全部 56 周的勾选记录？此操作不可撤销。')) return
+  state = {}; save(); render()
+})
+render()
+</script>
+</body>
+</html>

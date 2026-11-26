@@ -14,6 +14,12 @@ import { DS2_LESSONS } from './lessons/cs-ds2'
 import { OS_LESSONS } from './lessons/cs-os'
 import { COA_LESSONS } from './lessons/cs-coa'
 import { NET_LESSONS } from './lessons/cs-net'
+import {
+  DS_FORMULA_LESSONS,
+  COA_FORMULA_LESSONS,
+  OS_FORMULA_LESSONS,
+  NET_FORMULA_LESSONS,
+} from './lessons/cs-408-formulas'
 import { POLITICS_LESSONS } from './lessons/politics'
 
 // ============================================================
@@ -35,6 +41,7 @@ import { POLITICS_LESSONS } from './lessons/politics'
 //   lessons/cs-os.ts     408 操作系统：总纲（三个幻觉）/ 进程 / 调度 / PV / 死锁 / 内存 / 文件 / I/O
 //   lessons/cs-coa.ts    408 组成原理：总纲（指令的一生）/ 数据运算 / Cache / 寻址 / 流水线 / 总线
 //   lessons/cs-net.ts    408 网络：总纲（数据包旅程）/ 规模主线 / 链路层 / IP 子网 / 路由 / TCP / 应用层
+//   lessons/cs-408-formulas.ts 408 四科公式速查：每科一张，公式 + 推导 + 例题 + 自编变式题
 //   lessons/politics.ts  政治六科：背诵条款（自动生成，见 scripts/gen-politics-2027.mjs）
 //
 // 新增考点：在对应学科文件里 push 一个 Lesson 对象，并在 ORDER 里登记
@@ -55,9 +62,13 @@ const ALL_LESSONS: Lesson[] = [
   ...PROB3_LESSONS,
   ...DS_LESSONS,
   ...DS2_LESSONS,
+  ...DS_FORMULA_LESSONS,
   ...OS_LESSONS,
+  ...OS_FORMULA_LESSONS,
   ...COA_LESSONS,
+  ...COA_FORMULA_LESSONS,
   ...NET_LESSONS,
+  ...NET_FORMULA_LESSONS,
   // 政治（2027 大纲六科）：背诵条款卡片，配套练习来自 politics.json 的 2027 模拟题
   ...POLITICS_LESSONS,
 ]
@@ -106,6 +117,7 @@ const ORDER: string[] = [
   'lsn-ds-graph2',
   'lsn-ds-search',
   'lsn-ds-sort',
+  'lsn-ds-formula',
   // 408 · 操作系统（第一张是总纲：三个幻觉与一个协调问题）
   'lsn-os-overview',
   'lsn-os-proc',
@@ -118,6 +130,7 @@ const ORDER: string[] = [
   'lsn-os-mem',
   'lsn-os-file',
   'lsn-os-io',
+  'lsn-os-formula',
   // 408 · 计算机组成原理（第一张是总纲：一条指令的一生）
   'lsn-coa-overview',
   'lsn-coa-arch',
@@ -126,6 +139,7 @@ const ORDER: string[] = [
   'lsn-coa-addr',
   'lsn-coa-pipe',
   'lsn-coa-bus',
+  'lsn-coa-formula',
   // 408 · 计算机网络（第一张是总纲：一个数据包的完整旅程）
   'lsn-net-overview',
   'lsn-net-scale',
@@ -134,6 +148,7 @@ const ORDER: string[] = [
   'lsn-net-route',
   'lsn-net-tcp',
   'lsn-net-app',
+  'lsn-net-formula',
   // 政治 · 背诵条款（2027 大纲六科）
   'lsn-zz-my-1',
   'lsn-zz-my-2',

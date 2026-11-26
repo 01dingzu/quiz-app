@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "paper": "数学一",
+  "subject": "数学一（三科共享）",
+  "generator": "none",
+  "note": "数学选项为公式、解析为 LaTeX，无法按选项字母逐字锚定；不编造干扰项诊断。",
+  "stats": {
+    "questions": 0,
+    "items": 0,
+    "grounded": 0,
+    "probe": 0,
+    "conclusion": 0,
+    "criterion": 0,
+    "topics": 0,
+    "mothers": 0
+  },
+  "questions": {}
+}

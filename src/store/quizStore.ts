@@ -66,12 +66,17 @@ export interface SessionFilter {
    * 缺省一律按 '408' 处理，老用户行为完全不变，无需写 migrate。
    */
   paper?: Paper
-  years: number[] // 空数组 = 该试卷全部年份
-  subjects: Subject[] // 空数组 = 该试卷全部科目
+  /**
+   * null = 不筛（该试卷全部年份）；数组 = 只保留列表里的年份。
+   * 空白数组是「一个都没选」——此时抽不到任何题，和「全部」是两回事。
+   */
+  years: number[] | null
+  /** 同 years：null = 全部科目，[] = 一个都没选（0 题） */
+  subjects: Subject[] | null
   shuffle: boolean
 }
 
-const DEFAULT_FILTER: SessionFilter = { paper: '408', years: [], subjects: [], shuffle: false }
+const DEFAULT_FILTER: SessionFilter = { paper: '408', years: null, subjects: null, shuffle: false }
 
 /** 该筛选条件所属试卷 */
 export function paperOfFilter(f: SessionFilter): Paper {
@@ -117,8 +122,8 @@ function filterQuestions(f: SessionFilter): Question[] {
       // 考点练习题不进自由练习 / 模拟考试的抽题池，只从考点页面成组进入
       !q.lesson &&
       paperOfQuestion(q) === paper &&
-      (f.years.length === 0 || f.years.includes(q.year)) &&
-      (f.subjects.length === 0 || f.subjects.includes(q.subject)),
+      (!f.years || f.years.includes(q.year)) &&
+      (!f.subjects || f.subjects.includes(q.subject)),
   )
 }
 
@@ -329,8 +334,13 @@ type Persisted = Pick<
   | 'unarchived'
 >
 
-/** 存储版本：v0 的 picked 是裸 AnswerKey 字符串，v1 起是判别联合 */
-const STORE_VERSION = 1
+/**
+ * 存储版本：
+ *  - v0：picked 是裸 AnswerKey 字符串
+ *  - v1：picked 改为判别联合 { t:'single', k:'A' }
+ *  - v2：filter 的「空数组 = 全部」改为「null = 全部」，空数组表示一个都没选
+ */
+const STORE_VERSION = 2
 
 /**
  * 旧数据迁移：把 v0 里所有裸 'A' 字符串的作答值转成 { t:'single', k:'A' }。
@@ -367,6 +377,15 @@ function migratePersisted(persisted: unknown, version: number): Persisted {
     }
   }
 
+  // v2：老 filter 里「空数组」的语义是「全部」，新语义下是「一个都没选」，
+  // 直接读会让老用户一打开首页就是 0 题，这里把空的转成 null（不筛）。
+  const f = s.filter
+  if (f && typeof f === 'object') {
+    const ff = f as Record<string, unknown>
+    if (Array.isArray(ff.years) && ff.years.length === 0) ff.years = null
+    if (Array.isArray(ff.subjects) && ff.subjects.length === 0) ff.subjects = null
+  }
+
   return s as unknown as Persisted
 }
 
@@ -389,7 +408,7 @@ export const useQuiz = create<QuizState>()(
 
       setFilter: (patch) => set({ filter: { ...get().filter, ...patch } }),
 
-      setPaper: (p) => set({ filter: { paper: p, years: [], subjects: [], shuffle: get().filter.shuffle } }),
+      setPaper: (p) => set({ filter: { paper: p, years: null, subjects: null, shuffle: get().filter.shuffle } }),
 
       startSession: () => {
         const { filter, unarchived, attempts } = get()

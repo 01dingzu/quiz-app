@@ -97,16 +97,19 @@ export default function Home() {
   const years = useMemo(() => paperYears(paper), [paper])
   const subs = useMemo(() => paperSubjects(paper), [paper])
 
-  const allYears = filter.years.length === 0
-  const allSubjects = filter.subjects.length === 0
+  // null = 不筛（全部）；空数组 = 用户把所有选项都取消了，此时一题都抽不到
+  const allYears = !filter.years
+  const allSubjects = !filter.subjects
+  const noYear = !!filter.years && filter.years.length === 0
+  const noSubject = !!filter.subjects && filter.subjects.length === 0
 
   const count = useMemo(
     () =>
       REAL_BANK.filter(
         (q) =>
           (q.paper ?? '408') === paper &&
-          (allYears || filter.years.includes(q.year)) &&
-          (allSubjects || filter.subjects.includes(q.subject)),
+          (allYears || (filter.years as number[]).includes(q.year)) &&
+          (allSubjects || (filter.subjects as Subject[]).includes(q.subject)),
       ).length,
     [paper, allYears, allSubjects, filter],
   )
@@ -119,16 +122,20 @@ export default function Home() {
   const examQ = examQuestionCount(paper)
   const examScore = examFullScore(filter)
 
+  /**
+   * 年份 / 科目都是「点谁选谁」的多选：null 状态下点一个 = 只看它，
+   * 再点别的 = 加进来，点已选的 = 取消。取消到空就停在空（0 题），不回落到「全部」。
+   */
   const toggleYear = (y: number) => {
-    const cur = allYears ? years : filter.years
+    const cur = filter.years ?? []
     const next = cur.includes(y) ? cur.filter((v) => v !== y) : [...cur, y].sort((a, b) => a - b)
-    setFilter({ years: next.length === years.length ? [] : next })
+    setFilter({ years: next.length === years.length ? null : next })
   }
 
   const toggleSubject = (s: string) => {
-    const cur = allSubjects ? subs : filter.subjects
+    const cur: string[] = filter.subjects ?? []
     const next = cur.includes(s) ? cur.filter((v) => v !== s) : [...cur, s]
-    setFilter({ subjects: next.length === subs.length ? [] : (next as Subject[]) })
+    setFilter({ subjects: next.length === subs.length ? null : (next as Subject[]) })
   }
 
   const startPractice = () => {
@@ -156,6 +163,15 @@ export default function Home() {
     if (bp) s.add(bp.durationMin)
     return [...s].sort((a, b) => a - b)
   }, [bp])
+
+  /** 自由练习按钮文案：把「一个都没选」和「都归档了」区分开，别让人误以为题目刷完了 */
+  const startLabel = noSubject
+    ? '请至少选择一个科目'
+    : noYear
+      ? '请至少选择一个年份'
+      : available === 0
+        ? `当前筛选已全部归档（${archN} 题）`
+        : `开始练习 · 共 ${available} 题`
 
   return (
     <>
@@ -202,16 +218,22 @@ export default function Home() {
 
       <div className="card">
         <div className="sec-title">
-          年份（当前：{allYears ? `全部 ${years.length} 年` : `${filter.years.length} 年`}）
+          年份（当前：
+          {allYears
+            ? `全部 ${years.length} 年`
+            : noYear
+              ? '未选择'
+              : `${filter.years!.length} 年`}
+          ）
         </div>
         <div className="chips">
-          <button className={'chip' + (allYears ? ' on' : '')} onClick={() => setFilter({ years: [] })}>
+          <button className={'chip' + (allYears ? ' on' : '')} onClick={() => setFilter({ years: null })}>
             全部
           </button>
           {years.map((y) => (
             <button
               key={y}
-              className={'chip' + (allYears || filter.years.includes(y) ? ' on' : '')}
+              className={'chip' + (!noYear && (allYears || (filter.years as number[]).includes(y)) ? ' on' : '')}
               onClick={() => toggleYear(y)}
             >
               {y}
@@ -220,19 +242,28 @@ export default function Home() {
         </div>
 
         <div className="sec-title">
-          科目（当前：{allSubjects ? `全部 ${subs.length} 科` : `${filter.subjects.length} 科`}）
+          科目（当前：
+          {allSubjects
+            ? `全部 ${subs.length} 科`
+            : noSubject
+              ? '未选择'
+              : `${filter.subjects!.length} 科`}
+          ）
         </div>
         <div className="chips">
           <button
             className={'chip' + (allSubjects ? ' on' : '')}
-            onClick={() => setFilter({ subjects: [] })}
+            onClick={() => setFilter({ subjects: null })}
           >
             全部
           </button>
           {subs.map((s) => (
             <button
               key={s}
-              className={'chip' + (allSubjects || filter.subjects.includes(s as Subject) ? ' on' : '')}
+              className={
+                'chip' +
+                (!noSubject && (allSubjects || (filter.subjects as Subject[]).includes(s as Subject)) ? ' on' : '')
+              }
               onClick={() => toggleSubject(s)}
             >
               {s}
@@ -252,7 +283,7 @@ export default function Home() {
 
         <div className="sec-title">自由练习</div>
         <button className="start-btn" disabled={available === 0} onClick={startPractice}>
-          {available === 0 ? `当前筛选已全部归档（${archN} 题）` : `开始练习 · 共 ${available} 题`}
+          {startLabel}
         </button>
         {available < count && (
           <div className="exam-hint">

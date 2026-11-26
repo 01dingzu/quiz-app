@@ -1,0 +1,2947 @@
+{
+  "zz-2010-01": {
+    "topic": "my-6.1.1",
+    "mt": "mt-my-001",
+    "by": "override"
+  },
+  "zz-2010-02": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2010-03": {
+    "topic": "my-1.3.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2010-04": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2010-05": {
+    "topic": "xs-1.1.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2010-06": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2010-07": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-005",
+    "by": "rule"
+  },
+  "zz-2010-08": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2010-09": {
+    "topic": "sg-2.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2010-10": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2010-11": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-004",
+    "by": "override"
+  },
+  "zz-2010-12": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2010-13": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-004",
+    "by": "rule"
+  },
+  "zz-2010-14": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-001",
+    "by": "override"
+  },
+  "zz-2010-15": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-001",
+    "by": "override"
+  },
+  "zz-2010-16": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-002",
+    "by": "rule"
+  },
+  "zz-2010-17": {
+    "topic": "my-1.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2010-18": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-001",
+    "by": "override"
+  },
+  "zz-2010-19": {
+    "topic": "my-6.1.1",
+    "mt": "mt-my-001",
+    "by": "override"
+  },
+  "zz-2010-20": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2010-21": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-005",
+    "by": "override"
+  },
+  "zz-2010-22": {
+    "topic": "mz-1.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2010-23": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2010-24": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2010-25": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-004",
+    "by": "override"
+  },
+  "zz-2010-26": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2010-27": {
+    "topic": "mz-1.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2010-28": {
+    "topic": "xs-4.1.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2010-29": {
+    "topic": "sg-3.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2010-30": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-004",
+    "by": "override"
+  },
+  "zz-2010-31": {
+    "topic": "sx-3.2.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2010-32": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2010-33": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2011-01": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2011-02": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-002",
+    "by": "override"
+  },
+  "zz-2011-03": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2011-04": {
+    "topic": "my-6.1.1",
+    "mt": "mt-my-005",
+    "by": "rule"
+  },
+  "zz-2011-05": {
+    "topic": "mz-1.1.1",
+    "mt": "mt-mz-001",
+    "by": "rule"
+  },
+  "zz-2011-06": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2011-07": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-005",
+    "by": "rule"
+  },
+  "zz-2011-08": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2011-09": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2011-10": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2011-11": {
+    "topic": "sx-3.2.1",
+    "mt": "mt-sx-002",
+    "by": "rule"
+  },
+  "zz-2011-12": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2011-13": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-001",
+    "by": "override"
+  },
+  "zz-2011-14": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-004",
+    "by": "rule"
+  },
+  "zz-2011-15": {
+    "topic": "sz-1.2.1",
+    "mt": "mt-sz-001",
+    "by": "rule"
+  },
+  "zz-2011-16": {
+    "topic": "sz-2.2.1",
+    "mt": "mt-sz-003",
+    "by": "override"
+  },
+  "zz-2011-17": {
+    "topic": "my-1.3.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2011-18": {
+    "topic": "my-5.4.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2011-19": {
+    "topic": "my-5.4.1",
+    "mt": "mt-my-004",
+    "by": "override"
+  },
+  "zz-2011-20": {
+    "topic": "my-6.1.1",
+    "mt": "mt-my-005",
+    "by": "override"
+  },
+  "zz-2011-21": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2011-22": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2011-23": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2011-24": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2011-25": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2011-26": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-003",
+    "by": "override"
+  },
+  "zz-2011-27": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2011-28": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2011-29": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2011-30": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2011-31": {
+    "topic": "sx-3.2.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2011-32": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "override"
+  },
+  "zz-2011-33": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2012-01": {
+    "topic": "my-3.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2012-02": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2012-03": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-003",
+    "by": "rule"
+  },
+  "zz-2012-04": {
+    "topic": "my-5.3.1",
+    "mt": "mt-my-003",
+    "by": "rule"
+  },
+  "zz-2012-05": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2012-06": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2012-07": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-003",
+    "by": "override"
+  },
+  "zz-2012-08": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2012-09": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2012-10": {
+    "topic": "mz-1.1.1",
+    "mt": "mt-mz-001",
+    "by": "rule"
+  },
+  "zz-2012-11": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-004",
+    "by": "rule"
+  },
+  "zz-2012-12": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2012-13": {
+    "topic": "sx-1.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2012-14": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-004",
+    "by": "rule"
+  },
+  "zz-2012-15": {
+    "topic": "sz-1.2.1",
+    "mt": "mt-sz-001",
+    "by": "rule"
+  },
+  "zz-2012-16": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-002",
+    "by": "rule"
+  },
+  "zz-2012-17": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2012-18": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2012-19": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2012-20": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2012-21": {
+    "topic": "mz-1.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2012-22": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "default"
+  },
+  "zz-2012-23": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2012-24": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2012-25": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2012-26": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2012-27": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2012-28": {
+    "topic": "sg-3.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2012-29": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2012-30": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2012-31": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2012-32": {
+    "topic": "sg-2.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2012-33": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-002",
+    "by": "override"
+  },
+  "zz-2013-01": {
+    "topic": "my-1.2.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2013-02": {
+    "topic": "my-2.2.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2013-03": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2013-04": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-003",
+    "by": "rule"
+  },
+  "zz-2013-05": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2013-06": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2013-07": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-005",
+    "by": "rule"
+  },
+  "zz-2013-08": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-001",
+    "by": "override"
+  },
+  "zz-2013-09": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-005",
+    "by": "rule"
+  },
+  "zz-2013-10": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-005",
+    "by": "override"
+  },
+  "zz-2013-11": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-004",
+    "by": "rule"
+  },
+  "zz-2013-12": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2013-13": {
+    "topic": "sx-1.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2013-14": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-004",
+    "by": "rule"
+  },
+  "zz-2013-15": {
+    "topic": "sz-2.2.1",
+    "mt": "mt-sz-003",
+    "by": "rule"
+  },
+  "zz-2013-16": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-001",
+    "by": "default"
+  },
+  "zz-2013-17": {
+    "topic": "my-1.3.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2013-18": {
+    "topic": "my-4.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2013-19": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2013-20": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2013-21": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2013-22": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "default"
+  },
+  "zz-2013-23": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-004",
+    "by": "override"
+  },
+  "zz-2013-24": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "default"
+  },
+  "zz-2013-25": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2013-26": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2013-27": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2013-28": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2013-29": {
+    "topic": "sg-3.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2013-30": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2013-31": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2013-32": {
+    "topic": "sz-1.2.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2013-33": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2014-01": {
+    "topic": "my-1.3.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2014-02": {
+    "topic": "my-1.3.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2014-03": {
+    "topic": "my-5.3.1",
+    "mt": "mt-my-003",
+    "by": "rule"
+  },
+  "zz-2014-04": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2014-05": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2014-06": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2014-07": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2014-08": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2014-09": {
+    "topic": "sg-2.1.1",
+    "mt": "mt-sg-002",
+    "by": "override"
+  },
+  "zz-2014-10": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-004",
+    "by": "rule"
+  },
+  "zz-2014-11": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-004",
+    "by": "rule"
+  },
+  "zz-2014-12": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-002",
+    "by": "override"
+  },
+  "zz-2014-13": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2014-14": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-004",
+    "by": "rule"
+  },
+  "zz-2014-15": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-001",
+    "by": "rule"
+  },
+  "zz-2014-16": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-002",
+    "by": "rule"
+  },
+  "zz-2014-17": {
+    "topic": "my-1.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2014-18": {
+    "topic": "my-4.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2014-19": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2014-20": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2014-21": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2014-22": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2014-23": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2014-24": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "default"
+  },
+  "zz-2014-25": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2014-26": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2014-27": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2014-28": {
+    "topic": "sg-3.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2014-29": {
+    "topic": "sg-3.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2014-30": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-004",
+    "by": "override"
+  },
+  "zz-2014-31": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2014-32": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-004",
+    "by": "override"
+  },
+  "zz-2014-33": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-004",
+    "by": "default"
+  },
+  "zz-2015-01": {
+    "topic": "my-3.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2015-02": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2015-03": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-003",
+    "by": "rule"
+  },
+  "zz-2015-04": {
+    "topic": "my-6.1.1",
+    "mt": "mt-my-005",
+    "by": "rule"
+  },
+  "zz-2015-05": {
+    "topic": "mz-1.2.1",
+    "mt": "mt-mz-001",
+    "by": "rule"
+  },
+  "zz-2015-06": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2015-07": {
+    "topic": "xs-2.1.1",
+    "mt": "mt-xs-002",
+    "by": "rule"
+  },
+  "zz-2015-08": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2015-09": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2015-10": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-005",
+    "by": "rule"
+  },
+  "zz-2015-11": {
+    "topic": "sg-2.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2015-12": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-004",
+    "by": "rule"
+  },
+  "zz-2015-13": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2015-14": {
+    "topic": "sx-1.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2015-15": {
+    "topic": "xs-3.2.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2015-16": {
+    "topic": "sz-2.2.1",
+    "mt": "mt-sz-003",
+    "by": "rule"
+  },
+  "zz-2015-17": {
+    "topic": "my-1.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2015-18": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2015-19": {
+    "topic": "my-4.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2015-20": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2015-21": {
+    "topic": "my-5.4.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2015-22": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "default"
+  },
+  "zz-2015-23": {
+    "topic": "xs-2.2.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2015-24": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2015-25": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "default"
+  },
+  "zz-2015-26": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2015-27": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2015-28": {
+    "topic": "sg-3.2.1",
+    "mt": "mt-sg-003",
+    "by": "override"
+  },
+  "zz-2015-29": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-003",
+    "by": "override"
+  },
+  "zz-2015-30": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2015-31": {
+    "topic": "sx-3.2.1",
+    "mt": "mt-sx-002",
+    "by": "override"
+  },
+  "zz-2015-32": {
+    "topic": "sg-3.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2015-33": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2016-01": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2016-02": {
+    "topic": "my-1.3.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2016-03": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-003",
+    "by": "rule"
+  },
+  "zz-2016-04": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2016-05": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2016-06": {
+    "topic": "mz-2.1.1",
+    "mt": "mt-mz-001",
+    "by": "rule"
+  },
+  "zz-2016-07": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2016-08": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2016-09": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2016-10": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2016-11": {
+    "topic": "sg-3.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2016-12": {
+    "topic": "sg-3.2.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2016-13": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2016-14": {
+    "topic": "sx-3.2.1",
+    "mt": "mt-sx-002",
+    "by": "rule"
+  },
+  "zz-2016-15": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-001",
+    "by": "rule"
+  },
+  "zz-2016-16": {
+    "topic": "sz-2.2.1",
+    "mt": "mt-sz-003",
+    "by": "rule"
+  },
+  "zz-2016-17": {
+    "topic": "my-3.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2016-18": {
+    "topic": "my-1.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2016-19": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2016-20": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2016-21": {
+    "topic": "my-6.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2016-22": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2016-23": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2016-24": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2016-25": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2016-26": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2016-27": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2016-28": {
+    "topic": "sg-2.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2016-29": {
+    "topic": "sg-4.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2016-30": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2016-31": {
+    "topic": "sx-3.2.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2016-32": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2016-33": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2017-01": {
+    "topic": "my-1.3.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2017-02": {
+    "topic": "my-1.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2017-03": {
+    "topic": "my-5.4.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2017-04": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2017-05": {
+    "topic": "mz-1.1.1",
+    "mt": "mt-mz-001",
+    "by": "rule"
+  },
+  "zz-2017-06": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-005",
+    "by": "rule"
+  },
+  "zz-2017-07": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2017-08": {
+    "topic": "xs-2.2.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2017-09": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2017-10": {
+    "topic": "sg-2.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2017-11": {
+    "topic": "mz-1.1.1",
+    "mt": "mt-mz-001",
+    "by": "rule"
+  },
+  "zz-2017-12": {
+    "topic": "sg-3.2.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2017-13": {
+    "topic": "sx-1.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2017-14": {
+    "topic": "sx-1.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2017-15": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2017-16": {
+    "topic": "sz-2.2.1",
+    "mt": "mt-sz-003",
+    "by": "rule"
+  },
+  "zz-2017-17": {
+    "topic": "my-3.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2017-18": {
+    "topic": "my-4.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2017-19": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2017-20": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2017-21": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2017-22": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2017-23": {
+    "topic": "xs-3.2.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2017-24": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2017-25": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2017-26": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2017-27": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2017-28": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2017-29": {
+    "topic": "sg-4.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2017-30": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-004",
+    "by": "override"
+  },
+  "zz-2017-31": {
+    "topic": "sx-3.2.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2017-32": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-004",
+    "by": "override"
+  },
+  "zz-2017-33": {
+    "topic": "sz-2.2.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2018-01": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2018-02": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2018-03": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2018-04": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2018-05": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2018-06": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2018-07": {
+    "topic": "sz-1.2.1",
+    "mt": "mt-sz-001",
+    "by": "rule"
+  },
+  "zz-2018-08": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2018-09": {
+    "topic": "xs-1.1.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2018-10": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-005",
+    "by": "rule"
+  },
+  "zz-2018-11": {
+    "topic": "mz-1.1.1",
+    "mt": "mt-mz-001",
+    "by": "rule"
+  },
+  "zz-2018-12": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-004",
+    "by": "rule"
+  },
+  "zz-2018-13": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-004",
+    "by": "rule"
+  },
+  "zz-2018-14": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2018-15": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-005",
+    "by": "rule"
+  },
+  "zz-2018-16": {
+    "topic": "sz-3.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2018-17": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2018-18": {
+    "topic": "my-4.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2018-19": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2018-20": {
+    "topic": "my-5.4.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2018-21": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2018-22": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2018-23": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2018-24": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2018-25": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2018-26": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2018-27": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2018-28": {
+    "topic": "sg-3.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2018-29": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2018-30": {
+    "topic": "sx-3.2.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2018-31": {
+    "topic": "sx-3.3.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2018-32": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "override"
+  },
+  "zz-2018-33": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2019-01": {
+    "topic": "my-6.1.1",
+    "mt": "mt-my-005",
+    "by": "rule"
+  },
+  "zz-2019-02": {
+    "topic": "my-1.2.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2019-03": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2019-04": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2019-05": {
+    "topic": "sg-4.2.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2019-06": {
+    "topic": "xs-3.2.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2019-07": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2019-08": {
+    "topic": "xs-2.2.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2019-09": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-005",
+    "by": "rule"
+  },
+  "zz-2019-10": {
+    "topic": "sg-2.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2019-11": {
+    "topic": "sg-3.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2019-12": {
+    "topic": "sg-3.2.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2019-13": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-001",
+    "by": "override"
+  },
+  "zz-2019-14": {
+    "topic": "sx-1.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2019-15": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-001",
+    "by": "default"
+  },
+  "zz-2019-16": {
+    "topic": "sz-2.2.1",
+    "mt": "mt-sz-002",
+    "by": "override"
+  },
+  "zz-2019-17": {
+    "topic": "my-1.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2019-18": {
+    "topic": "my-1.3.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2019-19": {
+    "topic": "my-5.4.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2019-20": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2019-21": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2019-22": {
+    "topic": "xs-1.1.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2019-23": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2019-24": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "default"
+  },
+  "zz-2019-25": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2019-26": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2019-27": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2019-28": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2019-29": {
+    "topic": "sg-4.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2019-30": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2019-31": {
+    "topic": "sx-3.3.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2019-32": {
+    "topic": "sz-3.1.1",
+    "mt": "mt-sz-004",
+    "by": "override"
+  },
+  "zz-2019-33": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2020-01": {
+    "topic": "my-6.1.1",
+    "mt": "mt-my-005",
+    "by": "rule"
+  },
+  "zz-2020-02": {
+    "topic": "my-3.2.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2020-03": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2020-04": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2020-05": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2020-06": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-005",
+    "by": "rule"
+  },
+  "zz-2020-07": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2020-08": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2020-09": {
+    "topic": "xs-1.1.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2020-10": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-005",
+    "by": "rule"
+  },
+  "zz-2020-11": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-004",
+    "by": "rule"
+  },
+  "zz-2020-12": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2020-13": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2020-14": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2020-15": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-003",
+    "by": "override"
+  },
+  "zz-2020-16": {
+    "topic": "sz-2.2.1",
+    "mt": "mt-sz-003",
+    "by": "override"
+  },
+  "zz-2020-17": {
+    "topic": "my-1.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2020-18": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2020-19": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2020-20": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2020-21": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2020-22": {
+    "topic": "sg-4.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2020-23": {
+    "topic": "sg-4.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2020-24": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2020-25": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2020-26": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2020-27": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2020-28": {
+    "topic": "sg-2.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2020-29": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2020-30": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2020-31": {
+    "topic": "sx-3.2.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2020-32": {
+    "topic": "sz-1.2.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2020-33": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2021-01": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2021-02": {
+    "topic": "my-1.3.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2021-03": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2021-04": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2021-05": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-002",
+    "by": "default"
+  },
+  "zz-2021-06": {
+    "topic": "xs-2.1.1",
+    "mt": "mt-xs-002",
+    "by": "rule"
+  },
+  "zz-2021-07": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2021-08": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2021-09": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-005",
+    "by": "rule"
+  },
+  "zz-2021-10": {
+    "topic": "sg-3.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2021-11": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2021-12": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2021-13": {
+    "topic": "sx-1.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2021-14": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2021-15": {
+    "topic": "sz-1.2.1",
+    "mt": "mt-sz-001",
+    "by": "rule"
+  },
+  "zz-2021-16": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-002",
+    "by": "rule"
+  },
+  "zz-2021-17": {
+    "topic": "my-1.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2021-18": {
+    "topic": "my-1.3.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2021-19": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2021-20": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2021-21": {
+    "topic": "my-6.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2021-22": {
+    "topic": "mz-2.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2021-23": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2021-24": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2021-25": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2021-26": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2021-27": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2021-28": {
+    "topic": "sg-2.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2021-29": {
+    "topic": "mz-2.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2021-30": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2021-31": {
+    "topic": "sx-3.2.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2021-32": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2021-33": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2022-01": {
+    "topic": "xs-1.1.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2022-02": {
+    "topic": "my-1.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2022-03": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2022-04": {
+    "topic": "my-5.4.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2022-05": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2022-06": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2022-07": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-005",
+    "by": "rule"
+  },
+  "zz-2022-08": {
+    "topic": "xs-4.1.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2022-09": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-005",
+    "by": "rule"
+  },
+  "zz-2022-10": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-004",
+    "by": "rule"
+  },
+  "zz-2022-11": {
+    "topic": "sg-3.2.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2022-12": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2022-13": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-004",
+    "by": "rule"
+  },
+  "zz-2022-14": {
+    "topic": "sx-3.2.1",
+    "mt": "mt-sx-002",
+    "by": "override"
+  },
+  "zz-2022-15": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-001",
+    "by": "override"
+  },
+  "zz-2022-16": {
+    "topic": "sz-2.2.1",
+    "mt": "mt-sz-003",
+    "by": "override"
+  },
+  "zz-2022-17": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2022-18": {
+    "topic": "my-1.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2022-19": {
+    "topic": "my-1.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2022-20": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2022-21": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2022-22": {
+    "topic": "xs-2.2.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2022-23": {
+    "topic": "xs-2.1.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2022-24": {
+    "topic": "xs-3.1.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2022-25": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2022-26": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "default"
+  },
+  "zz-2022-27": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2022-28": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2022-29": {
+    "topic": "sg-4.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2022-30": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2022-31": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2022-32": {
+    "topic": "sz-1.2.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2022-33": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2023-01": {
+    "topic": "my-4.2.1",
+    "mt": "mt-my-001",
+    "by": "override"
+  },
+  "zz-2023-02": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2023-03": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2023-04": {
+    "topic": "my-5.4.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2023-05": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2023-06": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-005",
+    "by": "rule"
+  },
+  "zz-2023-07": {
+    "topic": "xs-3.2.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2023-08": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2023-09": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2023-10": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-004",
+    "by": "rule"
+  },
+  "zz-2023-11": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2023-12": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2023-13": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-004",
+    "by": "rule"
+  },
+  "zz-2023-14": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2023-15": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-001",
+    "by": "override"
+  },
+  "zz-2023-16": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-002",
+    "by": "rule"
+  },
+  "zz-2023-17": {
+    "topic": "my-4.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2023-18": {
+    "topic": "my-3.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2023-19": {
+    "topic": "my-5.4.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2023-20": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2023-21": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2023-22": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "default"
+  },
+  "zz-2023-23": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2023-24": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2023-25": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2023-26": {
+    "topic": "xs-1.1.1",
+    "mt": "mt-xs-003",
+    "by": "override"
+  },
+  "zz-2023-27": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2023-28": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2023-29": {
+    "topic": "sg-4.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2023-30": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2023-31": {
+    "topic": "sx-3.2.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2023-32": {
+    "topic": "sz-2.2.1",
+    "mt": "mt-sz-004",
+    "by": "override"
+  },
+  "zz-2023-33": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2024-01": {
+    "topic": "xs-1.1.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2024-02": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2024-03": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2024-04": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2024-05": {
+    "topic": "mz-2.1.1",
+    "mt": "mt-mz-001",
+    "by": "rule"
+  },
+  "zz-2024-06": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2024-07": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-005",
+    "by": "rule"
+  },
+  "zz-2024-08": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-005",
+    "by": "rule"
+  },
+  "zz-2024-09": {
+    "topic": "mz-4.1.1",
+    "mt": "mt-mz-004",
+    "by": "override"
+  },
+  "zz-2024-10": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2024-11": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-005",
+    "by": "rule"
+  },
+  "zz-2024-12": {
+    "topic": "sg-3.1.1",
+    "mt": "mt-sg-002",
+    "by": "rule"
+  },
+  "zz-2024-13": {
+    "topic": "sg-3.2.1",
+    "mt": "mt-sg-001",
+    "by": "override"
+  },
+  "zz-2024-14": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2024-15": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-001",
+    "by": "rule"
+  },
+  "zz-2024-16": {
+    "topic": "sz-2.1.1",
+    "mt": "mt-sz-002",
+    "by": "rule"
+  },
+  "zz-2024-17": {
+    "topic": "my-1.3.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2024-18": {
+    "topic": "my-1.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2024-19": {
+    "topic": "my-4.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2024-20": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2024-21": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2024-22": {
+    "topic": "mz-1.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2024-23": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2024-24": {
+    "topic": "xs-2.2.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2024-25": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2024-26": {
+    "topic": "mz-4.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2024-27": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2024-28": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2024-29": {
+    "topic": "sg-4.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2024-30": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2024-31": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2024-32": {
+    "topic": "sz-1.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2024-33": {
+    "topic": "sz-2.2.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2027-01": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2027-02": {
+    "topic": "my-2.2.1",
+    "mt": "mt-my-002",
+    "by": "override"
+  },
+  "zz-2027-03": {
+    "topic": "my-3.2.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2027-04": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2027-05": {
+    "topic": "my-5.1.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2027-06": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-003",
+    "by": "rule"
+  },
+  "zz-2027-07": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-003",
+    "by": "rule"
+  },
+  "zz-2027-08": {
+    "topic": "my-5.4.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2027-09": {
+    "topic": "my-5.4.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2027-10": {
+    "topic": "my-1.2.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2027-11": {
+    "topic": "my-1.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2027-12": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2027-13": {
+    "topic": "my-3.2.1",
+    "mt": "mt-my-002",
+    "by": "rule"
+  },
+  "zz-2027-14": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-001",
+    "by": "rule"
+  },
+  "zz-2027-15": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-003",
+    "by": "rule"
+  },
+  "zz-2027-16": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-003",
+    "by": "rule"
+  },
+  "zz-2027-17": {
+    "topic": "mz-1.1.1",
+    "mt": "mt-mz-001",
+    "by": "rule"
+  },
+  "zz-2027-18": {
+    "topic": "mz-1.1.1",
+    "mt": "mt-mz-001",
+    "by": "rule"
+  },
+  "zz-2027-19": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-002",
+    "by": "rule"
+  },
+  "zz-2027-20": {
+    "topic": "xs-3.1.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2027-21": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2027-22": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2027-23": {
+    "topic": "xs-3.2.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2027-24": {
+    "topic": "xs-3.2.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2027-25": {
+    "topic": "xs-2.1.1",
+    "mt": "mt-xs-002",
+    "by": "rule"
+  },
+  "zz-2027-26": {
+    "topic": "mz-3.2.1",
+    "mt": "mt-mz-003",
+    "by": "rule"
+  },
+  "zz-2027-27": {
+    "topic": "sg-4.2.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2027-28": {
+    "topic": "xs-1.1.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2027-29": {
+    "topic": "xs-2.1.1",
+    "mt": "mt-xs-002",
+    "by": "rule"
+  },
+  "zz-2027-30": {
+    "topic": "xs-3.1.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2027-31": {
+    "topic": "xs-1.1.1",
+    "mt": "mt-xs-001",
+    "by": "rule"
+  },
+  "zz-2027-32": {
+    "topic": "sg-1.1.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2027-33": {
+    "topic": "sg-1.2.1",
+    "mt": "mt-sg-005",
+    "by": "rule"
+  },
+  "zz-2027-34": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-004",
+    "by": "rule"
+  },
+  "zz-2027-35": {
+    "topic": "sg-3.2.1",
+    "mt": "mt-sg-001",
+    "by": "rule"
+  },
+  "zz-2027-36": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-004",
+    "by": "rule"
+  },
+  "zz-2027-37": {
+    "topic": "sx-1.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2027-38": {
+    "topic": "sx-1.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2027-39": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-001",
+    "by": "rule"
+  },
+  "zz-2027-40": {
+    "topic": "sx-3.2.1",
+    "mt": "mt-sx-002",
+    "by": "override"
+  },
+  "zz-2027-41": {
+    "topic": "sz-3.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2027-42": {
+    "topic": "sz-3.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2027-43": {
+    "topic": "my-2.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2027-44": {
+    "topic": "my-3.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2027-45": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2027-46": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2027-47": {
+    "topic": "my-5.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2027-48": {
+    "topic": "my-5.4.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2027-49": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2027-50": {
+    "topic": "my-5.4.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2027-51": {
+    "topic": "my-2.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2027-52": {
+    "topic": "my-3.1.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2027-53": {
+    "topic": "my-4.2.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2027-54": {
+    "topic": "my-5.3.1",
+    "mt": "mt-my-004",
+    "by": "rule"
+  },
+  "zz-2027-55": {
+    "topic": "mz-1.2.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2027-56": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2027-57": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-003",
+    "by": "override"
+  },
+  "zz-2027-58": {
+    "topic": "xs-3.1.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2027-59": {
+    "topic": "xs-2.2.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2027-60": {
+    "topic": "xs-3.1.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2027-61": {
+    "topic": "xs-3.2.1",
+    "mt": "mt-xs-003",
+    "by": "override"
+  },
+  "zz-2027-62": {
+    "topic": "xs-4.1.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2027-63": {
+    "topic": "xs-4.1.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2027-64": {
+    "topic": "xs-4.1.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2027-65": {
+    "topic": "xs-4.1.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2027-66": {
+    "topic": "xs-2.1.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2027-67": {
+    "topic": "xs-2.2.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2027-68": {
+    "topic": "xs-3.1.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2027-69": {
+    "topic": "xs-3.2.1",
+    "mt": "mt-xs-003",
+    "by": "rule"
+  },
+  "zz-2027-70": {
+    "topic": "sg-2.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2027-71": {
+    "topic": "sg-4.2.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2027-72": {
+    "topic": "sg-4.1.1",
+    "mt": "mt-sg-003",
+    "by": "rule"
+  },
+  "zz-2027-73": {
+    "topic": "sx-2.1.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2027-74": {
+    "topic": "sx-3.1.1",
+    "mt": "mt-sx-003",
+    "by": "rule"
+  },
+  "zz-2027-75": {
+    "topic": "sz-3.1.1",
+    "mt": "mt-sz-004",
+    "by": "rule"
+  },
+  "zz-2027-76": {
+    "topic": "mz-5.1.1",
+    "mt": "mt-mz-004",
+    "by": "rule"
+  },
+  "zz-2027-a01": {
+    "topic": "my-3.2.1",
+    "mt": "mt-my-006",
+    "by": "rule"
+  },
+  "zz-2027-a02": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-006",
+    "by": "rule"
+  },
+  "zz-2027-a03": {
+    "topic": "my-2.2.1",
+    "mt": "mt-my-006",
+    "by": "rule"
+  },
+  "zz-2027-a04": {
+    "topic": "my-3.1.1",
+    "mt": "mt-my-006",
+    "by": "rule"
+  },
+  "zz-2027-a05": {
+    "topic": "my-4.1.1",
+    "mt": "mt-my-006",
+    "by": "rule"
+  },
+  "zz-2027-a06": {
+    "topic": "sg-2.2.1",
+    "mt": "mt-sg-006",
+    "by": "rule"
+  },
+  "zz-2027-a07": {
+    "topic": "mz-1.2.1",
+    "mt": "mt-mz-006",
+    "by": "rule"
+  },
+  "zz-2027-a08": {
+    "topic": "xs-3.1.1",
+    "mt": "mt-xs-005",
+    "by": "rule"
+  },
+  "zz-2027-a09": {
+    "topic": "xs-4.1.1",
+    "mt": "mt-xs-005",
+    "by": "rule"
+  },
+  "zz-2027-a10": {
+    "topic": "xs-2.2.1",
+    "mt": "mt-xs-004",
+    "by": "rule"
+  },
+  "zz-2027-a11": {
+    "topic": "xs-3.1.1",
+    "mt": "mt-xs-005",
+    "by": "rule"
+  },
+  "zz-2027-a12": {
+    "topic": "mz-3.1.1",
+    "mt": "mt-mz-006",
+    "by": "override"
+  },
+  "zz-2027-a13": {
+    "topic": "sg-4.2.1",
+    "mt": "mt-sg-006",
+    "by": "override"
+  },
+  "zz-2027-a14": {
+    "topic": "sg-4.2.1",
+    "mt": "mt-sg-006",
+    "by": "rule"
+  },
+  "zz-2027-a15": {
+    "topic": "sx-1.1.1",
+    "mt": "mt-sx-005",
+    "by": "rule"
+  },
+  "zz-2027-a16": {
+    "topic": "sx-2.2.1",
+    "mt": "mt-sx-005",
+    "by": "rule"
+  },
+  "zz-2027-a17": {
+    "topic": "sz-3.1.1",
+    "mt": "mt-sz-005",
+    "by": "rule"
+  },
+  "zz-2027-a18": {
+    "topic": "sz-3.1.1",
+    "mt": "mt-sz-005",
+    "by": "override"
+  }
+}

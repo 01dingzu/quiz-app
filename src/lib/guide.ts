@@ -124,6 +124,11 @@ interface GuideResource {
  *     数学；按 subject 分科会让这些题拿到错误学科的知识点，故三行指向同一组
  *     文件，每题的 topic / mt 按题干实际考点人工指定。数学选项是公式、解析是
  *     LaTeX，不做干扰项诊断与解析体检（两分片为空）。
+ *   · 政治六科：由 scripts/ai-guide/5-build-politics.mjs 生成，同样共用一份
+ *     全量资源。politics.json 的 subject 按题号段硬分，约 30 道思修/毛中特/
+ *     时政题被标到不对应科目，故按题干与解析的实际考点逐题标注（589/589 全覆盖、
+ *     零 fallback）。政治是背诵辨析型，母题骨架是「命题角度—定位原理—排除陷阱
+ *     —回代材料」而非计算步骤；诊断分片与解析体检按设计留空。
  * 新增科目只需在这里加一行；缺文件的加载器会静默返回 null。
  */
 const RESOURCES: GuideResource[] = [
@@ -183,6 +188,55 @@ const RESOURCES: GuideResource[] = [
     mothers: 'guide/mothers-math.json',
     warn: 'guide/exp-warn-math.json',
     tags: 'guide/tags-math.json',
+  },
+  // 政治六科共用一份全量资源（见上方说明）
+  {
+    subject: '马原',
+    kg: 'guide/kg-politics.json',
+    diag: 'guide/diag/politics.json',
+    mothers: 'guide/mothers-politics.json',
+    warn: 'guide/exp-warn-politics.json',
+    tags: 'guide/tags-politics.json',
+  },
+  {
+    subject: '毛中特',
+    kg: 'guide/kg-politics.json',
+    diag: 'guide/diag/politics.json',
+    mothers: 'guide/mothers-politics.json',
+    warn: 'guide/exp-warn-politics.json',
+    tags: 'guide/tags-politics.json',
+  },
+  {
+    subject: '习思想',
+    kg: 'guide/kg-politics.json',
+    diag: 'guide/diag/politics.json',
+    mothers: 'guide/mothers-politics.json',
+    warn: 'guide/exp-warn-politics.json',
+    tags: 'guide/tags-politics.json',
+  },
+  {
+    subject: '史纲',
+    kg: 'guide/kg-politics.json',
+    diag: 'guide/diag/politics.json',
+    mothers: 'guide/mothers-politics.json',
+    warn: 'guide/exp-warn-politics.json',
+    tags: 'guide/tags-politics.json',
+  },
+  {
+    subject: '思修法纪',
+    kg: 'guide/kg-politics.json',
+    diag: 'guide/diag/politics.json',
+    mothers: 'guide/mothers-politics.json',
+    warn: 'guide/exp-warn-politics.json',
+    tags: 'guide/tags-politics.json',
+  },
+  {
+    subject: '时政',
+    kg: 'guide/kg-politics.json',
+    diag: 'guide/diag/politics.json',
+    mothers: 'guide/mothers-politics.json',
+    warn: 'guide/exp-warn-politics.json',
+    tags: 'guide/tags-politics.json',
   },
 ]
 

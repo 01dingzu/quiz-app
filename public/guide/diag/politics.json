@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "paper": "政治",
+  "subject": "政治（六科共享）",
+  "generator": "none",
+  "note": "政治是背诵辨析型，选项多为并列条款与固定表述，不做按选项字母逐字锚定的干扰项诊断；不编造引用。母题骨架与陷阱库承担辨析引导。",
+  "stats": {
+    "questions": 0,
+    "items": 0,
+    "grounded": 0,
+    "probe": 0,
+    "conclusion": 0,
+    "criterion": 0,
+    "topics": 0,
+    "mothers": 0
+  },
+  "questions": {}
+}

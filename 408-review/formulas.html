@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 公式速查 · 会推导就不必背</title>
+<style>
+:root{
+  --bg:#F6F5F1; --card:#FFFFFF; --border:rgba(0,0,0,0.15); --border2:rgba(0,0,0,0.26);
+  --text:#2C2C2A; --muted:#6B6A65; --faint:#9A9992;
+  --purple-50:#EEEDFE; --purple-600:#534AB7; --purple-800:#3C3489;
+  --teal-50:#E1F5EE; --teal-600:#0F6E56;
+  --blue-50:#E6F1FB; --blue-600:#185FA5; --blue-800:#0C447C;
+  --amber-50:#FAEEDA; --amber-600:#854F0B;
+  --red-50:#FCEBEB; --red-600:#A32D2D;
+  --gray-50:#F1EFE8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.7}
+main{max-width:980px;margin:0 auto;padding:32px 26px 90px}
+h1{font-size:20px;font-weight:500;margin-bottom:5px}
+.sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.nav a{font-size:12px;text-decoration:none;color:var(--blue-600);padding:5px 12px;border:1px solid var(--border);border-radius:999px;background:var(--card)}
+.nav a:hover{border-color:var(--blue-600)}
+.nav a.q{color:var(--purple-800);background:var(--purple-50)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+.toolbar input{font:inherit;font-size:13px;flex:1;min-width:220px;padding:9px 13px;border:1px solid var(--border2);border-radius:9px;background:var(--card);color:var(--text)}
+.toolbar input:focus{outline:none;border-color:var(--blue-600)}
+.btn{font:inherit;font-size:12px;padding:8px 13px;border:1px solid var(--border2);border-radius:8px;background:var(--card);color:var(--text);cursor:pointer}
+.btn:hover{border-color:var(--blue-600)}
+.count{font-size:12px;color:var(--faint)}
+details{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden}
+summary{list-style:none;cursor:pointer;padding:15px 20px;display:flex;align-items:baseline;gap:12px;border-bottom:1px solid transparent}
+summary::-webkit-details-marker{display:none}
+details[open] summary{border-bottom-color:var(--border)}
+summary .sn{font-size:15px;font-weight:500;color:var(--blue-800)}
+summary .ss{font-size:12px;color:var(--muted)}
+summary .sx{margin-left:auto;font-size:12px;color:var(--faint)}
+.body{padding:4px 20px 18px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-size:12px;font-weight:500;color:var(--muted);background:var(--gray-50)}
+tr:last-child td{border-bottom:none}
+td.f{width:30%;font-family:Consolas,"Courier New",monospace;font-size:12.5px;color:var(--blue-800);white-space:nowrap}
+td.d{width:48%}
+td.w{width:22%;font-size:12px;color:var(--red-600)}
+tr.hide{display:none}
+.practice{margin-top:14px;font-size:12px;display:flex;flex-wrap:wrap;gap:8px}
+.practice a{text-decoration:none;color:var(--purple-800);background:var(--purple-50);border-radius:8px;padding:5px 11px}
+.practice a:hover{background:#DED9FA}
+.note{background:var(--blue-50);border-radius:12px;padding:16px 20px;margin-top:22px;font-size:13px}
+.note h3{font-size:13px;font-weight:500;color:var(--blue-800);margin-bottom:7px}
+.note p{margin-bottom:6px}
+.note p:last-child{margin-bottom:0}
+.note b{color:var(--blue-800)}
+.planmap{background:var(--amber-50);border-radius:12px;padding:16px 20px;margin-top:14px;font-size:13px}
+.planmap b{color:var(--amber-600)}
+@media(max-width:700px){
+  td.f{width:auto;white-space:normal}
+  td.d,td.w{width:auto}
+  table,thead,tbody,tr,th,td{display:block}
+  thead{display:none}
+  tr{border-bottom:1px solid var(--border);padding:6px 0}
+  td{border:none;padding:3px 6px}
+  td.f{font-weight:500}
+}
+@media print{
+  body{background:#fff}
+  .nav,.toolbar,.count{display:none}
+  details{border:1px solid #ccc;break-inside:avoid}
+  details:not([open]) .body{display:block}
+  summary{border-bottom:1px solid #ddd}
+}
+</style>
+</head>
+<body>
+<h2 class="sr-only">408 四科选择题公式速查，含每条公式的推导起点与考场提醒</h2>
+<main>
+  <h1>408 公式速查 · 会推导就不必背</h1>
+  <div class="sub">四科 37 条选择题高频公式 · 每条给出推导起点 · 支持搜索、折叠与打印</div>
+
+  <div class="nav">
+    <a href="index.html">← 复习站总览</a>
+    <a href="plan.html">56 周练习计划</a>
+    <a href="https://01dingzu.github.io/quiz-app/#/learn" target="_blank">刷题程序 · 考点页</a>
+    <a class="q" href="https://01dingzu.github.io/quiz-app/" target="_blank">按考点组题</a>
+  </div>
+
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="搜公式或关键词：补码 / Cache / 香农 / 死锁 / 片偏移 / 流水线…" autocomplete="off">
+    <button class="btn" id="expand">展开全部</button>
+    <button class="btn" id="collapse">折叠全部</button>
+    <span class="count" id="count"></span>
+  </div>
+
+  <details open data-subject="ds">
+    <summary><span class="sn">数据结构</span><span class="ss">45 分 · 计数与树形结构为主</span><span class="sx">9 条</span></summary>
+    <div class="body">
+      <table>
+        <thead><tr><th>公式</th><th>怎么推出来的</th><th>考场提醒</th></tr></thead>
+        <tbody>
+          <tr data-kw="二叉树 叶子 度 n0 n2 结点"><td class="f">n₀ = n₂ + 1</td><td class="d">边数既等于 n−1（除根外每结点一条入边），又等于 n₁ + 2n₂；与 n = n₀+n₁+n₂ 相减即得</td><td class="w">只对二叉树成立</td></tr>
+          <tr data-kw="完全二叉树 高度 层数 log log2 叶子"><td class="f">h = ⌊log₂n⌋+1</td><td class="d">前 h−1 层满：2^(h−1)−1 &lt; n ≤ 2^h−1，两边取对数</td><td class="w">根算第 1 层</td></tr>
+          <tr data-kw="完全二叉树 叶子 编号 双亲 孩子"><td class="f">叶数 ⌈n/2⌉；双亲 ⌊i/2⌋，左孩 2i，右孩 2i+1</td><td class="d">层序编号下第 k 层是 2^(k−1) ~ 2^k−1，父子是翻倍/减半关系；后半编号都没有孩子</td><td class="w">编号从 1 起</td></tr>
+          <tr data-kw="压缩存储 三角矩阵 下标"><td class="f">下三角 k = i(i−1)/2 + j − 1</td><td class="d">前 i−1 行共 1+2+…+(i−1) = i(i−1)/2 个元素，再加本行第 j 个</td><td class="w">i ≥ j，下标从 1 起</td></tr>
+          <tr data-kw="哈夫曼 WPL 带权路径长度"><td class="f">WPL = 所有非叶结点权之和</td><td class="d">每次合并两最小，其和记为一个内部点；叶权每被合并一次就多算一层，累计次数恰等于深度</td><td class="w">路径长度数「边」不数「层」</td></tr>
+          <tr data-kw="二分查找 折半 比较次数"><td class="f">最多 ⌊log₂n⌋+1 次比较</td><td class="d">每比较一次区间减半，n/2^k ≤ 1 得 k ≥ log₂n</td><td class="w">成功/失败 ASL 要分开算</td></tr>
+          <tr data-kw="排序 下界 判定树 阶乘"><td class="f">⌈log₂(n!)⌉ ≈ n·log₂n − 1.44n</td><td class="d">n! 种排列各需一个判定树叶，树高至少 log₂(n!)，再用 Stirling 展开</td><td class="w">只约束比较排序</td></tr>
+          <tr data-kw="散列表 装填因子 ASL 线性探测"><td class="f">α = n/m；ASL成功 ≈ ½(1+1/(1−α))，失败 ≈ ½(1+1/(1−α)²)</td><td class="d">探测命中空槽服从几何分布，空槽率 1−α，平均探测次数 1/(1−α)</td><td class="w">成功与失败公式别记反</td></tr>
+          <tr data-kw="循环队列 队空 队满 元素个数 取模"><td class="f">个数 (rear−front+m)%m；队满 (rear+1)%m = front</td><td class="d">牺牲一格才能区分空与满；取模把环拉成直线</td><td class="w">看清 rear 指向队尾还是队尾后一位</td></tr>
+        </tbody>
+      </table>
+      <div class="practice"><a href="ds.html">去数据结构分卷练 →</a><a href="https://01dingzu.github.io/quiz-app/#/learn/lsn-ds-formula" target="_blank">刷题程序 · 数据结构公式卡</a></div>
+    </div>
+  </details>
+
+  <details open data-subject="coa">
+    <summary><span class="sn">计算机组成原理</span><span class="ss">45 分 · 范围、地址划分与时间</span><span class="sx">9 条</span></summary>
+    <div class="body">
+      <table>
+        <thead><tr><th>公式</th><th>怎么推出来的</th><th>考场提醒</th></tr></thead>
+        <tbody>
+          <tr data-kw="补码 范围 符号位 真值"><td class="f">n 位补码：−2^(n−1) ~ 2^(n−1)−1</td><td class="d">把符号位看成权 −2^(n−1)，其余 n−1 位全 1 是 2^(n−1)−1，两端相加</td><td class="w">原码/反码有 ±0，补码没有</td></tr>
+          <tr data-kw="移码 IEEE754 浮点数 阶码 偏置"><td class="f">[x]移 = 2^(n−1)+x；N = (−1)^s·1.M·2^(E−127)</td><td class="d">整体平移使负数变正便于比较阶码；E 只取 1~254（0/255 留给非规格化与无穷/NaN），故真指数 −126 ~ +127</td><td class="w">双精度偏置是 1023</td></tr>
+          <tr data-kw="海明码 校验位 码距 纠错"><td class="f">2^k ≥ n+k+1；检 t 错 d ≥ t+1，纠 t 错 d ≥ 2t+1</td><td class="d">k 位校验共 2^k 种症状，要覆盖 n+k 个位置各错一种再加无错；纠错要求各码字半径 t 的球互不相交</td><td class="w">n 是信息位，不是总位数</td></tr>
+          <tr data-kw="Cache 地址划分 组相联 命中率 平均访存"><td class="f">地址 = tag + 组号 s + 块内 b；s = log₂组数，b = log₂块大小；t = h·t_c+(1−h)·t_m</td><td class="d">主存块按块号 mod 组数入组，块号低 s 位即组号、高位是 tag；平均时间是命中/未命中的全概率加权</td><td class="w">串行访问与并行访问结果不同</td></tr>
+          <tr data-kw="流水线 吞吐率 加速比 时间"><td class="f">T = (k+n−1)Δt；S = nk/(k+n−1) → k；E = n/(k+n−1)</td><td class="d">首条要 k 拍充满流水线，之后每拍流出一条；串行需 nk 拍，一除就是加速比</td><td class="w">有冒险时要加停顿拍</td></tr>
+          <tr data-kw="CPU时间 CPI MIPS 主频"><td class="f">CPU时间 = I×CPI/f；MIPS = f/(CPI×10⁶)</td><td class="d">总周期数 = 指令数 × 平均周期数，再除以频率换成秒</td><td class="w">CPI 要按指令类型加权</td></tr>
+          <tr data-kw="Amdahl 加速比 并行"><td class="f">S = 1/[(1−f) + f/s]</td><td class="d">归一化原时间为 1，不可加速部分 1−f 不变，可加速部分压缩为 f/s</td><td class="w">f 是「占比」不是「倍数」</td></tr>
+          <tr data-kw="总线 带宽 频率 宽度"><td class="f">带宽 = (宽度/8) × 频率 × 每周期传送次数</td><td class="d">一次传多少字节 × 每秒传几次</td><td class="w">宽度常给「位」，要除以 8</td></tr>
+          <tr data-kw="磁盘 存取时间 旋转延迟 寻道"><td class="f">平均存取 = 寻道 + 1/(2r) + 数据量/(r×每道容量)</td><td class="d">平均等半圈；传输率 = 每道容量 × 每秒转速</td><td class="w">r 用「转/秒」</td></tr>
+        </tbody>
+      </table>
+      <div class="practice"><a href="coa.html">去组成原理分卷练 →</a><a href="https://01dingzu.github.io/quiz-app/#/learn/lsn-coa-formula" target="_blank">刷题程序 · 组原公式卡</a></div>
+    </div>
+  </details>
+
+  <details open data-subject="os">
+    <summary><span class="sn">操作系统</span><span class="ss">35 分 · 调度、死锁、地址换算</span><span class="sx">9 条</span></summary>
+    <div class="body">
+      <table>
+        <thead><tr><th>公式</th><th>怎么推出来的</th><th>考场提醒</th></tr></thead>
+        <tbody>
+          <tr data-kw="周转时间 带权 等待 调度"><td class="f">周转 = 完成−到达；带权 = 周转/服务</td><td class="d">定义；除以服务时间消掉长作业天然吃亏的偏差</td><td class="w">等待 = 周转 − 服务</td></tr>
+          <tr data-kw="高响应比 HRRN 响应比 调度"><td class="f">响应比 = (等待+服务)/服务 = 1 + 等待/服务</td><td class="d">等得久分子变大、短作业分母小，两个诉求同时被照顾</td><td class="w">每次调度完要重算</td></tr>
+          <tr data-kw="死锁 最少资源 银行家 安全序列"><td class="f">不死锁最少同类资源 = n(m−1)+1</td><td class="d">最坏每进程各占 m−1 个、都差最后 1 个；多给 1 个必有一进程凑齐，完成后释放唤醒全链</td><td class="w">只对「同类资源、一次性申请」成立</td></tr>
+          <tr data-kw="银行家算法 Need 安全性 死锁 安全序列 资源分配"><td class="f">Need = Max − Allocation；从 Work = Available 反复找 Need ≤ Work</td><td class="d">模拟「假设批给它，它能否完成并归还」，能排完就存在安全序列</td><td class="w">安全序列不唯一，找到一个即可</td></tr>
+          <tr data-kw="分页 地址转换 页号 页内偏移"><td class="f">页号 = ⌊逻辑地址/页大小⌋；物理地址 = 页框号×页大小 + 页内偏移</td><td class="d">页内偏移映射前后不变，只替换页框基址</td><td class="w">页大小通常是 2 的幂，直接切低位</td></tr>
+          <tr data-kw="页表 多级页表 页表项 级数"><td class="f">页表项数 = 2^(页号位数)；每级索引 = log₂(页大小/表项大小)</td><td class="d">页表必须刚好装进一页，才能用一级索引直接定位下一级</td><td class="w">别忘算页表自身占几页</td></tr>
+          <tr data-kw="EAT TLB 有效访问时间 命中率"><td class="f">无 TLB：2t；有 TLB：h(t_TLB+t)+(1−h)(t_TLB+2t)</td><td class="d">命中只访存一次，未命中多访一次页表，再按命中率加权</td><td class="w">看清 TLB 查询是否与访存重叠</td></tr>
+          <tr data-kw="索引分配 最大文件 文件长度"><td class="f">最大文件 = (直接块 + B/a + (B/a)² + …) × B</td><td class="d">一个 B 字节索引块能存 B/a 个盘块地址（a 为地址长度），二级索引是两层相乘</td><td class="w">a 用字节数，别用位数</td></tr>
+          <tr data-kw="位示图 字号 位号 空闲块"><td class="f">字号 = ⌊块号/w⌋，位号 = 块号 mod w</td><td class="d">一位对应一块的线性映射</td><td class="w">0 有时表示已分配，看题设</td></tr>
+        </tbody>
+      </table>
+      <div class="practice"><a href="os.html">去操作系统分卷练 →</a><a href="https://01dingzu.github.io/quiz-app/#/learn/lsn-os-formula" target="_blank">刷题程序 · OS 公式卡</a></div>
+    </div>
+  </details>
+
+  <details open data-subject="net">
+    <summary><span class="sn">计算机网络</span><span class="ss">25 分 · 率、时延、窗口与地址</span><span class="sx">10 条</span></summary>
+    <div class="body">
+      <table>
+        <thead><tr><th>公式</th><th>怎么推出来的</th><th>考场提醒</th></tr></thead>
+        <tbody>
+          <tr data-kw="奈奎斯特 奈氏 香农 带宽 信噪比 dB"><td class="f">R = 2W·log₂V；C = W·log₂(1+S/N)</td><td class="d">带宽 W 的信道每秒最多 2W 个独立码元（采样定理），每码元带 log₂V 位；香农是噪声下的信息论上限。dB = 10·log₁₀(S/N)，故 S/N = 10^(dB/10)</td><td class="w">先由 dB 还原线性比值</td></tr>
+          <tr data-kw="发送时延 传播时延 时延带宽积"><td class="f">发送 = L/R；传播 = d/v；时延带宽积 = 传播时延 × R</td><td class="d">定义；时延带宽积是链路上「在途」的最大比特数</td><td class="w">先统一 Mb 与 MB、ms 与 μs</td></tr>
+          <tr data-kw="停等 利用率 滑动窗口 信道利用率"><td class="f">停等 U = 1/(1+2a)，a = 传播/发送；窗口 U = min(1, W/(1+2a))</td><td class="d">发完一帧要 L/R，最早也要再等 2×传播时延才收到 ACK；窗口内 W 帧可连发填补空档</td><td class="w">a 是两个时延之比，别写成倒数</td></tr>
+          <tr data-kw="GBN SR 滑动窗口 序号位数 后退N帧 选择重传"><td class="f">GBN 发送窗 ≤ 2^k−1；SR 收发窗各 ≤ 2^(k−1)</td><td class="d">k 位序号只有 2^k 个编号；SR 要求收发窗口之和不超编号空间，否则新帧与重传旧帧序号混淆</td><td class="w">GBN 接收窗恒为 1</td></tr>
+          <tr data-kw="CSMA/CD 最小帧长 争用期 碰撞"><td class="f">最小帧长 = 2τ×R（τ 为单程传播时延）</td><td class="d">最远端冲突要 2τ 才传回来，帧必须此刻还在发才能检测到；10Mb/s × 51.2μs = 512bit = 64B</td><td class="w">τ 是单程，2τ 是往返</td></tr>
+          <tr data-kw="二进制指数退避 冲突 重传"><td class="f">r ∈ [0, 2^k−1]，k = min(重传次数, 10)；退避 512 bit time × r</td><td class="d">冲突越多随机范围翻倍，压低再次碰撞概率；16 次仍失败则丢弃</td><td class="w">k 上限 10，不是无限翻倍</td></tr>
+          <tr data-kw="CIDR 子网 主机数 网络地址 广播地址"><td class="f">/n：地址数 2^(32−n)，可用主机数 = 2^(32−n) − 2</td><td class="d">主机位全 0 是网络地址、全 1 是广播地址，各占掉一个</td><td class="w">/31、/32 点对点链路例外</td></tr>
+          <tr data-kw="IP 分片 片偏移 MF DF"><td class="f">片偏移 = 该片数据首字节 / 8</td><td class="d">偏移字段以 8 字节为单位计数，故除末片外每片数据长度必须是 8 的倍数</td><td class="w">偏移不含首部长度</td></tr>
+          <tr data-kw="距离向量 RIP Bellman-Ford"><td class="f">D_x(y) = min_v { c(x,v) + D_v(y) }</td><td class="d">到 y 的最优路径必经某个邻居 v，取「到 v 的链路代价 + v 通告的距离」最小</td><td class="w">坏消息传得慢，要逐轮迭代</td></tr>
+          <tr data-kw="TCP RTO RTT 超时重传 慢启动 拥塞窗口 吞吐"><td class="f">RTO = RTT_s + 4·RTT_D；慢启动 cwnd 每 RTT 翻倍；吞吐 ≈ min(cwnd, rwnd)/RTT</td><td class="d">指数加权平滑滤抖动、加 4 倍偏差覆盖波动；每收一个 ACK 加 1 MSS，一轮 ACK 数约等于 cwnd 故指数增长</td><td class="w">超时 ssthresh = cwnd/2 且 cwnd 回 1</td></tr>
+        </tbody>
+      </table>
+      <div class="practice"><a href="net.html">去计算机网络分卷练 →</a><a href="https://01dingzu.github.io/quiz-app/#/learn/lsn-net-formula" target="_blank">刷题程序 · 网络公式卡</a></div>
+    </div>
+  </details>
+
+  <div class="note">
+    <h3>三条抓手（忘了公式就现推）</h3>
+    <p><b>范围 / 容量类</b>都从「位数或边数守恒」来：补码看符号位权、树看边数、Cache 看地址位数、CIDR 看主机位。</p>
+    <p><b>时间类</b>都是「一次多少 × 多少次」：流水线 k+(n−1) 拍、CPU 时间 I×CPI/f、磁盘等半圈、CSMA/CD 等 2τ。</p>
+    <p><b>率类</b>都是「有效部分 / 总部分」：命中率加权、停等利用率 1/(1+2a)、Amdahl 的 (1−f)+f/s、窗口占编号空间的比例。</p>
+  </div>
+
+  <div class="note">
+    <h3>还有几类「看着像公式、其实是逐层套定义」</h3>
+    <p>B 树高度与最少关键字数（每层至少 ⌈m/2⌉ 棵子树递推）、AOE 关键路径 ve/vl/e/l、磁盘调度平均寻道长度、UDP 与 IP 检验和的反码加法、CIDR 最长前缀聚合、扩展操作码条数、Cache 与页表的组合命中率。做法都是分层算，不必背结论。</p>
+    <p><b>单位先统一：</b>速率 Mb/s = 10⁶ b/s，容量 1K = 2¹⁰，1B = 8b。时延题几乎每年都有人栽在 Mb 与 MB、ms 与 μs 上。</p>
+  </div>
+
+  <div class="planmap">
+    <b>与 56 周计划对号：</b>公式集中落在 W5–W36 的分科推进周（DS → 组原 → OS → 网络），每个 4 周块的回炉周用「只看错题」把这些计算题再过一遍；<a href="plan.html">W54「高频结论默写」</a>专门用来脱稿默写本页，W55 考前保温只看错题与四科总纲。冲刺阶段建议直接打印本页当清单。
+  </div>
+
+  <div class="note">
+    <p><b>版权说明：</b>本页公式与推导均为通用学科结论与自撰讲解，不含真题原文；分卷与考点卡的练习题全部自编。真题请配合官方渠道与正版教材使用。</p>
+  </div>
+</main>
+
+<script>
+(function(){
+  var rows = [].slice.call(document.querySelectorAll('tr[data-kw]'));
+  var box = document.getElementById('q');
+  var count = document.getElementById('count');
+  var total = rows.length;
+  function render(){
+    var s = (box.value || '').trim().toLowerCase();
+    var shown = 0;
+    rows.forEach(function(tr){
+      var hay = (tr.getAttribute('data-kw') + ' ' + tr.textContent).toLowerCase();
+      var hit = !s || hay.indexOf(s) >= 0;
+      tr.classList.toggle('hide', !hit);
+      if (hit) shown++;
+    });
+    [].slice.call(document.querySelectorAll('details')).forEach(function(d){
+      var any = [].slice.call(d.querySelectorAll('tr[data-kw]')).some(function(tr){ return !tr.classList.contains('hide'); });
+      if (s && any) d.open = true;
+      var n = [].slice.call(d.querySelectorAll('tr[data-kw]')).filter(function(tr){ return !tr.classList.contains('hide'); }).length;
+      var sx = d.querySelector('.sx');
+      if (sx) sx.textContent = n + ' 条';
+    });
+    count.textContent = s ? ('匹配 ' + shown + ' / ' + total + ' 条') : ('共 ' + total + ' 条');
+  }
+  box.addEventListener('input', render);
+  document.getElementById('expand').addEventListener('click', function(){
+    [].slice.call(document.querySelectorAll('details')).forEach(function(d){ d.open = true; });
+  });
+  document.getElementById('collapse').addEventListener('click', function(){
+    [].slice.call(document.querySelectorAll('details')).forEach(function(d){ d.open = false; });
+  });
+  render();
+})();
+</script>
+</body>
+</html>

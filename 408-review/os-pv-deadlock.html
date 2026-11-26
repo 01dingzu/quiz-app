@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 复习站 · 操作系统：PV 操作与死锁</title>
+<style>
+:root{
+  --bg:#F6F5F1; --card:#FFFFFF; --border:rgba(0,0,0,0.15);
+  --text:#2C2C2A; --muted:#6B6A65;
+  --purple-50:#EEEDFE; --purple-600:#534AB7; --purple-800:#3C3489;
+  --teal-50:#E1F5EE; --teal-600:#0F6E56;
+  --red-50:#FCEBEB; --red-600:#A32D2D;
+  --green-50:#EAF3DE; --green-600:#3B6D11;
+  --amber-50:#FAEEDA; --amber-600:#854F0B;
+  --blue-50:#E6F1FB; --blue-600:#185FA5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.7}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+header.top{position:sticky;top:0;z-index:10;background:rgba(246,245,241,0.95);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header.top h1{font-size:15px;font-weight:500}
+header.top .stat{font-size:12px;color:var(--muted)}
+header.top .stat b{color:var(--red-600)}
+header.top .spacer{flex:1}
+.btn{border:1px solid var(--border);background:var(--card);border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;color:var(--text)}
+.btn:hover{background:var(--purple-50);border-color:var(--purple-600)}
+.btn.active{background:var(--purple-50);border-color:var(--purple-600);color:var(--purple-800)}
+nav.side{position:fixed;top:56px;left:0;bottom:0;width:216px;padding:18px 14px;border-right:1px solid var(--border);overflow-y:auto}
+nav.side a{display:block;padding:6px 10px;border-radius:8px;color:var(--text);text-decoration:none;font-size:13px;margin-bottom:2px}
+nav.side a:hover{background:var(--purple-50);color:var(--purple-800)}
+nav.side .grp{font-size:11px;color:var(--muted);margin:12px 0 4px 10px}
+main{margin-left:216px;padding:24px 32px 80px;max-width:920px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;margin-bottom:22px}
+.card h2{font-size:15px;font-weight:500;margin-bottom:4px}
+.card .sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.card h3{font-size:13px;font-weight:500;margin:16px 0 8px;color:var(--purple-800)}
+.learn{background:var(--purple-50);border-radius:10px;padding:14px 16px;margin:10px 0}
+.learn p{margin-bottom:8px}
+.learn p:last-child{margin-bottom:0}
+.learn code,.exa code,.q code{font-family:Consolas,monospace;font-size:13px;background:rgba(0,0,0,0.05);padding:1px 5px;border-radius:4px}
+.exa{background:var(--teal-50);border-radius:10px;padding:14px 16px;margin:10px 0}
+.exa .tag{display:inline-block;font-size:11px;color:var(--teal-600);margin-bottom:6px}
+.exa .stem{margin-bottom:8px}
+.exa details,.qz .ans-toggle{margin-top:8px}
+.exa summary{cursor:pointer;font-size:13px;font-weight:500;color:var(--teal-600)}
+.exa pre{background:#FFFFFF;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:13px;overflow-x:auto;margin:8px 0;white-space:pre}
+.tip{font-size:12px;color:var(--muted);margin-top:6px}
+.tip b{color:var(--red-600);font-weight:500}
+.qz-head{display:flex;align-items:center;gap:10px;margin:18px 0 10px}
+.qz-head .num{font-size:12px;color:var(--muted)}
+.q{border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;background:#FDFCFA}
+.q .meta{font-size:11px;color:var(--muted);margin-bottom:6px}
+.q .meta .diff{color:var(--amber-600)}
+.q .stem{margin-bottom:10px}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--border);background:#FFFFFF;border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer;margin-bottom:6px;color:var(--text);font-family:inherit}
+.opt:hover{border-color:var(--purple-600)}
+.opt.correct{background:var(--green-50);border-color:var(--green-600);color:var(--green-600)}
+.opt.wrong{background:var(--red-50);border-color:var(--red-600);color:var(--red-600)}
+.q.done .opt{cursor:default;opacity:0.85}
+.q .exp{display:none;margin-top:8px;font-size:13px;background:var(--blue-50);border-radius:8px;padding:10px 12px}
+.q.done .exp{display:block}
+.q .exp b{color:var(--blue-600);font-weight:500}
+.essay{background:var(--amber-50);border-radius:10px;padding:14px 16px;margin:10px 0}
+.essay summary{cursor:pointer;font-size:13px;font-weight:500;color:var(--amber-600)}
+.essay pre{background:#FFFFFF;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:13px;overflow-x:auto;margin:8px 0;white-space:pre}
+body.wrongonly .q:not(.wrong){display:none}
+body.wrongonly .learn,body.wrongonly .exa,body.wrongonly .essay,body.wrongonly .qz-head{display:none}
+body.wrongonly .card h2,body.wrongonly .card .sub{opacity:0.5}
+.banner{display:none;background:var(--red-50);border-radius:8px;padding:8px 14px;font-size:12px;color:var(--red-600);margin-bottom:16px}
+body.wrongonly .banner{display:block}
+</style>
+</head>
+<body>
+<h2 class="sr-only">408 操作系统 PV 操作与死锁：考点讲解、例题推演与互动练习题</h2>
+
+<header class="top">
+  <h1>408 复习站 · 操作系统：PV 操作与死锁（试点章节）</h1>
+  <span class="stat">已做 <span id="doneNum">0</span>/<span id="totalNum">0</span> · 错题 <b id="wrongNum">0</b> 道</span>
+  <span class="spacer"></span>
+  <button class="btn" id="btnWrong">只看错题</button>
+  <button class="btn" id="btnReset">重置记录</button>
+</header>
+
+<nav class="side">
+  <div class="grp">本章内容</div>
+  <a href="#sec0">使用说明</a>
+  <a href="#sec1">考点 1 · 信号量与 PV 基础</a>
+  <a href="#sec2">考点 2 · 生产者-消费者</a>
+  <a href="#sec3">考点 3 · 读者-写者</a>
+  <a href="#sec4">考点 4 · 哲学家与死锁预防</a>
+  <a href="#sec5">考点 5 · 死锁与银行家算法</a>
+  <a href="#sec6">综合大题（考场同款）</a>
+</nav>
+
+<main>
+<div class="banner" id="banner"></div>
+
+<section class="card" id="sec0">
+  <h2>使用说明</h2>
+  <div class="sub">试点章节 · 定风格用</div>
+  <div class="learn">
+    <p>每个考点 = <b>重点讲解</b>（一屏读完）→ <b>例题</b>（带完整推演，先自己想再展开）→ <b>练习题</b>（点选项即判分，答完显示解析）。</p>
+    <p>错题自动记录在浏览器本地（localStorage），点右上角"只看错题"可二刷；"重置记录"清空重新来。</p>
+    <p>题目全部为<b>自编仿真题</b>，考点与考法对标真题，不收录真题原文。真题请配合官方渠道或正版教材使用。</p>
+  </div>
+</section>
+
+<section class="card" id="sec1">
+  <h2>考点 1 · 信号量与 PV 操作基础</h2>
+  <div class="sub">选择题必考 · 记录型信号量的值是判断一切的钥匙</div>
+
+  <div class="learn">
+    <p><b>信号量 S</b> = 一个整型值 value + 一个等待队列。<b>P 操作</b>（wait）：value 减 1，若减完 value &lt; 0 则进程阻塞入队；<b>V 操作</b>（signal）：value 加 1，若加完 value ≤ 0 则从队头唤醒一个进程。</p>
+    <p><b>value 的含义</b>：正值 = 还可用的资源数；0 = 资源刚好用完、无人排队；<b>负值 = 绝对值就是阻塞等待的进程数</b>。这一条能秒杀一半的选择题。</p>
+    <p><b>初值怎么定</b>：互斥信号量初值 = 1；同步信号量初值 = 可用资源个数（如缓冲区空位数）。</p>
+    <p><b>P/V 都是原语</b>：执行过程不可中断，这是保证计数值不出错的根本。</p>
+    <p><b>易错：同步 P 在前、互斥 P 在后。</b>顺序颠倒可能导致持有互斥锁的进程去等一个永远等不到的资源——死锁。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 1 · 值的推演</span>
+    <div class="stem">信号量 S 初值为 2，当前值为 -1。此时等待队列中有几个进程？若再执行一次 V 操作，S 的值变为多少，队列状态如何？</div>
+    <details><summary>展开完整推演</summary>
+      <p>第一步：当前值 -1 &lt; 0，负值的绝对值 = 阻塞进程数，所以等待队列中有 <b>1 个进程</b>。</p>
+      <p>第二步：执行 V：value 加 1，-1 + 1 = <b>0</b>。因为加完 ≤ 0，说明还有进程在等，于是<b>唤醒队列中的一个进程</b>，该进程进入就绪态。</p>
+      <p>第三步：此时 value = 0，队列变空。注意 V 之后 value = 0 不是"没资源"，而是"资源刚被唤醒者领走、无人排队"。</p>
+      <p class="tip"><b>答：</b>等待 1 个进程；V 后 S = 0，唤醒一个进程后队列空。</p>
+    </details>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 2 · 顺序颠倒的死锁推演</span>
+    <div class="stem">生产者-消费者问题中，把生产者的 <code>P(mutex)</code> 写在 <code>P(empty)</code> 之前，且缓冲区已满。推演会发生什么。</div>
+    <details><summary>展开完整推演</summary>
+      <p>设 mutex=1、empty=0（满）、full=n。生产者进入：</p>
+      <pre>P(mutex)   成功，mutex 变 0，生产者拿到锁
+P(empty)   empty 变 -1，生产者阻塞，等待空位
+消费者     想取产品，执行 P(full) 成功，
+           接着 P(mutex) —— 但 mutex 是 0，
+           被持锁的生产者占着，消费者阻塞</pre>
+      <p>结论：生产者锁着门等空位，消费者有资格腾空位却进不了门——<b>两个进程互相等待，死锁</b>。所以"同步 P 在前，互斥 P 在后"不是风格问题，是正确性问题。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec1"></span></div>
+  <div id="qz-sec1"></div>
+</section>
+
+<section class="card" id="sec2">
+  <h2>考点 2 · 生产者-消费者问题</h2>
+  <div class="sub">大题第一模板 · 必须做到默写零错</div>
+
+  <div class="learn">
+    <p><b>标准模板</b>（缓冲区 n 个，多生产者多消费者）：</p>
+    <pre>semaphore mutex = 1;   // 互斥访问缓冲区
+semaphore empty = n;   // 空位数（同步）
+semaphore full  = 0;   // 产品数（同步）
+
+生产者:                     消费者:
+while(true){                while(true){
+  生产一个产品;                P(full);
+  P(empty);                   P(mutex);
+  P(mutex);                   从缓冲区取产品;
+  放入缓冲区;                 V(mutex);
+  V(mutex);                   V(empty);
+  V(full);                    消费产品;
+}                           }</pre>
+    <p><b>三条铁律</b>：① 两个 P 不可交换（同步在前）；② 两个 V 可以交换（V 不会阻塞）；③ mutex、empty、full 各司其职，多对生产者消费者时 mutex 仍只需 1 个。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 初值设定与死锁时序</span>
+    <div class="stem">缓冲区容量为 3，两个生产者、一个消费者。写出三个信号量的初值；并说明若消费者写成 <code>P(mutex); P(full);</code>，在缓冲区为空时的死锁时序。</div>
+    <details><summary>展开完整推演</summary>
+      <p><b>初值：</b>mutex = 1（临界区只容一个）；empty = 3（3 个空位）；full = 0（初始无产品）。与生产者消费者个数无关——它们保护的是缓冲区，不是进程。</p>
+      <p><b>死锁时序</b>（初始 empty=3, full=0）：</p>
+      <pre>t1  消费者 P(mutex) → mutex=0，拿到锁
+t2  消费者 P(full)  → full=-1，阻塞等产品
+t3  生产者 P(empty) → empty=2，成功
+t4  生产者 P(mutex) → mutex=-1，阻塞等锁
+    ⇒ 消费者等"产品"，生产者等"锁"，
+      锁在等"产品"的人手里。死锁。</pre>
+      <p class="tip"><b>要点：</b>给"为什么死锁"写答案时，按 t1~t4 这种<b>编号时序</b>写，阅卷最清晰。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec2"></span></div>
+  <div id="qz-sec2"></div>
+</section>
+
+<section class="card" id="sec3">
+  <h2>考点 3 · 读者-写者问题</h2>
+  <div class="sub">选择题考变体识别 · 大题考模板默写</div>
+
+  <div class="learn">
+    <p><b>读者优先模板</b>（允许多读者并发，读者来了不用等写者以外的任何人）：</p>
+    <pre>int count = 0;            // 正在读的读者数
+semaphore mutex = 1;      // 保护 count 的互斥
+semaphore w = 1;          // 读写互斥、写写互斥
+
+读者:                       写者:
+P(mutex);                   P(w);
+if(count==0) P(w);          写;
+count++;                    V(w);
+V(mutex);
+读;
+P(mutex);
+count--;
+if(count==0) V(w);
+V(mutex);</pre>
+    <p><b>两行灵魂代码</b>：只有第一个读者 <code>P(w)</code>（把写者挡在门外），只有最后一个读者 <code>V(w)</code>（放写者进来）。count 为什么要 mutex 保护？——两个读者同时发现 count==0，会各自 P(w) 一次，第二个读者自己把自己锁死在门外。</p>
+    <p><b>写者优先</b>：再加一个排队信号量（如 <code>queue</code>）+ 写者计数，使"写者之后到达的读者"排在写者后面，防止读者流饿死写者。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 谁来 V(w)</span>
+    <div class="stem">读者 R1 正在读。R2、R3 相继到达，随后 R1 退出、R2 退出、R3 退出。问：哪几次操作执行了 P(w)？哪一次执行了 V(w)？逐次推演 count 的值。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>      count 动作            count   w
+R1到  P(mutex);count==0→P(w)  0→1   1→0 持有
+R2到  count==1,不P(w)         1→2   仍0
+R3到  count==2,不P(w)         2→3   仍0
+R1退  count-- → 不是0,不V(w)  3→2   仍0
+R2退  count-- → 不是0,不V(w)  2→1   仍0
+R3退  count-- → 等于0→V(w)    1→0   0→1 释放</pre>
+      <p><b>答：</b>P(w) 只在 R1 进入时执行一次；V(w) 只在最后一个退出的 R3 处执行。中间的读者进出只动 count。</p>
+      <p class="tip"><b>考点化：</b>这类推演做成选择题，常把"最后一个退出的读者"换成"第一个读者"当干扰项——记住 V(w) 永远跟着 count 归零走。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec3"></span></div>
+  <div id="qz-sec3"></div>
+</section>
+
+<section class="card" id="sec4">
+  <h2>考点 4 · 哲学家进餐与死锁预防</h2>
+  <div class="sub">选择题考"打破了哪个条件" · 必须能对号入座</div>
+
+  <div class="learn">
+    <p><b>死锁四个必要条件</b>：互斥、请求与保持（拿着手里的还要等新的）、不可剥夺、循环等待。破坏任何一个即可预防。</p>
+    <p><b>哲学家死锁成因</b>：5 人同时拿起左筷子，每人都在等右筷子 → 循环等待。</p>
+    <p><b>三种经典解法与对应的"破坏对象"</b>：</p>
+    <pre>① 最多允许 4 人同时拿筷子 → 破坏循环等待
+② 奇数号先拿左、偶数号先拿右 → 破坏循环等待
+③ 一次性拿齐两根（要么全拿要么不拿）→ 破坏请求与保持</pre>
+    <p><b>易混淆点</b>：①② 方案下"先拿一根再等一根"的持有行为还在，所以不是破坏请求与保持；③ 才是。银行家算法属于"避免"，不是"预防"——预防是静态破坏条件，避免是动态判断安全性。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 奇偶方案为什么有效</span>
+    <div class="stem">哲学家 P0~P4 围坐，筷子编号 0~4，P<sub>i</sub> 左手是 i 号、右手是 (i+1)%5 号。采用"奇数号先左后右、偶数号先右后左"。推演为什么不会死锁。</div>
+    <details><summary>展开完整推演</summary>
+      <p>看最关键的 P0（偶，先右即先拿 1 号）和 P1（奇，先左即先拿 1 号）：两人<b>争同一根筷子</b>，必然一人拿走、另一人阻塞——至少一根筷子始终有人用。</p>
+      <p>逐条检查：P0 拿 1 号成功 → P1 阻塞在 1 号；P2（偶，先拿 3 号）；P3（奇，先拿 3 号）与 P2 竞争；P4（偶，先拿 0 号）。</p>
+      <p>若 5 人同时行动：P0 持 1 等 0，P4 持 0 等 4，P3 或 P2 之一持 3 等 2/4……任何时刻总存在"持有一根、竞争同一根"的赢家，资源链不会闭合成环。<b>环路被打断，死锁无法形成。</b></p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec4"></span></div>
+  <div id="qz-sec4"></div>
+</section>
+
+<section class="card" id="sec5">
+  <h2>考点 5 · 死锁、安全状态与银行家算法</h2>
+  <div class="sub">大题必考计算 · Need = Max - Allocation 是入口</div>
+
+  <div class="learn">
+    <p><b>三个必背关系</b>：Need = Max − Allocation；安全序列存在 ⇔ 系统安全；<b>安全状态一定无死锁，不安全状态不一定死锁</b>（只是可能死锁）。</p>
+    <p><b>银行家算法（避免）</b>：每次分配前试探，找一个进程使 Need ≤ Available，模拟其归还后 Available 增大，继续找——全部能找完则存在安全序列，分配；否则拒绝。</p>
+    <p><b>死锁处理三档策略</b>：预防（静态破坏条件）&lt; 避免（动态安全判断）&lt; 检测+解除（鸵鸟之外的兜底，解除手段：剥夺资源、撤销进程）。</p>
+    <p><b>资源分配图有环 ≠ 死锁</b>：每类资源只有 1 个时，环路 ⇔ 死锁；资源有多个时，环路可能化简（死锁定理：不可化简才是死锁）。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 银行家算法全流程推演</span>
+    <div class="stem">系统有两类资源 R1、R2，共 4 个 R1、4 个 R2。当前分配如下（每格为 R1, R2）：
+      <pre>     Allocation   Max      Need
+P0     1,1        2,2      1,1
+P1     2,0        3,1      1,1
+P2     0,1        2,2      2,1
+Available = 4-3=1, 4-2=2 → (1,2)</pre>
+      求安全序列。</div>
+    <details><summary>展开完整推演</summary>
+      <p>Available = (1, 2)。逐个找 Need ≤ Available 的进程：</p>
+      <pre>试 P0: Need(1,1) ≤ (1,2) ✓
+  假装运行完归还：Avail = (1,2)+(1,1) = (2,3)
+试 P1: Need(1,1) ≤ (2,3) ✓
+  归还：Avail = (2,3)+(2,0) = (4,3)
+试 P2: Need(2,1) ≤ (4,3) ✓
+  归还：Avail = (4,3)+(0,1) = (4,4) = 全部资源 ✓</pre>
+      <p><b>答：</b>存在安全序列 &lt;P0, P1, P2&gt;，系统安全，可以分配。（若先试 P2：Need(2,1) 中 2 &gt; 1，不满足——P2 必须排后面，这正是"序列"的含义。）</p>
+      <p class="tip"><b>书写模板：</b>每步写三样——比较式、归还后 Avail、打勾结论。按这个格式写，计算大题不给阅卷扣分的机会。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec5"></span></div>
+  <div id="qz-sec5"></div>
+</section>
+
+<section class="card" id="sec6">
+  <h2>综合大题（考场同款）</h2>
+  <div class="sub">限时 15 分钟 · 先自己写伪代码再展开答案对照</div>
+
+  <div class="essay" id="essay1">
+    <b>题目：</b>桌上有一个盘子，<b>每次只能放一个水果</b>。父亲专门向盘中放苹果，母亲专门向盘中放橘子；儿子专门等吃盘中的橘子，女儿专门等吃盘中的苹果。请用信号量机制实现父亲、母亲、儿子、女儿四个进程的同步与互斥，写出信号量定义和各进程的伪代码，并说明每个信号量的含义与初值理由。
+  </div>
+  <div class="essay">
+    <details><summary>展开参考答案与推演</summary>
+      <pre>semaphore plate  = 1;   // 盘子空位：既是互斥（一次一个）
+                        // 也是同步（空了才能放）
+semaphore apple  = 0;   // 盘中苹果数
+semaphore orange = 0;   // 盘中橘子数
+
+父亲:                        母亲:
+while(true){                 while(true){
+  准备苹果;                    准备橘子;
+  P(plate);                    P(plate);
+  苹果放入盘;                  橘子放入盘;
+  V(apple);                    V(orange);
+}                            }
+
+女儿:                        儿子:
+while(true){                 while(true){
+  P(apple);                    P(orange);
+  从盘取苹果;                  从盘取橘子;
+  V(plate);                    V(plate);
+  吃苹果;                      吃橘子;
+}                            }</pre>
+      <p><b>推演要点：</b></p>
+      <p>① "每次只能放一个"是互斥约束，但盘子放水果→有人取走是同步链条，这里 plate = 1 一箭双雕：有水果在盘时 plate = 0，另一个放水果的人自然被挡住。</p>
+      <p>② apple、orange 初值 0：初始盘中无水果，子女必须等父母先放。</p>
+      <p>③ <b>同步 P 在前、互斥 P 在后</b>的纪律在本题的体现：子女先 P(apple)/P(orange) 再动盘子，若颠倒（先 P(plate)），盘中无水果时子女会抱着盘子空等——另一路放水果的人被 plate 挡住，形成死锁。</p>
+      <p>④ 阅卷给分点：信号量定义与初值理由、四段伪代码、V 的位置（取走后释放盘子）。按此三点自查。</p>
+    </details>
+  </div>
+</section>
+
+</main>
+
+<script>
+const QS = [
+  {id:"p1q1", sec:"sec1", diff:"★", stem:"记录型信号量 S 初值为 3，先后执行了 2 次 P 操作和 1 次 V 操作（均已完整执行）。此时 S 的值与等待队列中的进程数为：",
+   opts:["S = 2，0 个进程等待","S = 2，1 个进程等待","S = 3，0 个进程等待","S = 1，0 个进程等待"], ans:0,
+   exp:"S = 3 − 2 + 1 = 2。正值表示还有 2 个可用资源，没有人需要阻塞，等待队列空。"},
+  {id:"p1q2", sec:"sec1", diff:"★", stem:"用信号量实现 n 个进程互斥访问一个临界资源时，信号量初值通常应设为：",
+   opts:["0","1","n","−1"], ans:1,
+   exp:"同一时刻只允许 1 个进程进入临界区，可用资源数就是 1，所以初值取 1。若初值取 n，n 个进程可同时进入，互斥失效。"},
+  {id:"p1q3", sec:"sec1", diff:"★★", stem:"某记录型信号量当前值为 −3。下列说法正确的是：",
+   opts:["有 3 个进程在该信号量的等待队列中","已有 3 个进程进入了临界区","还有 3 个资源可供分配","系统发生了死锁"], ans:0,
+   exp:"负值的绝对值 = 阻塞在等待队列上的进程数。它只反映排队情况，不能推出死锁（死锁需要形成循环等待）。"},
+  {id:"p1q4", sec:"sec1", diff:"★★", stem:"P 操作执行中，进程会转入阻塞态的条件是（设减 1 后信号量值为 value）：",
+   opts:["value < 0","value ≤ 0","value = 0","value > 0"], ans:0,
+   exp:"value < 0 说明资源不够且已有人排队，本进程必须阻塞。value = 0 恰好用完最后一个资源但不阻塞自己。这是记录型信号量与整型信号量的关键区别。"},
+  {id:"p1q5", sec:"sec1", diff:"★★★", stem:"若把同步 P 操作写在互斥 P 操作之后（如先 P(mutex) 再 P(empty)），最可能引发的后果是：",
+   opts:["死锁","失去互斥效果","失去同步效果但不会死锁","无任何影响"], ans:0,
+   exp:"参见例题 2 的推演：先拿锁的进程可能阻塞在同步信号量上，而需要锁来'救场'的进程被锁挡住，双方互相等待形成死锁。互斥与同步的效果本身仍存在，坏在顺序造成的死锁。"},
+
+  {id:"p2q1", sec:"sec2", diff:"★", stem:"缓冲区可存放 5 个产品，多个生产者与多个消费者共享。三个信号量 mutex、empty、full 的初值应为：",
+   opts:["1、5、0","5、5、0","1、0、5","1、1、1"], ans:0,
+   exp:"mutex 保护缓冲区，初值 1；empty 是空位数，初值 = 缓冲区容量 5；full 是产品数，初始为空，初值 0。三者与进程个数无关。"},
+  {id:"p2q2", sec:"sec2", diff:"★★", stem:"消费者进程写成 P(mutex); P(full); 取产品; V(mutex); V(empty); 在缓冲区为空时运行，将出现：",
+   opts:["消费者持有 mutex 阻塞在 full 上，生产者随后阻塞在 mutex 上，死锁","消费者正常等待产品，无异常","互斥失效，多个消费者同时进入","empty 信号量被耗尽"], ans:0,
+   exp:"正是考点 2 例题的时序：锁在等产品的人手里，能腾出产品的生产者却拿不到锁，双向等待成死锁。"},
+  {id:"p2q3", sec:"sec2", diff:"★★", stem:"生产者代码中 V(mutex) 与 V(full) 的执行顺序对调，则：",
+   opts:["不影响程序的正确性","导致死锁","导致互斥失效","导致缓冲区溢出"], ans:0,
+   exp:"V 操作永不阻塞、只增加资源，两个 V 之间没有依赖关系，交换顺序不改变结果。铁律只约束 P 操作的相对顺序。"},
+  {id:"p2q4", sec:"sec2", diff:"★★", stem:"m 个生产者、n 个消费者共享容量为 k 的缓冲区，实现正确的同步互斥最少需要几个信号量？",
+   opts:["3 个：mutex(1)、empty(k)、full(0)","m+n 个：每对生产者消费者一个","2 个：empty(k) 与 full(0)","4 个：增加一个专管读者的信号量"], ans:0,
+   exp:"缓冲区只有一块，互斥信号量 mutex 一个即可，与进程数量无关；empty、full 负责双向同步。共 3 个，初值 1、k、0。"},
+  {id:"p2q5", sec:"sec2", diff:"★★★", stem:"将标准生产者-消费者代码中的 P(mutex) 全部删去，其余不变。在单生产者单消费者、缓冲区容量为 1 的条件下：",
+   opts:["程序仍能正确工作","一定死锁","可能同时读写导致数据错乱","编译无法通过"], ans:0,
+   exp:"容量为 1 时 empty/full 已保证'满不写、空不读'，任意时刻至多一个进程在操作缓冲区，互斥被同步信号量自然满足，mutex 可省。容量大于 1 时则必须保留 mutex——这是选择题爱考的边界情形。"},
+
+  {id:"p3q1", sec:"sec3", diff:"★", stem:"读者优先算法中，整型变量 count 的作用是：",
+   opts:["记录正在读的读者数，用于让第一个读者 P(w)、最后一个读者 V(w)","记录读者总数以限制并发数","记录已完成的读操作次数","替代信号量 w 实现读写互斥"], ans:0,
+   exp:"count 只服务于两行灵魂代码：count==0 进入时 P(w)、退出后归零时 V(w)。它不限制读者数量，读者-写者模型允许多读者并发。"},
+  {id:"p3q2", sec:"sec3", diff:"★★", stem:"对 count 的访问必须用信号量 mutex 加以保护，否则最可能发生：",
+   opts:["多个读者同时判断自己 count==0，各自执行一次 P(w)，读者之间互相阻塞","写者进入后读者仍能进入","count 变为负数导致死循环","信号量 w 的值溢出"], ans:0,
+   exp:"两个读者并发读改 count 时，可能都看到 0、都执行 P(w)：第二个读者被自己（其实被第一个读者）拿走的 w 阻塞，读者之间出现假互斥。这是标准解析的标准措辞。"},
+  {id:"p3q3", sec:"sec3", diff:"★★", stem:"与读者优先相比，写者优先算法额外引入的核心机制是：",
+   opts:["一个记录排队写者数量的信号量/计数器，使写者之后到达的读者等待","把 mutex 的初值改为 0","禁止多个读者同时读","增加一个读者计数器"], ans:0,
+   exp:"读者优先的问题：读者流源源不断时写者永远轮不上。写者优先在读者入口加一道'写者排队闸'（queue 信号量 + 写者计数），有写者等待时，新读者被挡在 queue 上，写者获得优先权。"},
+  {id:"p3q4", sec:"sec3", diff:"★", stem:"读者-写者问题中，实现'读与写互斥、写与写互斥'的信号量是：",
+   opts:["w（写者互斥信号量）","mutex（保护 count 的信号量）","count","reader"], ans:0,
+   exp:"w 同时承担读写互斥与写写互斥：第一个读者 P(w) 挡住写者，写者之间靠 P(w) 本身串行。mutex 只保护 count 变量，不直接管互斥。"},
+  {id:"p3q5", sec:"sec3", diff:"★★★", stem:"若删去读者算法中对 count 的保护（mutex），且恰有读者 R1、R2 同时到达、此时无任何读者在读。系统的状态是：",
+   opts:["R1、R2 各执行一次 P(w)，一个成功一个阻塞，两读者不能同时读","两人都成功读，互斥失效","发生死锁，所有进程无法推进","写者优先级被提升"], ans:0,
+   exp:"推演：R1 判 count==0 → P(w) 成功（w: 1→0）；R2 同时判 count==0 → P(w) → w 变 −1，R2 阻塞。结果：本应并发的两个读者被串行化，违反了'读者可并发'的设计目标，但不是死锁（R1 正常推进，退出时会唤醒 R2）。"},
+
+  {id:"p4q1", sec:"sec4", diff:"★", stem:"下列哪一组是死锁的四个必要条件？",
+   opts:["互斥、请求与保持、不可剥夺、循环等待","互斥、同步、异步、封闭性","互斥、抢占、循环等待、饥饿","请求与保持、可剥夺、共享、并发"], ans:0,
+   exp:"标准四条件。记忆锚点：'互斥保着不放转圈圈'——互斥、请求与保持、不可剥夺、循环等待。破坏任何一个即可预防死锁。"},
+  {id:"p4q2", sec:"sec4", diff:"★★", stem:"哲学家问题中'奇数号先拿左筷、偶数号先拿右筷'的方案，破坏的是：",
+   opts:["循环等待","请求与保持","互斥","不可剥夺"], ans:0,
+   exp:"该方案下每人仍是'先拿一根再等另一根'（请求与保持仍在），但相邻哲学家对同一根筷子的竞争打断了等待链，环路无法闭合。"},
+  {id:"p4q3", sec:"sec4", diff:"★★", stem:"'最多允许 4 位哲学家同时去拿筷子'的方案破坏的是：",
+   opts:["循环等待","请求与保持","互斥条件","不破坏任何必要条件，属于死锁避免"], ans:0,
+   exp:"4 人抢 5 根筷子，至少 1 根空闲，等待链不可能绕满一圈成环。注意它是静态策略，属于死锁预防，不是避免（避免要动态判断安全性，如银行家算法）。"},
+  {id:"p4q4", sec:"sec4", diff:"★★", stem:"'要求哲学家一次性申请全部所需的筷子，要么全拿到、要么一根不拿'，破坏的是：",
+   opts:["请求与保持","循环等待","互斥","不可剥夺"], ans:0,
+   exp:"一次性分配后进程手里要么'全有'、要么'全无'，不存在'持有一根等另一根'的中间态——这正是请求与保持被破坏的含义。"},
+  {id:"p4q5", sec:"sec4", diff:"★★★", stem:"关于死锁的预防与避免，正确的说法是：",
+   opts:["预防是静态策略（破坏必要条件），避免是动态策略（分配时判断是否进入不安全状态）","两者都是静态策略，仅严格程度不同","避免即银行家算法，可完全杜绝死锁且资源利用率最高","预防能保证资源利用率最高"], ans:0,
+   exp:"预防=事先立规矩破坏四条件之一；避免=运行时逐次分配前做安全判断。银行家算法属于避免；避免策略保守（经常拒绝安全实际可行的分配），资源利用率并不高，但能保证系统始终处于安全状态。"},
+
+  {id:"p5q1", sec:"sec5", diff:"★", stem:"某进程 Allocation = (0,1,0)，Max = (1,2,1)（单位：三类资源各若干）。其 Need 向量为：",
+   opts:["(1,1,1)","(1,2,1)","(0,1,0)","(1,3,1)"], ans:0,
+   exp:"Need = Max − Allocation = (1−0, 2−1, 1−0) = (1,1,1)。所有银行家算法计算题都从这一步开始。"},
+  {id:"p5q2", sec:"sec5", diff:"★★", stem:"系统处于安全状态，则下列推断必然正确的是：",
+   opts:["系统当前一定无死锁","系统一定不会进入死锁状态","系统处于不安全状态时一定死锁","存在死锁时系统可能仍安全"], ans:0,
+   exp:"安全 ⇔ 存在安全序列 ⇔ 当前无死锁。但'安全'只对当前状态负责：之后的非法请求仍可能引入死锁；反之不安全只是'有死锁风险'，不一定真死锁。C 是最经典的错误说法。"},
+  {id:"p5q3", sec:"sec5", diff:"★", stem:"银行家算法属于死锁处理策略中的：",
+   opts:["死锁避免","死锁预防","死锁检测与解除","鸵鸟策略"], ans:0,
+   exp:"银行家算法在每次分配前动态判断安全性，是'避免'的代表算法。预防是静态破坏必要条件（如一次性分配），检测则允许死锁发生后再解除。"},
+  {id:"p5q4", sec:"sec5", diff:"★★", stem:"检测到死锁后，可用于解除死锁的方法包括：",
+   opts:["剥夺若干进程的资源，或强制撤销部分进程","重新执行银行家算法","破坏互斥条件让资源可共享","提高 CPU 频率加快进程推进"], ans:0,
+   exp:"解除的两板斧：资源剥夺（抢占给别的进程）、撤销进程（挂起/终止）。破坏互斥条件属于预防而非解除，且多数资源（打印机等）天然不可共享。"},
+  {id:"p5q5", sec:"sec5", diff:"★★★", stem:"资源分配图中存在环路，则：",
+   opts:["若每类资源只有 1 个，则环路意味着死锁；若资源有多个，存在环路不一定死锁","只要有环路就一定死锁","环路与死锁无关","环路一定可以通过化简消除"], ans:0,
+   exp:"单实例资源：环 ⇔ 死锁。多实例资源：环只是必要条件，可能被化简（死锁定理：图不可化简时才处于死锁状态）。选择题常拿'有环必死锁'当陷阱。"}
+];
+
+const KEY = "408-os-pv-v1";
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e) { state = {}; }
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+
+function renderQ(q){
+  const el = document.createElement("div");
+  el.className = "q";
+  el.id = "q-" + q.id;
+  const st = state[q.id];
+  el.innerHTML =
+    '<div class="meta">练习 ' + q.id.slice(-2).replace("q","") + ' · 难度 <span class="diff">' + q.diff + "</span></div>" +
+    '<div class="stem">' + q.stem + "</div>" +
+    q.opts.map(function(o, i){ return '<button class="opt" data-i="' + i + '">' + String.fromCharCode(65+i) + ". " + o + "</button>"; }).join("") +
+    '<div class="exp"><b>解析：</b>' + q.exp + "</div>";
+  if (st !== undefined) {
+    el.classList.add("done");
+    if (!st.correct) el.classList.add("wrong");
+    el.querySelectorAll(".opt").forEach(function(b){
+      const i = parseInt(b.dataset.i);
+      if (i === q.ans) b.classList.add("correct");
+      else if (i === st.sel) b.classList.add("wrong");
+    });
+  }
+  el.addEventListener("click", function(ev){
+    const b = ev.target.closest(".opt");
+    if (!b || el.classList.contains("done")) return;
+    const sel = parseInt(b.dataset.i);
+    const correct = sel === q.ans;
+    state[q.id] = { sel: sel, correct: correct };
+    save();
+    el.classList.add("done");
+    if (!correct) el.classList.add("wrong");
+    el.querySelectorAll(".opt").forEach(function(x){
+      const i = parseInt(x.dataset.i);
+      x.disabled = true;
+      if (i === q.ans) x.classList.add("correct");
+      else if (i === sel) x.classList.add("wrong");
+    });
+    updateStats();
+  });
+  return el;
+}
+
+const container = {};
+QS.forEach(function(q){
+  if (!container[q.sec]) container[q.sec] = document.getElementById("qz-" + q.sec);
+  container[q.sec].appendChild(renderQ(q));
+});
+document.getElementById("totalNum").textContent = QS.length;
+
+function updateStats(){
+  const ids = Object.keys(state);
+  const wrong = ids.filter(function(k){ return !state[k].correct; });
+  document.getElementById("doneNum").textContent = ids.length;
+  document.getElementById("wrongNum").textContent = wrong.length;
+  QS.forEach(function(q){
+    const cell = document.getElementById("q-" + q.id);
+    if (cell) cell.classList.toggle("wrong", state[q.id] !== undefined && !state[q.id].correct);
+  });
+  document.getElementById("banner").textContent =
+    "错题模式 · 共 " + wrong.length + " 道错题。重做一遍做对的题会自动移出错题本。";
+}
+updateStats();
+
+const btnW = document.getElementById("btnWrong");
+btnW.addEventListener("click", function(){
+  document.body.classList.toggle("wrongonly");
+  btnW.classList.toggle("active", document.body.classList.contains("wrongonly"));
+});
+document.getElementById("btnReset").addEventListener("click", function(){
+  if (confirm("确定清空所有做题记录吗？")) {
+    localStorage.removeItem(KEY);
+    location.reload();
+  }
+});
+</script>
+</body>
+</html>

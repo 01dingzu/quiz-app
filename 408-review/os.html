@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 复习站 · 操作系统</title>
+<style>
+:root{
+  --bg:#F6F5F1; --card:#FFFFFF; --border:rgba(0,0,0,0.15);
+  --text:#2C2C2A; --muted:#6B6A65;
+  --purple-50:#EEEDFE; --purple-600:#534AB7; --purple-800:#3C3489;
+  --teal-50:#E1F5EE; --teal-600:#0F6E56;
+  --red-50:#FCEBEB; --red-600:#A32D2D;
+  --green-50:#EAF3DE; --green-600:#3B6D11;
+  --amber-50:#FAEEDA; --amber-600:#854F0B;
+  --blue-50:#E6F1FB; --blue-600:#185FA5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.7}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+header.top{position:sticky;top:0;z-index:10;background:rgba(246,245,241,0.95);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header.top h1{font-size:15px;font-weight:500}
+header.top .stat{font-size:12px;color:var(--muted)}
+header.top .stat b{color:var(--red-600)}
+header.top .spacer{flex:1}
+.btn{border:1px solid var(--border);background:var(--card);border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;color:var(--text)}
+.btn:hover{background:var(--purple-50);border-color:var(--purple-600)}
+.btn.active{background:var(--purple-50);border-color:var(--purple-600);color:var(--purple-800)}
+nav.side{position:fixed;top:56px;left:0;bottom:0;width:216px;padding:18px 14px;border-right:1px solid var(--border);overflow-y:auto}
+nav.side a{display:block;padding:6px 10px;border-radius:8px;color:var(--text);text-decoration:none;font-size:13px;margin-bottom:2px}
+nav.side a:hover{background:var(--purple-50);color:var(--purple-800)}
+nav.side .grp{font-size:11px;color:var(--muted);margin:12px 0 4px 10px}
+main{margin-left:216px;padding:24px 32px 80px;max-width:920px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;margin-bottom:22px}
+.card h2{font-size:15px;font-weight:500;margin-bottom:4px}
+.card .sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.learn{background:var(--purple-50);border-radius:10px;padding:14px 16px;margin:10px 0}
+.learn p{margin-bottom:8px}
+.learn p:last-child{margin-bottom:0}
+.learn code,.exa code,.q code{font-family:Consolas,monospace;font-size:13px;background:rgba(0,0,0,0.05);padding:1px 5px;border-radius:4px}
+.exa{background:var(--teal-50);border-radius:10px;padding:14px 16px;margin:10px 0}
+.exa .tag{display:inline-block;font-size:11px;color:var(--teal-600);margin-bottom:6px}
+.exa .stem{margin-bottom:8px}
+.exa details{margin-top:8px}
+.exa summary{cursor:pointer;font-size:13px;font-weight:500;color:var(--teal-600)}
+.exa pre{background:#FFFFFF;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:13px;overflow-x:auto;margin:8px 0;white-space:pre}
+.tip{font-size:12px;color:var(--muted);margin-top:6px}
+.tip b{color:var(--red-600);font-weight:500}
+.qz-head{display:flex;align-items:center;gap:10px;margin:18px 0 10px}
+.qz-head .num{font-size:12px;color:var(--muted)}
+.q{border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;background:#FDFCFA}
+.q .meta{font-size:11px;color:var(--muted);margin-bottom:6px}
+.q .meta .diff{color:var(--amber-600)}
+.q .stem{margin-bottom:10px}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--border);background:#FFFFFF;border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer;margin-bottom:6px;color:var(--text);font-family:inherit}
+.opt:hover{border-color:var(--purple-600)}
+.opt.correct{background:var(--green-50);border-color:var(--green-600);color:var(--green-600)}
+.opt.wrong{background:var(--red-50);border-color:var(--red-600);color:var(--red-600)}
+.q.done .opt{cursor:default;opacity:0.85}
+.q .exp{display:none;margin-top:8px;font-size:13px;background:var(--blue-50);border-radius:8px;padding:10px 12px}
+.q.done .exp{display:block}
+.q .exp b{color:var(--blue-600);font-weight:500}
+.essay{background:var(--amber-50);border-radius:10px;padding:14px 16px;margin:10px 0}
+.essay summary{cursor:pointer;font-size:13px;font-weight:500;color:var(--amber-600)}
+.essay pre{background:#FFFFFF;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:13px;overflow-x:auto;margin:8px 0;white-space:pre}
+body.wrongonly .q:not(.wrong){display:none}
+body.wrongonly .learn,body.wrongonly .exa,body.wrongonly .essay,body.wrongonly .qz-head{display:none}
+body.wrongonly .card h2,body.wrongonly .card .sub{opacity:0.5}
+.banner{display:none;background:var(--red-50);border-radius:8px;padding:8px 14px;font-size:12px;color:var(--red-600);margin-bottom:16px}
+body.wrongonly .banner{display:block}
+</style>
+</head>
+<body>
+<h2 class="sr-only">408 操作系统复习：进程调度、PV 操作、死锁、内存管理、文件与 I/O 的考点讲解、例题与练习</h2>
+
+<header class="top">
+  <h1>408 复习站 · 操作系统（35 分）</h1>
+  <span class="stat">已做 <span id="doneNum">0</span>/<span id="totalNum">0</span> · 错题 <b id="wrongNum">0</b> 道</span>
+  <span class="spacer"></span>
+  <a class="btn" href="index.html">返回总览</a>
+  <button class="btn" id="btnWrong">只看错题</button>
+  <button class="btn" id="btnReset">重置记录</button>
+</header>
+
+<nav class="side">
+  <div class="grp">进程管理</div>
+  <a href="#sec1">考点 1 · 进程与线程</a>
+  <a href="#sec2">考点 2 · 处理机调度</a>
+  <div class="grp">同步与死锁</div>
+  <a href="#sec3">考点 3 · 信号量与 PV 基础</a>
+  <a href="#sec4">考点 4 · 生产者-消费者</a>
+  <a href="#sec5">考点 5 · 读者-写者</a>
+  <a href="#sec6">考点 6 · 哲学家与死锁预防</a>
+  <a href="#sec7">考点 7 · 死锁与银行家算法</a>
+  <div class="grp">内存 · 文件 · I/O</div>
+  <a href="#sec8">考点 8 · 内存管理与页面置换</a>
+  <a href="#sec9">考点 9 · 文件管理</a>
+  <a href="#sec10">考点 10 · I/O 管理</a>
+  <a href="#sec11">综合大题（考场同款）</a>
+</nav>
+
+<main>
+<div class="banner" id="banner"></div>
+
+<section class="card" id="sec1">
+  <h2>考点 1 · 进程与线程</h2>
+  <div class="sub">三态转换是所有选择题的地基</div>
+
+  <div class="learn">
+    <p><b>进程实体</b> = PCB + 程序段 + 数据段。<b>三态</b>：就绪 ⇄ 运行 ⇄ 阻塞。两条单行道必须背死：<b>阻塞 → 不能直接到运行</b>（必须先就绪），<b>就绪 → 不能到阻塞</b>（没在运行谈不上等资源）。</p>
+    <p><b>转换触发</b>：运行→就绪是时间片到或被更高优先级抢占；运行→阻塞是等待 I/O 或资源（主动行为）；阻塞→就绪是等待的事件发生（被动行为）。</p>
+    <p><b>线程</b>：调度和分派的基本单位；进程是资源分配的基本单位。用户级线程切换不需内核介入但一个阻塞全阻塞；内核级线程切换需内核，可真并发。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 转换合法性判断</span>
+    <div class="stem">某时刻进程 P 因请求打印机而阻塞。之后打印机就绪，P 被唤醒。分别写出这两次转换的名称与触发原因，并说明 P 能否从阻塞直接转为运行。</div>
+    <details><summary>展开完整推演</summary>
+      <p>第一步：P 运行中执行"请求打印机"，资源不可用 → P <b>主动</b>放弃 CPU，运行态 → 阻塞态，进入该资源的等待队列。</p>
+      <p>第二步：打印机空闲，唤醒机制把 P 从等待队列移入就绪队列：阻塞态 → 就绪态。P 此时还要在就绪队列里排队等调度，<b>不能直接跳到运行</b>——因为"唤醒"只解决资源问题，CPU 分配是调度程序的事。</p>
+      <p class="tip"><b>记忆锚：</b>阻塞 → 就绪是别人叫醒你；就绪 → 运行是调度程序选中你。中间永远隔着调度。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec1"></span></div>
+  <div id="qz-sec1"></div>
+</section>
+
+<section class="card" id="sec2">
+  <h2>考点 2 · 处理机调度</h2>
+  <div class="sub">周转时间计算题的套路非常固定</div>
+
+  <div class="learn">
+    <p><b>三个时间</b>：周转时间 = 完成时间 − 到达时间；带权周转 = 周转 / 运行；等待 = 周转 − 运行。大题算的就是这三样。</p>
+    <p><b>算法要点</b>：FCFS 利于长作业；<b>SJF 平均等待时间最短</b>但长作业饥饿（"饿死"）；HRRN 响应比 = (等待+服务)/服务，兼顾长短；RR 时间片过大退化为 FCFS、过小切换开销大；<b>多级反馈队列</b>是最通用的，新进程进最高优先级队列。</p>
+    <p><b>抢占 vs 非抢占</b>：SJF 的抢占版叫 SRTF（最短剩余时间优先）；RR 天然抢占（时间片到）。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · FCFS 与 SJF 对比计算</span>
+    <div class="stem">三个进程：P1 到达 0 运行 8；P2 到达 1 运行 4；P3 到达 2 运行 2。分别按 FCFS 和非抢占 SJF 计算 平均周转时间。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>FCFS（按到达顺序）:
+P1: 0→8     周转 8
+P2: 8→12    周转 12−1=11
+P3: 12→14   周转 14−2=12
+平均 = (8+11+12)/3 ≈ 10.33
+
+非抢占 SJF:
+0 时刻只有 P1 → P1: 0→8   周转 8
+8 时刻 P2(4) P3(2) 都在 → 先短: P3: 8→10  周转 8
+P2: 10→14  周转 13
+平均 = (8+8+13)/3 ≈ 9.67</pre>
+      <p><b>结论：</b>SJF 让短作业 P3 插队，平均周转更短；但若再来一个运行 20 的长作业，它要一直等——这就是饥饿。</p>
+      <p class="tip"><b>书写模板：</b>每个进程一行"开始→完成、周转 = 完成 − 到达"，最后求均值，阅卷无懈可击。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec2"></span></div>
+  <div id="qz-sec2"></div>
+</section>
+
+<section class="card" id="sec3">
+  <h2>考点 3 · 信号量与 PV 操作基础</h2>
+  <div class="sub">记录型信号量的值是判断一切的钥匙</div>
+
+  <div class="learn">
+    <p><b>信号量 S</b> = 整型值 value + 等待队列。<b>P 操作</b>：value 减 1，减完 &lt; 0 则阻塞入队；<b>V 操作</b>：value 加 1，加完 ≤ 0 则唤醒队头一个进程。</p>
+    <p><b>value 的含义</b>：正值 = 剩余可用资源数；<b>负值 = 绝对值就是阻塞进程数</b>。这一条能秒杀一半的选择题。</p>
+    <p><b>初值</b>：互斥信号量 = 1；同步信号量 = 可用资源数。<b>P/V 是原语</b>，不可中断。</p>
+    <p><b>铁律：同步 P 在前，互斥 P 在后</b>——颠倒可能死锁（见考点 4 例题）。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 值的推演</span>
+    <div class="stem">信号量 S 初值为 2，当前值为 -1。等待队列中有几个进程？再执行一次 V 后 S 为多少，队列状态如何？</div>
+    <details><summary>展开完整推演</summary>
+      <p>当前值 −1 &lt; 0 ⇒ 等待 <b>1 个进程</b>。执行 V：−1 + 1 = <b>0</b>，加完 ≤ 0 说明仍有进程在等，于是唤醒一个进入就绪态。此后 value = 0，队列空。</p>
+      <p class="tip"><b>注意：</b>V 后 value = 0 不是"没资源"，而是"资源刚被唤醒者领走、无人排队"。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec3"></span></div>
+  <div id="qz-sec3"></div>
+</section>
+
+<section class="card" id="sec4">
+  <h2>考点 4 · 生产者-消费者问题</h2>
+  <div class="sub">大题第一模板 · 必须默写零错</div>
+
+  <div class="learn">
+    <p><b>标准模板</b>（缓冲区 n 个，多生产者多消费者）：</p>
+    <pre>semaphore mutex = 1;   // 互斥访问缓冲区
+semaphore empty = n;   // 空位数（同步）
+semaphore full  = 0;   // 产品数（同步）
+
+生产者:                     消费者:
+  生产一个产品;                P(full);
+  P(empty);                   P(mutex);
+  P(mutex);                   取产品;
+  放入缓冲区;                 V(mutex);
+  V(mutex);                   V(empty);
+  V(full);                    消费产品;</pre>
+    <p><b>三条铁律</b>：① 两个 P 不可交换；② 两个 V 可以交换（V 永不阻塞）；③ mutex、empty、full 与进程个数无关，多对生产者消费者时 mutex 仍只需 1 个。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 初值与死锁时序</span>
+    <div class="stem">缓冲区容量 3，两个生产者一个消费者。写出初值；并推演消费者写成 <code>P(mutex); P(full);</code> 时缓冲区为空场景下的死锁时序。</div>
+    <details><summary>展开完整推演</summary>
+      <p><b>初值：</b>mutex=1、empty=3、full=0，与进程个数无关。</p>
+      <pre>t1  消费者 P(mutex) → 拿到锁
+t2  消费者 P(full)  → full=-1，阻塞等产品
+t3  生产者 P(empty) → 成功
+t4  生产者 P(mutex) → mutex=-1，阻塞等锁
+    ⇒ 消费者等"产品"，生产者等"锁"，
+      锁在等"产品"的人手里。死锁。</pre>
+      <p class="tip"><b>书写要领：</b>死锁类大题按 t1~t4 编号时序写，每行写清"谁、做什么、变成什么值"。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec4"></span></div>
+  <div id="qz-sec4"></div>
+</section>
+
+<section class="card" id="sec5">
+  <h2>考点 5 · 读者-写者问题</h2>
+  <div class="sub">两行灵魂代码：第一个读者 P(w)，最后一个读者 V(w)</div>
+
+  <div class="learn">
+    <p><b>读者优先模板</b>：</p>
+    <pre>int count = 0;            // 正在读的读者数
+semaphore mutex = 1;      // 保护 count
+semaphore w = 1;          // 读写互斥、写写互斥
+
+读者:                       写者:
+P(mutex);                   P(w);
+if(count==0) P(w);          写;
+count++;                    V(w);
+V(mutex);
+读;
+P(mutex);
+count--;
+if(count==0) V(w);
+V(mutex);</pre>
+    <p><b>count 为什么加锁</b>：两个读者同时发现 count==0，会各自 P(w)，读者间互相阻塞。<b>写者优先</b>：再加一个排队信号量+写者计数，让写者之后到达的读者排在写者后面。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 谁来 V(w)</span>
+    <div class="stem">R1 正在读，R2、R3 相继到达，随后 R1、R2、R3 依次退出。逐次推演 count 与 w 的变化。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>      count 动作              count   w
+R1到  count==0 → P(w)          0→1   1→0 持有
+R2到  count==1，不 P(w)        1→2   仍 0
+R3到  count==2，不 P(w)        2→3   仍 0
+R1退  count-- ≠0，不 V(w)      3→2   仍 0
+R2退  count-- ≠0，不 V(w)      2→1   仍 0
+R3退  count-- =0 → V(w)        1→0   0→1 释放</pre>
+      <p><b>答：</b>P(w) 只在 R1 进入时执行一次；V(w) 只在最后退出的 R3 处执行。中间读者只动 count。</p>
+      <p class="tip"><b>考点化：</b>V(w) 永远跟着 count 归零走——选择题常把"第一个读者"当干扰项。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec5"></span></div>
+  <div id="qz-sec5"></div>
+</section>
+
+<section class="card" id="sec6">
+  <h2>考点 6 · 哲学家进餐与死锁预防</h2>
+  <div class="sub">选择题考"打破了哪个条件" · 必须对号入座</div>
+
+  <div class="learn">
+    <p><b>死锁四个必要条件</b>：互斥、请求与保持、不可剥夺、循环等待。破坏任何一个即可<b>预防</b>。</p>
+    <p><b>哲学家死锁成因</b>：5 人同时拿起左筷子 → 各等右筷子 → 循环等待。</p>
+    <p><b>三种解法与破坏对象</b>：① 最多 4 人同时拿筷 → 破坏循环等待；② 奇数先左偶数先右 → 破坏循环等待；③ 一次性拿齐两根 → 破坏请求与保持。①② 下"拿一根等一根"仍在，所以不是破坏请求与保持。</p>
+    <p><b>预防 vs 避免</b>：预防是静态破坏条件；避免是动态判断（银行家算法）。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 奇偶方案为何有效</span>
+    <div class="stem">P0~P4 围坐，筷子 0~4，P<sub>i</sub> 左手 i 号、右手 (i+1)%5 号。奇数号先左后右、偶数号先右后左。推演为何不死锁。</div>
+    <details><summary>展开完整推演</summary>
+      <p>关键竞争：P0（偶，先拿 1 号）与 P1（奇，先拿 1 号）<b>抢同一根筷子</b>，必有一人成功一人阻塞。同理 P2 与 P3 抢 3 号。</p>
+      <p>若 5 人同时行动：P0 持 1 等 0，P4 持 0 等 4，P2/P3 之一持 3 等 2 或 4……任何时刻总有人竞争获胜，等待链无法闭合成环。<b>环路被打断，死锁不能形成。</b></p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec6"></span></div>
+  <div id="qz-sec6"></div>
+</section>
+
+<section class="card" id="sec7">
+  <h2>考点 7 · 死锁、安全状态与银行家算法</h2>
+  <div class="sub">大题必考计算 · Need = Max − Allocation 是入口</div>
+
+  <div class="learn">
+    <p><b>三个必背关系</b>：Need = Max − Allocation；安全 ⇔ 存在安全序列；<b>安全状态一定无死锁，不安全状态不一定死锁</b>。</p>
+    <p><b>银行家算法（避免）</b>：每步找 Need ≤ Available 的进程，模拟归还后 Available 增大，直到全部找完——找到即存在安全序列，分配；否则拒绝。</p>
+    <p><b>资源分配图有环 ≠ 死锁</b>：每类资源仅 1 个时环 ⇔ 死锁；资源多个时环路可能化简。</p>
+    <p><b>解除手段</b>：剥夺资源、撤销进程。检测+解除是鸵鸟策略之外的兜底。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 银行家算法全流程</span>
+    <div class="stem">两类资源 R1、R2，总量各 4。当前（每格 R1,R2）：
+      <pre>     Allocation   Max      Need
+P0     1,1        2,2      1,1
+P1     2,0        3,1      1,1
+P2     0,1        2,2      2,1
+Available = (1,2)</pre>
+      求安全序列。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>试 P0: Need(1,1) ≤ (1,2) ✓
+  归还后 Avail = (1,2)+(1,1) = (2,3)
+试 P1: Need(1,1) ≤ (2,3) ✓
+  归还后 Avail = (2,3)+(2,0) = (4,3)
+试 P2: Need(2,1) ≤ (4,3) ✓
+  归还后 Avail = (4,3)+(0,1) = (4,4) = 总量 ✓</pre>
+      <p><b>答：</b>存在安全序列 &lt;P0, P1, P2&gt;，系统安全，可分配。（P2 的 Need 是 2&gt;1，排不了最前。）</p>
+      <p class="tip"><b>书写模板：</b>每步三样——比较式、归还后 Avail、打勾结论。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec7"></span></div>
+  <div id="qz-sec7"></div>
+</section>
+
+<section class="card" id="sec8">
+  <h2>考点 8 · 内存管理与页面置换</h2>
+  <div class="sub">地址换算 + 置换算法推演 = 大题双保险</div>
+
+  <div class="learn">
+    <p><b>分页地址换算</b>：页大小 2<sup>k</sup> ⇒ 逻辑地址低 k 位是页内偏移、高位是页号；物理地址 = 帧号×页大小 + 偏移。</p>
+    <p><b>置换算法</b>：FIFO 有 <b>Belady 异常</b>（帧变多缺页反而变多）；LRU 看过去、无异常但实现贵；<b>CLOCK 是 LRU 的近似</b>——循环扫描，访问位为 1 清 0 跳过，为 0 换出。</p>
+    <p><b>碎片</b>：页式有<b>内部</b>碎片（最后一页装不满）、无外部碎片；段式相反（按逻辑单位、段长可变）。可变分区：首次/最佳/最坏适应。</p>
+    <p><b>有效访问时间（带 TLB）</b>：EAT = h×(t_TLB + t_mem) + (1−h)×(t_TLB + 2×t_mem)。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · FIFO 与 LRU 对照推演</span>
+    <div class="stem">引用串 1,2,3,4,1,2,5,1,2,3,4,5，3 个物理帧（初始为空）。分别求 FIFO 和 LRU 的缺页次数。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>FIFO（换最早进入的帧）:
+1F 2F 3F 4F(逐1) 1F(逐2) 2F(逐3) 5F(逐4)
+1H 2H 3F(逐1) 4F(逐2) 5H → 缺页 9 次
+
+LRU（换最久未使用的帧）:
+1F 2F 3F 4F(逐1) 1F(逐2) 2F(逐3) 5F(逐4)
+1H 2H 3F(逐5)  4F(逐1) 5F(逐2) → 缺页 10 次</pre>
+      <p><b>答：</b>FIFO 缺 9 次，LRU 缺 10 次——LRU 这次反而差。若帧数增到 4，FIFO 缺页 10 次（比 3 帧还多），这就是 Belady 异常。</p>
+      <p class="tip"><b>推演技巧：</b>画三列帧 + 每步标注替换者，LRU 还要顺手维护"最近使用顺序"。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec8"></span></div>
+  <div id="qz-sec8"></div>
+</section>
+
+<section class="card" id="sec9">
+  <h2>考点 9 · 文件管理</h2>
+  <div class="sub">混合索引计算是大题公式题</div>
+
+  <div class="learn">
+    <p><b>物理结构</b>：连续分配支持随机访问、难扩展；隐式链接只能顺序访问；<b>FAT 属于显式链接</b>（表放内存）；索引分配支持随机访问，UNIX 用<b>混合索引</b>（直接块 + 一级 + 二级…）。</p>
+    <p><b>混合索引算容量</b>：可索引块数 = 直接块数 + 盘块大小/地址长度 + (盘块大小/地址长度)² + …，再乘块大小。</p>
+    <p><b>空闲空间</b>：位示图（字长 w，块号 b → 行 = ⌊b/w⌋、列 = b mod w，0 起算）、空闲链表、成组链接（UNIX）。</p>
+    <p><b>共享</b>：硬链接 = 多目录指向同一 inode，计数减到 0 才删；软链接（符号链接）= 新文件存路径，可跨文件系统，原文件删除后失效。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · UNIX 混合索引容量推演</span>
+    <div class="stem">块大小 4KB，每个地址项 4B，inode 含 10 个直接地址项、1 个一级间接、1 个二级间接。求单个文件最大长度。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>每个索引块可装地址数 = 4KB / 4B = 1024 个
+直接块:        10
+一级间接:      1024
+二级间接:      1024 × 1024 = 1048576
+可索引总块数 = 10 + 1024 + 1048576 = 1049610
+最大文件 = 1049610 × 4KB
+        = 40960KB + 4MB + 4GB
+        ≈ 4GB + 4MB + 40KB</pre>
+      <p class="tip"><b>易错：</b>二级间接是 1024 × 1024 个块（先一级索引块、再二级块），别算成 2×1024。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec9"></span></div>
+  <div id="qz-sec9"></div>
+</section>
+
+<section class="card" id="sec10">
+  <h2>考点 10 · I/O 管理</h2>
+  <div class="sub">I/O 方式对比 + 磁盘时间计算</div>
+
+  <div class="learn">
+    <p><b>四种 I/O 方式</b>：程序查询（忙等，CPU 最浪费）→ 中断（CPU 与设备并行，但<b>每字</b>中断一次）→ <b>DMA</b>（以<b>块</b>为单位，数据直达内存，仅传输开始/结束打扰 CPU）→ 通道。</p>
+    <p><b>磁盘访问时间</b> = 寻道时间 + 旋转延迟（平均半圈）+ 传输时间（一圈时间/每道扇区数）。</p>
+    <p><b>磁盘调度</b>：SSTF 找最近（可能饥饿）、SCAN 电梯式沿一个方向扫到底再折返、C-SCAN 单向扫描更均匀。</p>
+    <p><b>缓冲</b>：单缓冲处理一块 max(C+M, T)+缓冲区…记结论：<b>双缓冲 max(T, C+M)</b>，可连续存取；SPOOLing 用磁盘模拟独占设备为共享设备（打印机）。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 读一个扇区的时间</span>
+    <div class="stem">磁盘转速 6000 转/分，每磁道 100 个扇区，寻道时间 8ms。忽略控制器延迟，读一个扇区需要多长时间？</div>
+    <details><summary>展开完整推演</summary>
+      <pre>转速 6000 转/分 = 100 转/秒 → 一圈 10ms
+平均旋转延迟 = 半圈 = 5ms
+传输一个扇区 = 10ms / 100 = 0.1ms
+读一个扇区 = 8 + 5 + 0.1 = 13.1ms</pre>
+      <p class="tip"><b>套路：</b>转速换算成"一圈时间"是第一步；平均旋转延迟恒为半圈。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec10"></span></div>
+  <div id="qz-sec10"></div>
+</section>
+
+<section class="card" id="sec11">
+  <h2>综合大题（考场同款）</h2>
+  <div class="sub">限时 15 分钟 · 先自己写伪代码再展开答案对照</div>
+
+  <div class="essay">
+    <b>题目：</b>桌上有一个盘子，<b>每次只能放一个水果</b>。父亲专门放苹果，母亲专门放橘子；儿子专门吃橘子，女儿专门吃苹果。用信号量实现四个进程的同步与互斥：写出信号量定义、初值理由和各进程伪代码。
+  </div>
+  <div class="essay">
+    <details><summary>展开参考答案与推演</summary>
+      <pre>semaphore plate  = 1;   // 盘子空位：互斥 + 同步一肩挑
+semaphore apple  = 0;   // 盘中苹果数
+semaphore orange = 0;   // 盘中橘子数
+
+父亲:                 母亲:
+  准备苹果;              准备橘子;
+  P(plate);              P(plate);
+  放入苹果;              放入橘子;
+  V(apple);              V(orange);
+
+女儿:                 儿子:
+  P(apple);              P(orange);
+  取走苹果;              取走橘子;
+  V(plate);              V(plate);
+  吃苹果;                吃橘子;</pre>
+      <p><b>推演要点：</b></p>
+      <p>① "每次只能放一个"由 plate=1 保证：盘中有水果时 plate=0，另一路放水果者自然被挡住——互斥与同步合一。</p>
+      <p>② apple、orange 初值 0：初始无水果，子女必须先等父母放。</p>
+      <p>③ 若子女把 P(plate) 写在 P(apple)/P(orange) 之前：盘中无水果时子女抱着盘子空等，放水果的人又被 plate 挡住 → 死锁。同步 P 在前的纪律再次体现。</p>
+      <p>④ 给分点：信号量定义与初值理由、四段伪代码、取走后 V(plate)。</p>
+    </details>
+  </div>
+</section>
+
+</main>
+
+<script>
+const QS = [
+  {id:"o1q1", sec:"sec1", diff:"★★", stem:"下列进程状态转换中，不可能发生的是：",
+   opts:["阻塞 → 运行","运行 → 阻塞","阻塞 → 就绪","运行 → 就绪"], ans:0,
+   exp:"阻塞的进程被唤醒后只能先进就绪队列排队，CPU 分配是调度程序的事——中间永远隔着调度。就绪 → 阻塞也不可能（没在运行谈不上等待事件）。"},
+  {id:"o1q2", sec:"sec1", diff:"★", stem:"进程从运行态转为就绪态的典型原因是：",
+   opts:["时间片用完或被更高优先级进程抢占","请求的资源不可用","等待的 I/O 完成","进程运行结束"], ans:0,
+   exp:"时间片到/被抢占 → 就绪；资源不可用 → 阻塞；I/O 完成 → 阻塞转就绪。三条线各自独立，别串。"},
+  {id:"o1q3", sec:"sec1", diff:"★★", stem:"关于线程，正确的说法是：",
+   opts:["线程是调度和分派的基本单位，进程是资源分配的基本单位","线程拥有独立的地址空间","用户级线程的一个线程阻塞不影响同进程其他线程","内核级线程切换不需要内核介入"], ans:0,
+   exp:"同进程的线程共享地址空间和资源，只各有栈和寄存器现场。用户级线程由库调度，一个阻塞整个进程阻塞；内核级线程切换恰恰需要内核。"},
+  {id:"o1q4", sec:"sec1", diff:"★★", stem:"进程 P1 运行中通过系统调用请求打印服务，打印机正忙。P1 的状态变化是：",
+   opts:["运行 → 阻塞，进入打印机的等待队列","运行 → 就绪，等待下一轮调度","保持运行，不断查询打印机状态","阻塞 → 就绪"], ans:0,
+   exp:"等待资源是主动放弃 CPU，进入该资源的等待队列（阻塞态）。'保持运行不断查询'是程序查询 I/O 的老黄历，现代 OS 让进程阻塞让出 CPU。"},
+
+  {id:"o2q1", sec:"sec2", diff:"★★", stem:"最短作业优先（SJF）调度算法的主要缺点是：",
+   opts:["长作业可能长期得不到调度（饥饿）","平均周转时间一定最长","无法用于批处理系统","必须抢占才能实现"], ans:0,
+   exp:"SJF 平均等待时间最短（这是它的招牌优点），但源源不断的短作业会让长作业无限期等待。HRRN 用响应比（等待越久比值越高）来补救。"},
+  {id:"o2q2", sec:"sec2", diff:"★★", stem:"时间片轮转（RR）调度中，若时间片设置得远大于典型进程的运行时间，算法将退化为：",
+   opts:["FCFS（先来先服务）","SJF","多级反馈队列","优先级调度"], ans:0,
+   exp:"时间片够大时进程总能在片内跑完，等效于按到达顺序服务 = FCFS。时间片过小则上下文切换开销占比过高。"},
+  {id:"o2q3", sec:"sec2", diff:"★★", stem:"高响应比优先（HRRN）调度中，进程已等待 5、预计还需运行 2，其响应比为：",
+   opts:["3.5","2.5","0.4","7"], ans:0,
+   exp:"响应比 = (等待 + 要求服务) / 要求服务 = (5+2)/2 = 3.5。等待时间相同则短作业响应比高，兼顾了长短作业。"},
+  {id:"o2q4", sec:"sec2", diff:"★★", stem:"关于多级反馈队列调度，正确的说法是：",
+   opts:["新进程先进入最高优先级队列，用尽时间片则降级","所有队列时间片相同","它只适合交互式系统","长作业优先级会越来越高"], ans:0,
+   exp:"新进程进最高队列；时间片内没跑完说明是 CPU 型 → 降到下一级（时间片更长）。长作业会沉到低优先级队列——可能饥饿，所以低队列常用 FCFS 兜底。"},
+
+  {id:"o3q1", sec:"sec3", diff:"★", stem:"记录型信号量 S 初值为 3，先后执行 2 次 P 和 1 次 V（均已完整执行）。此时 S 的值与等待进程数为：",
+   opts:["S = 2，0 个进程等待","S = 2，1 个进程等待","S = 3，0 个进程等待","S = 1，0 个进程等待"], ans:0,
+   exp:"S = 3 − 2 + 1 = 2。正值表示还有 2 个可用资源，无人阻塞。"},
+  {id:"o3q2", sec:"sec3", diff:"★", stem:"用信号量实现 n 个进程互斥访问一个临界资源时，信号量初值通常设为：",
+   opts:["1","0","n","−1"], ans:0,
+   exp:"同一时刻只允许 1 个进程进入，可用资源数为 1。初值取 n 则 n 个进程同时进入，互斥失效。"},
+  {id:"o3q3", sec:"sec3", diff:"★★", stem:"某记录型信号量当前值为 −3。正确的说法是：",
+   opts:["有 3 个进程在该信号量的等待队列中","已有 3 个进程进入临界区","还有 3 个资源可分配","系统一定发生了死锁"], ans:0,
+   exp:"负值绝对值 = 阻塞进程数。排队多不代表死锁——死锁需要循环等待，排队完全可能自然解开。"},
+  {id:"o3q4", sec:"sec3", diff:"★★★", stem:"若把同步 P 操作写在互斥 P 操作之后（先 P(mutex) 再 P(empty)），最可能的后果是：",
+   opts:["死锁","失去互斥效果","失去同步效果但不会死锁","无任何影响"], ans:0,
+   exp:"见考点 4 例题的 t1~t4 时序：先拿锁的进程可能阻塞在同步信号量上，需要锁来解围的进程被锁挡住，互相等待成死锁。"},
+
+  {id:"o4q1", sec:"sec4", diff:"★", stem:"缓冲区可存放 5 个产品，多个生产者与消费者共享。mutex、empty、full 的初值应为：",
+   opts:["1、5、0","5、5、0","1、0、5","1、1、1"], ans:0,
+   exp:"mutex 保护缓冲区 = 1；empty 空位数 = 容量 5；full 产品数初始为 0。三个初值都与进程个数无关。"},
+  {id:"o4q2", sec:"sec4", diff:"★★", stem:"消费者写成 P(mutex); P(full); 取产品; V(mutex); V(empty); 在缓冲区为空时运行，将出现：",
+   opts:["消费者持锁阻塞在 full 上，生产者随后阻塞在 mutex 上，死锁","消费者正常等待产品，无异常","互斥失效，多个消费者同时进入","empty 信号量耗尽"], ans:0,
+   exp:"考点 4 例题的 t1~t4 时序：锁在等产品的人手里，能腾产品的生产者拿不到锁，双向等待。"},
+  {id:"o4q3", sec:"sec4", diff:"★★", stem:"生产者代码中 V(mutex) 与 V(full) 的执行顺序对调，则：",
+   opts:["不影响程序的正确性","导致死锁","导致互斥失效","导致缓冲区溢出"], ans:0,
+   exp:"V 永不阻塞、只增加资源，两个 V 之间没有依赖，可交换。铁律只约束 P 操作的相对顺序。"},
+  {id:"o4q4", sec:"sec4", diff:"★★", stem:"m 个生产者、n 个消费者共享容量 k 的缓冲区，实现正确同步互斥最少需要几个信号量？",
+   opts:["3 个：mutex(1)、empty(k)、full(0)","m+n 个：每对进程一个","2 个：empty(k) 与 full(0)","k+2 个"], ans:0,
+   exp:"缓冲区只有一块，mutex 一个即可；empty/full 负责双向同步。共 3 个，初值 1、k、0。"},
+
+  {id:"o5q1", sec:"sec5", diff:"★", stem:"读者优先算法中，整型变量 count 的作用是：",
+   opts:["记录正在读的读者数，让第一个读者 P(w)、最后一个读者 V(w)","记录读者总数以限制并发","统计读操作次数","替代信号量 w"], ans:0,
+   exp:"count 只服务于两行灵魂代码。它不限制读者数量——读者写者模型本就允许多读者并发。"},
+  {id:"o5q2", sec:"sec5", diff:"★★", stem:"对 count 的访问必须用 mutex 保护，否则最可能发生：",
+   opts:["多个读者同时判断自己 count==0，各自执行一次 P(w)，读者之间互相阻塞","写者进入后读者仍能进入","count 变为负数死循环","信号量 w 溢出"], ans:0,
+   exp:"两个读者并发读改 count，可能都看到 0、都执行 P(w)：第二个读者被自己人拿走的 w 阻塞，读者间出现假互斥。"},
+  {id:"o5q3", sec:"sec5", diff:"★★", stem:"写者优先算法相对读者优先额外引入的核心机制是：",
+   opts:["记录排队写者的信号量/计数器，使写者之后到达的读者等待","把 mutex 初值改为 0","禁止多读者并发","增加一个读者计数器"], ans:0,
+   exp:"读者优先的问题：读者流不断则写者饿死。写者优先在读者入口加一道'写者排队闸'，有写者等时新读者被挡住。"},
+  {id:"o5q4", sec:"sec5", diff:"★★★", stem:"R1、R2 同时到达且无读者在读（均越过判零检查）。若 count 保护失效，两人的处境是：",
+   opts:["各执行一次 P(w)，一人成功一人阻塞，两读者无法并发","两人都成功读","发生死锁，所有进程无法推进","写者优先级被提升"], ans:0,
+   exp:"R1 判 0 → P(w) 成功（w:1→0）；R2 同时判 0 → P(w) → w=−1，R2 阻塞。结果：本应并发的读者被串行化——是性能错误不是死锁（R1 正常推进，退出时唤醒 R2）。"},
+
+  {id:"o6q1", sec:"sec6", diff:"★", stem:"死锁的四个必要条件是：",
+   opts:["互斥、请求与保持、不可剥夺、循环等待","互斥、同步、异步、封闭","互斥、抢占、循环等待、饥饿","请求与保持、可剥夺、共享、并发"], ans:0,
+   exp:"标准四条件。记忆锚：'互斥、保着不放、抢不走、转圈圈'。破坏任何一个即可预防死锁。"},
+  {id:"o6q2", sec:"sec6", diff:"★★", stem:"哲学家问题'奇数号先拿左筷、偶数号先拿右筷'的方案，破坏的是：",
+   opts:["循环等待","请求与保持","互斥","不可剥夺"], ans:0,
+   exp:"每人仍是'拿一根等一根'（请求与保持仍在），但相邻哲学家抢同一根筷子打断了等待链，环路无法闭合。"},
+  {id:"o6q3", sec:"sec6", diff:"★★", stem:"'要求哲学家一次性申请全部所需筷子，要么全拿、要么一根不拿'，破坏的是：",
+   opts:["请求与保持","循环等待","互斥","不可剥夺"], ans:0,
+   exp:"一次性分配后不存在'持有一根等另一根'的中间态——这正是破坏请求与保持。与'最多 4 人'方案（破坏循环等待）对照记忆。"},
+  {id:"o6q4", sec:"sec6", diff:"★★", stem:"关于死锁的预防与避免，正确的是：",
+   opts:["预防是静态破坏必要条件，避免是分配时动态判断是否进入不安全状态","两者都是静态策略","避免可完全杜绝死锁且资源利用率最高","预防能保证资源利用率最高"], ans:0,
+   exp:"预防=事先立规矩；避免=运行时逐次安全判断（银行家）。避免策略保守（常拒绝实际安全的分配），利用率不高但保证安全状态。"},
+
+  {id:"o7q1", sec:"sec7", diff:"★", stem:"某进程 Allocation=(0,1,0)，Max=(1,2,1)（三类资源）。其 Need 向量为：",
+   opts:["(1,1,1)","(1,2,1)","(0,1,0)","(1,3,1)"], ans:0,
+   exp:"Need = Max − Allocation = (1−0, 2−1, 1−0) = (1,1,1)。银行家算法所有计算从这步开始。"},
+  {id:"o7q2", sec:"sec7", diff:"★★", stem:"系统处于安全状态，则必然正确的推断是：",
+   opts:["系统当前一定无死锁","系统今后一定不会死锁","不安全状态一定死锁","存在死锁时系统可能安全"], ans:0,
+   exp:"安全 ⇔ 存在安全序列 ⇔ 当前无死锁。但安全只对当下负责；不安全只是'有风险'，不一定真死锁——C 是最经典的错误说法。"},
+  {id:"o7q3", sec:"sec7", diff:"★", stem:"银行家算法属于死锁处理策略中的：",
+   opts:["死锁避免","死锁预防","检测与解除","鸵鸟策略"], ans:0,
+   exp:"每次分配前动态判断安全性，是'避免'的代表。预防是静态破坏必要条件。"},
+  {id:"o7q4", sec:"sec7", diff:"★★", stem:"资源分配图中存在环路，正确的说法是：",
+   opts:["每类资源仅 1 个时环路意味着死锁；资源有多个时不一定死锁","只要有环路就一定死锁","环路与死锁无关","环路一定可通过化简消除"], ans:0,
+   exp:"单实例资源：环 ⇔ 死锁；多实例：环只是必要条件，可化简（死锁定理：不可化简才处于死锁状态）。'有环必死锁'是常见陷阱。"},
+
+  {id:"o8q1", sec:"sec8", diff:"★★", stem:"页大小 4KB，逻辑地址 0x2A3F。其页号与页内偏移为：",
+   opts:["页号 2，偏移 0xA3F","页号 0x2A，偏移 0x3F","页号 0xA，偏移 0x23F","页号 0x2A3，偏移 0xF"], ans:0,
+   exp:"4KB = 0x1000，低 12 位是页内偏移：0x2A3F = 0x2000（页 2）+ 0xA3F（偏移）。物理地址 = 帧号×0x1000 + 0xA3F。"},
+  {id:"o8q2", sec:"sec8", diff:"★★", stem:"关于分页与分段存储管理，正确的说法是：",
+   opts:["页式有内部碎片无外部碎片，段式有外部碎片无内部碎片","页式有外部碎片无内部碎片","段式按固定大小划分","两者都会产生外部碎片"], ans:0,
+   exp:"页固定大小 → 最后一页装不满（内部碎片），帧之间不产生外零头；段按逻辑单位、长度可变 → 段间空隙（外部碎片），段内无内零头。"},
+  {id:"o8q3", sec:"sec8", diff:"★★", stem:"出现 Belady 异常（分配帧数增多、缺页次数反而增加）的置换算法是：",
+   opts:["FIFO","LRU","CLOCK","最佳置换 OPT"], ans:0,
+   exp:"只有 FIFO 有此异常（用队列记进入顺序、无未来信息）。OPT 理论最优不可能缺页更多；LRU/CLOCK 用访问历史，均无异常。"},
+  {id:"o8q4", sec:"sec8", diff:"★★", stem:"存取一次内存 100ns，查一次 TLB 10ns，TLB 命中率 90%（忽略其他开销）。有效访问时间约为：",
+   opts:["120ns","110ns","130ns","100ns"], ans:0,
+   exp:"命中：10+100=110；未命中：10+100（查页表）+100（取数）=210。EAT = 0.9×110 + 0.1×210 = 99+21 = 120ns。公式记住'未命中多访存一次'。"},
+
+  {id:"o9q1", sec:"sec9", diff:"★", stem:"文件物理结构中，既支持随机访问又便于动态扩展的是：",
+   opts:["索引分配","连续分配","隐式链接分配","以上都一样"], ans:0,
+   exp:"连续：支持随机访问但扩展要搬移；隐式链接：易扩展但只能顺序访问；索引：通过索引块随机定位，扩展只增块。所以'随机+可扩展'双优的是索引分配。"},
+  {id:"o9q2", sec:"sec9", diff:"★★", stem:"FAT（文件分配表）方式属于：",
+   opts:["显式链接分配","隐式链接分配","连续分配","索引分配"], ans:0,
+   exp:"FAT 把链接指针集中到一张常驻内存的表里，查找物理块不用逐块读盘（区别于隐式链接的关键），属于显式链接。"},
+  {id:"o9q3", sec:"sec9", diff:"★★", stem:"一个一级索引块（大小 1KB，每个地址项 4B）可管理的最大文件大小为：",
+   opts:["256KB","1KB","1024KB","64KB"], ans:0,
+   exp:"可索引块数 = 1KB/4B = 256 个，文件最大 = 256 × 1KB = 256KB。混合索引题都是这个除法打头。"},
+  {id:"o9q4", sec:"sec9", diff:"★★", stem:"位示图中每字 32 位表示 32 个盘块，盘块号 b 从 0 开始编号。块号 2050 位于：",
+   opts:["第 64 行第 2 列（均从 0 计）","第 65 行第 2 列","第 64 行第 0 列","第 2 行第 64 列"], ans:0,
+   exp:"行 = ⌊2050/32⌋ = 64，列 = 2050 mod 32 = 2。反向题（由行列求块号 = i×32+j）同样常考。"},
+
+  {id:"o10q1", sec:"sec10", diff:"★", stem:"DMA 方式与中断驱动方式的主要区别是：",
+   opts:["DMA 以块为单位传送，数据直达内存，仅开始和结束需要 CPU 干预","DMA 完全不需要 CPU 参与","中断方式以块为单位","DMA 需要每个字节中断一次"], ans:0,
+   exp:"中断驱动每字（节）中断一次 CPU；DMA 挪用周期在块级搬数据、数据不经过 CPU。'完全不需要 CPU'是错的——初始化与结束处理仍要 CPU。"},
+  {id:"o10q2", sec:"sec10", diff:"★★", stem:"磁头当前位于 60 号磁道，沿磁道号增大方向移动。请求队列：40、70、10、90、120。按 SCAN（电梯）算法，服务顺序为：",
+   opts:["70、90、120、40、10","40、70、10、90、120","70、40、90、10、120","120、90、70、40、10"], ans:0,
+   exp:"SCAN 沿当前方向扫到头再折返：先服务 70、90、120，到 120（方向上最大请求）后折返 40、10。SSTF 才是'谁近服务谁'。"},
+  {id:"o10q3", sec:"sec10", diff:"★★", stem:"单缓冲与双缓冲相比，双缓冲的优势是：",
+   opts:["输入与输出可并行，处理一块时间约为 max(T, C+M)","缓冲区容量更大","不需要设备控制器","传输时间缩短为原来的一半"], ans:0,
+   exp:"单缓冲必须'装满才能处理、处理完才能再装'（T 与 C+M 串行叠加）；双缓冲让填装与处理流水起来。不是容量问题，是并行性问题。"},
+  {id:"o10q4", sec:"sec10", diff:"★", stem:"SPOOLing 技术的主要作用是：",
+   opts:["把独占设备改造成可共享的虚拟设备","提高 CPU 主频","减少磁盘容量占用","替代中断机制"], ans:0,
+   exp:"典型应用：用磁盘上的打印队列模拟多台'虚拟打印机'，多个进程'同时'申请打印机互不阻塞。独占 → 共享，是它的唯一关键词。"}
+];
+
+const KEY = "408-os-v1";
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e) { state = {}; }
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+
+function renderQ(q, no){
+  const el = document.createElement("div");
+  el.className = "q";
+  el.id = "q-" + q.id;
+  const st = state[q.id];
+  el.innerHTML =
+    '<div class="meta">练习 ' + no + ' · 难度 <span class="diff">' + q.diff + "</span></div>" +
+    '<div class="stem">' + q.stem + "</div>" +
+    q.opts.map(function(o, i){ return '<button class="opt" data-i="' + i + '">' + String.fromCharCode(65+i) + ". " + o + "</button>"; }).join("") +
+    '<div class="exp"><b>解析：</b>' + q.exp + "</div>";
+  if (st !== undefined) {
+    el.classList.add("done");
+    if (!st.correct) el.classList.add("wrong");
+    el.querySelectorAll(".opt").forEach(function(b){
+      const i = parseInt(b.dataset.i);
+      if (i === q.ans) b.classList.add("correct");
+      else if (i === st.sel) b.classList.add("wrong");
+    });
+  }
+  el.addEventListener("click", function(ev){
+    const b = ev.target.closest(".opt");
+    if (!b || el.classList.contains("done")) return;
+    const sel = parseInt(b.dataset.i);
+    const correct = sel === q.ans;
+    state[q.id] = { sel: sel, correct: correct };
+    save();
+    el.classList.add("done");
+    if (!correct) el.classList.add("wrong");
+    el.querySelectorAll(".opt").forEach(function(x){
+      const i = parseInt(x.dataset.i);
+      x.disabled = true;
+      if (i === q.ans) x.classList.add("correct");
+      else if (i === sel) x.classList.add("wrong");
+    });
+    updateStats();
+  });
+  return el;
+}
+
+const secs = [];
+QS.forEach(function(q){ if (secs.indexOf(q.sec) < 0) secs.push(q.sec); });
+secs.forEach(function(sec){
+  const box = document.getElementById("qz-" + sec);
+  const mine = QS.filter(function(q){ return q.sec === sec; });
+  mine.forEach(function(q, i){ box.appendChild(renderQ(q, i + 1)); });
+});
+document.getElementById("totalNum").textContent = QS.length;
+
+function updateStats(){
+  const ids = Object.keys(state);
+  const wrong = ids.filter(function(k){ return !state[k].correct; });
+  document.getElementById("doneNum").textContent = ids.length;
+  document.getElementById("wrongNum").textContent = wrong.length;
+  secs.forEach(function(sec){
+    const el = document.getElementById("num-" + sec);
+    if (!el) return;
+    const mine = QS.filter(function(q){ return q.sec === sec; });
+    const done = mine.filter(function(q){ return state[q.id] !== undefined; }).length;
+    const w = mine.filter(function(q){ return state[q.id] && !state[q.id].correct; }).length;
+    el.textContent = "已做 " + done + "/" + mine.length + (w ? " · 错 " + w : "");
+  });
+  QS.forEach(function(q){
+    const cell = document.getElementById("q-" + q.id);
+    if (cell) cell.classList.toggle("wrong", state[q.id] !== undefined && !state[q.id].correct);
+  });
+  document.getElementById("banner").textContent =
+    "错题模式 · 共 " + wrong.length + " 道错题。重做一遍做对的题会自动移出错题本。";
+}
+updateStats();
+
+const btnW = document.getElementById("btnWrong");
+btnW.addEventListener("click", function(){
+  document.body.classList.toggle("wrongonly");
+  btnW.classList.toggle("active", document.body.classList.contains("wrongonly"));
+});
+document.getElementById("btnReset").addEventListener("click", function(){
+  if (confirm("确定清空本课程所有做题记录吗？")) {
+    localStorage.removeItem(KEY);
+    location.reload();
+  }
+});
+</script>
+</body>
+</html>

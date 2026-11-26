@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 复习站 · 数据结构</title>
+<style>
+:root{
+  --bg:#F6F5F1; --card:#FFFFFF; --border:rgba(0,0,0,0.15);
+  --text:#2C2C2A; --muted:#6B6A65;
+  --purple-50:#EEEDFE; --purple-600:#534AB7; --purple-800:#3C3489;
+  --teal-50:#E1F5EE; --teal-600:#0F6E56;
+  --red-50:#FCEBEB; --red-600:#A32D2D;
+  --green-50:#EAF3DE; --green-600:#3B6D11;
+  --amber-50:#FAEEDA; --amber-600:#854F0B;
+  --blue-50:#E6F1FB; --blue-600:#185FA5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.7}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+header.top{position:sticky;top:0;z-index:10;background:rgba(246,245,241,0.95);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header.top h1{font-size:15px;font-weight:500}
+header.top .stat{font-size:12px;color:var(--muted)}
+header.top .stat b{color:var(--red-600)}
+header.top .spacer{flex:1}
+.btn{border:1px solid var(--border);background:var(--card);border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;color:var(--text)}
+.btn:hover{background:var(--purple-50);border-color:var(--purple-600)}
+.btn.active{background:var(--purple-50);border-color:var(--purple-600);color:var(--purple-800)}
+nav.side{position:fixed;top:56px;left:0;bottom:0;width:216px;padding:18px 14px;border-right:1px solid var(--border);overflow-y:auto}
+nav.side a{display:block;padding:6px 10px;border-radius:8px;color:var(--text);text-decoration:none;font-size:13px;margin-bottom:2px}
+nav.side a:hover{background:var(--purple-50);color:var(--purple-800)}
+nav.side .grp{font-size:11px;color:var(--muted);margin:12px 0 4px 10px}
+main{margin-left:216px;padding:24px 32px 80px;max-width:920px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;margin-bottom:22px}
+.card h2{font-size:15px;font-weight:500;margin-bottom:4px}
+.card .sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.learn{background:var(--purple-50);border-radius:10px;padding:14px 16px;margin:10px 0}
+.learn p{margin-bottom:8px}
+.learn p:last-child{margin-bottom:0}
+.learn code,.exa code,.q code{font-family:Consolas,monospace;font-size:13px;background:rgba(0,0,0,0.05);padding:1px 5px;border-radius:4px}
+.exa{background:var(--teal-50);border-radius:10px;padding:14px 16px;margin:10px 0}
+.exa .tag{display:inline-block;font-size:11px;color:var(--teal-600);margin-bottom:6px}
+.exa .stem{margin-bottom:8px}
+.exa details{margin-top:8px}
+.exa summary{cursor:pointer;font-size:13px;font-weight:500;color:var(--teal-600)}
+.exa pre{background:#FFFFFF;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:13px;overflow-x:auto;margin:8px 0;white-space:pre}
+.tip{font-size:12px;color:var(--muted);margin-top:6px}
+.tip b{color:var(--red-600);font-weight:500}
+.qz-head{display:flex;align-items:center;gap:10px;margin:18px 0 10px}
+.qz-head .num{font-size:12px;color:var(--muted)}
+.q{border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;background:#FDFCFA}
+.q .meta{font-size:11px;color:var(--muted);margin-bottom:6px}
+.q .meta .diff{color:var(--amber-600)}
+.q .stem{margin-bottom:10px}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--border);background:#FFFFFF;border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer;margin-bottom:6px;color:var(--text);font-family:inherit}
+.opt:hover{border-color:var(--purple-600)}
+.opt.correct{background:var(--green-50);border-color:var(--green-600);color:var(--green-600)}
+.opt.wrong{background:var(--red-50);border-color:var(--red-600);color:var(--red-600)}
+.q.done .opt{cursor:default;opacity:0.85}
+.q .exp{display:none;margin-top:8px;font-size:13px;background:var(--blue-50);border-radius:8px;padding:10px 12px}
+.q.done .exp{display:block}
+.q .exp b{color:var(--blue-600);font-weight:500}
+.essay{background:var(--amber-50);border-radius:10px;padding:14px 16px;margin:10px 0}
+.essay summary{cursor:pointer;font-size:13px;font-weight:500;color:var(--amber-600)}
+.essay pre{background:#FFFFFF;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:13px;overflow-x:auto;margin:8px 0;white-space:pre}
+body.wrongonly .q:not(.wrong){display:none}
+body.wrongonly .learn,body.wrongonly .exa,body.wrongonly .essay,body.wrongonly .qz-head{display:none}
+body.wrongonly .card h2,body.wrongonly .card .sub{opacity:0.5}
+.banner{display:none;background:var(--red-50);border-radius:8px;padding:8px 14px;font-size:12px;color:var(--red-600);margin-bottom:16px}
+body.wrongonly .banner{display:block}
+</style>
+</head>
+<body>
+<h2 class="sr-only">408 数据结构复习：考点讲解、例题推演与互动练习题</h2>
+
+<header class="top">
+  <h1>408 复习站 · 数据结构（45 分）</h1>
+  <span class="stat">已做 <span id="doneNum">0</span>/<span id="totalNum">0</span> · 错题 <b id="wrongNum">0</b> 道</span>
+  <span class="spacer"></span>
+  <a class="btn" href="index.html">返回总览</a>
+  <button class="btn" id="btnWrong">只看错题</button>
+  <button class="btn" id="btnReset">重置记录</button>
+</header>
+
+<nav class="side">
+  <div class="grp">本章内容</div>
+  <a href="#sec1">考点 1 · 线性表、栈与队列</a>
+  <a href="#sec2">考点 2 · 树与二叉树</a>
+  <a href="#sec3">考点 3 · 图</a>
+  <a href="#sec4">考点 4 · 查找</a>
+  <a href="#sec5">考点 5 · 排序</a>
+  <a href="#sec6">综合大题（算法设计）</a>
+</nav>
+
+<main>
+<div class="banner" id="banner"></div>
+
+<section class="card" id="sec1">
+  <h2>考点 1 · 线性表、栈与队列</h2>
+  <div class="sub">选择题高频 · 循环队列与出入栈序列是常客</div>
+
+  <div class="learn">
+    <p><b>顺序表 vs 链表</b>：顺序表支持随机访问 O(1)、插删需移动 O(n)；链表插删改指针 O(1)（定位 O(n)）、不支持随机访问。按位序访问选顺序表，频繁插删选链表。</p>
+    <p><b>出入栈序列</b>：n 个不同元素依次入栈，合法出栈序列数 = 卡特兰数 <code>C(2n,n)/(n+1)</code>。判断合法性：任何时刻出栈元素只能是"还未出栈且已入栈"的最大者之后……直接模拟即可。</p>
+    <p><b>循环队列</b>：队满条件（牺牲一格）<code>(rear+1)%size == front</code>；元素个数 = <code>(rear − front + size) % size</code>。此时最多存 size − 1 个元素。</p>
+    <p><b>矩阵压缩</b>：对称矩阵下三角（1 起，i ≥ j）按行存到一维数组：k = i(i−1)/2 + j（k 从 1 计）。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 出栈序列合法性推演</span>
+    <div class="stem">入栈顺序为 1、2、3、4，判断出栈序列 <b>3, 1, 4, 2</b> 是否合法。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>目标序列第一个是 3：
+  依次入栈 1, 2, 3 → 栈内(底→顶): 1, 2, 3
+  弹出 3 ✓ 栈: 1, 2
+第二个是 1：但当前栈顶是 2，且 4 还未入栈
+  （入栈顺序固定，1 已被 2 压在下面）
+  既弹不出 1，也不可能再入栈改变栈顶顺序
+  ⇒ 非法</pre>
+      <p><b>判断技巧：</b>序列中某个元素出栈后，它下面"比它小的元素"必须已按降序…更快的通用办法是直接模拟：维护一个"下一个待入栈元素"指针，逐个比对目标序列，能模拟到底就合法。</p>
+      <p class="tip"><b>答：</b>不合法。1 出栈前 2 必须先出栈，而目标序列要求 1 先出。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec1"></span></div>
+  <div id="qz-sec1"></div>
+</section>
+
+<section class="card" id="sec2">
+  <h2>考点 2 · 树与二叉树</h2>
+  <div class="sub">全卷重中之重 · 二叉树性质、AVL、哈夫曼、B 树</div>
+
+  <div class="learn">
+    <p><b>二叉树性质</b>：叶子数 n₀ = 度 2 结点数 n₂ + 1。完全二叉树 n 个结点高度 = ⌊log₂n⌋ + 1。</p>
+    <p><b>遍历</b>：中序 + 先序（或中序 + 后序）可唯一确定二叉树；<b>先序 + 后序不能</b>（无法区分独子是左还是右）。</p>
+    <p><b>哈夫曼树</b>：n 个叶子 → 总结点数 2n − 1，<b>无度为 1 的结点</b>；哈夫曼编码是前缀码（任何编码不是另一个的前缀）。</p>
+    <p><b>BST</b>：中序遍历得到递增序列。AVL：任一结点平衡因子 ∈ {−1, 0, 1}，失衡按最小不平衡子树调整（LL/RR 单旋，LR/RL 双旋）。</p>
+    <p><b>B 树（m 阶）</b>：根至少 2 棵子树；非根非叶至少 ⌈m/2⌉ 棵子树、⌈m/2⌉−1 个关键字；每结点至多 m 棵子树、m−1 个关键字。B+ 树：n 棵子树 n 个关键字，叶子含全部关键字并链表相连，非叶仅作索引。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · AVL 插入与旋转推演</span>
+    <div class="stem">依次插入 3、2、1、4、5，画出每次失衡调整后的树形，并写出最终树的先序序列。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>插 3:      3
+插 2:      3(2, )        无失衡
+插 1:      3(2(1,), )    结点 3 失衡 bf=2，LL 型
+  → 右单旋:  2(1, 3)
+插 4:      2(1, 3(,4))   无失衡
+插 5:      2(1, 3(,4(,5)))
+  结点 3 失衡 bf=-2，RR 型 → 左单旋:
+  3 的右孩子 4 上提，3 成为 4 的左孩子
+最终:      2(1, 4(3, 5))</pre>
+      <p><b>答：</b>先序序列 <b>2, 1, 4, 3, 5</b>。</p>
+      <p class="tip"><b>口诀：</b>LL 右旋、RR 左旋、LR 先左后右、RL 先右后左——第一个字母指插入方向。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec2"></span></div>
+  <div id="qz-sec2"></div>
+</section>
+
+<section class="card" id="sec3">
+  <h2>考点 3 · 图</h2>
+  <div class="sub">大题常客 · 遍历、最短路、拓扑、关键路径</div>
+
+  <div class="learn">
+    <p><b>存储</b>：邻接矩阵判断两点邻接 O(1)、空间 O(n²)，适合稠密图；邻接表空间 O(n+e)，适合稀疏图。无向图邻接矩阵是对称矩阵，边数 = 非零元素数 / 2。</p>
+    <p><b>遍历</b>：BFS 用队列（可求无权图单源最短路），DFS 用栈/递归。邻接矩阵下两者均 O(n²)，邻接表下均 O(n+e)。</p>
+    <p><b>最小生成树</b>：Prim 逐点扩张 O(n²)，适合<b>稠密图</b>；Kruskal 逐边挑选 O(elog₂e)，适合<b>稀疏图</b>。MST 形态可能不唯一但边权之和唯一。</p>
+    <p><b>最短路</b>：Dijkstra 单源、<b>不能处理负权</b>；Floyd 全源 O(n³)、可负权边但不能有负权回路。</p>
+    <p><b>拓扑与关键路径</b>：拓扑序列一般不唯一；AOE 网关键路径 = 最长路径，关键活动满足最早开始 = 最迟开始。缩短单个关键活动<b>不一定</b>缩短工期（可能同时存在多条关键路径）。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · Dijkstra 逐步推演</span>
+    <div class="stem">有向图：A→B=1，A→C=4，B→C=2，B→D=6，C→D=3。求 A 到 D 的最短路径与长度。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>初始: dist[B]=1, dist[C]=4, dist[D]=∞
+选 B(最小 1)，用 B 松弛:
+  C: min(4, 1+2)=3   D: min(∞, 1+6)=7
+选 C(最小 3)，用 C 松弛:
+  D: min(7, 3+3)=6
+选 D(6)。结束。</pre>
+      <p><b>答：</b>最短路径 A→B→C→D，长度 6。</p>
+      <p class="tip"><b>易错：</b>Dijkstra 每轮从"未确定"集合中选 dist 最小的点，一旦某点被选中其距离即最终值——这也是它容不下负权边的原因。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec3"></span></div>
+  <div id="qz-sec3"></div>
+</section>
+
+<section class="card" id="sec4">
+  <h2>考点 4 · 查找</h2>
+  <div class="sub">散列表 ASL 计算是大题常客</div>
+
+  <div class="learn">
+    <p><b>二分查找</b>：仅适用于<b>有序 + 顺序存储</b>；n 个元素最多比较 ⌈log₂(n+1)⌉ 次，判定树是平衡的二叉排序树。</p>
+    <p><b>散列表</b>：装填因子 α = 表中元素数 / 表长；α 越大冲突概率越高。查找效率取决于<b>散列函数、冲突处理方法、装填因子</b>，不直接依赖表长或元素数本身。</p>
+    <p><b>冲突处理</b>：线性探测易"堆积（聚集）"；平方探测缓解堆积；拉链法无堆积、删除方便，但需额外指针空间。</p>
+    <p><b>ASL 计算</b>：成功的 ASL = 各元素比较次数之和 / 元素数；不成功的 ASL = 从每个可能的散列地址出发到"空位"的比较次数之和 / 散列函数取值数。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 线性探测与 ASL 推演</span>
+    <div class="stem">散列函数 H(key) = key mod 7，表长 10，用线性探测法依次插入 14、36、42、8。画出表，并计算查找成功的平均查找长度。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>14: 14%7=0 → 放 0 号位（1 次）
+36: 36%7=1 → 放 1 号位（1 次）
+42: 42%7=0 → 0 被占 → 1 被占 → 放 2 号位（3 次）
+ 8:  8%7=1 → 1 被占 → 2 被占 → 放 3 号位（3 次）
+表: [14][36][42][8][ ][ ][ ][ ][ ][ ]</pre>
+      <p><b>答：</b>ASL成功 = (1+1+3+3)/4 = <b>2</b>。</p>
+      <p class="tip"><b>注意：</b>比较次数 = 从散列地址开始探测到最终落位（含落位确认）的地址访问次数，不是散列值本身。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec4"></span></div>
+  <div id="qz-sec4"></div>
+</section>
+
+<section class="card" id="sec5">
+  <h2>考点 5 · 排序</h2>
+  <div class="sub">稳定性 + 复杂度对比是选择题固定菜</div>
+
+  <div class="learn">
+    <p><b>稳定的</b>：直接插入、冒泡、归并、基数。<b>不稳定的</b>：简单选择、希尔、快排、堆。（口诀：稳定四君子，选择希尔快排堆不靠谱。）</p>
+    <p><b>快排</b>：平均 O(nlog₂n)，<b>基本有序（或基本逆序）时最坏 O(n²)</b>；每趟至少确定一个元素的最终位置。</p>
+    <p><b>堆排序</b>：建初始堆 O(n)，之后每次取堆顶再调整 O(log₂n)；适合取前 k 大/小元素。</p>
+    <p><b>归并</b>：稳定 O(nlog₂n)，需要 O(n) 辅助空间。<b>基数排序</b>：d 趟"分配-收集"，与初始序列是否有序无关。</p>
+    <p><b>简单选择</b>：比较次数固定 n(n−1)/2，与初始状态无关。<b>折半插入</b>：减少比较次数，移动次数不变。<b>基本有序的序列</b>首选直接插入 / 冒泡（可近 O(n)）。</p>
+  </div>
+
+  <div class="exa">
+    <span class="tag">例题 · 快排一趟划分推演</span>
+    <div class="stem">对 [45, 20, 60, 30, 70, 10] 以第一个元素 45 为枢轴做一趟快速划分，写出结果。</div>
+    <details><summary>展开完整推演</summary>
+      <pre>枢轴 45 暂存。i 从左找 >45，j 从右找 <45。
+j: 10 < 45 停（位置 5）；i: 60 > 45 停（位置 2）
+  交换 → [45, 20, 10, 30, 70, 60]
+j 继续左移: 30 < 45 停（位置 3）
+i 继续右移: 70 > 45 停（位置 4）
+  此时 i > j，枢轴放入位置 3
+结果: [30, 20, 10, 45, 70, 60]</pre>
+      <p><b>答：</b>一趟后 [30, 20, 10, <b>45</b>, 70, 60]，45 到达最终位置，左区 {30,20,10} 右区 {70,60}。</p>
+      <p class="tip"><b>自查法：</b>枢轴左边全 ≤ 枢轴、右边全 ≥ 枢轴，即划分成功。</p>
+    </details>
+  </div>
+
+  <div class="qz-head"><h3>练习题</h3><span class="num" id="num-sec5"></span></div>
+  <div id="qz-sec5"></div>
+</section>
+
+<section class="card" id="sec6">
+  <h2>综合大题（算法设计）</h2>
+  <div class="sub">限时 20 分钟 · 先写思路和伪代码再展开对照</div>
+
+  <div class="essay">
+    <b>题目：</b>带头结点的单链表 L，结点值为整数且 |值| ≤ 表长 n。设计一个<b>时间 O(n)</b> 的算法，删除链表中绝对值相等的结点，只保留第一次出现的那个，结点相对次序不变。要求给出算法思想、代码，并说明空间复杂度。
+  </div>
+  <div class="essay">
+    <details><summary>展开参考答案与评分点</summary>
+      <p><b>算法思想：</b>利用值域有限（|值| ≤ n）这一条件，开一个长度 n+1 的标记数组 flag（初值 false）。一趟扫描：遇到值 v，若 flag[|v|] 为 false，置 true 保留；为 true 则删除当前结点。</p>
+      <pre>void dedup(LinkList L, int n){
+    int *flag = calloc(n+1, sizeof(int));
+    LNode *p = L->next, *pre = L;
+    while(p != NULL){
+        int v = abs(p->data);
+        if(flag[v]){            // 已出现过，删除
+            pre->next = p->next;
+            free(p);
+            p = pre->next;
+        } else {                // 首次出现，保留
+            flag[v] = 1;
+            pre = p;
+            p = p->next;
+        }
+    }
+    free(flag);
+}</pre>
+      <p><b>复杂度：</b>时间 O(n)（一趟扫描）；空间 O(n)（标记数组）。若不允许辅助数组且链表无序，只能双重循环 O(n²)——审题时要抓住"|值| ≤ n"这个提示。</p>
+      <p><b>评分点自查：</b>① pre 指针与删除时先保存 p->next；② 头结点处理正确（pre 从 L 开始）；③ 空间复杂度说明；④ 边界：空表、全重复。</p>
+    </details>
+  </div>
+</section>
+
+</main>
+
+<script>
+const QS = [
+  {id:"d1q1", sec:"sec1", diff:"★", stem:"循环队列的存储空间为 Q[0..9]（size=10），当前 front=3、rear=8。队列中元素个数为：",
+   opts:["5","6","4","15"], ans:0,
+   exp:"元素个数 = (rear − front + size) % size = (8 − 3 + 10) % 10 = 5。该公式无论 front/rear 谁大都成立。"},
+  {id:"d1q2", sec:"sec1", diff:"★★", stem:"n 个不同元素依次进栈，可能的出栈序列个数为：",
+   opts:["C(2n, n) / (n+1)","n!","2ⁿ","n·(n−1)/2"], ans:0,
+   exp:"卡特兰数 C(2n,n)/(n+1)。例如 n=3 时为 5 种。这是选择题的老熟人，建议把 n=3、n=4 的具体数值（5、14）也记住用于验证。"},
+  {id:"d1q3", sec:"sec1", diff:"★", stem:"用头插法将元素 a₁, a₂, a₃ 依次插入带头结点的空单链表，链表中的顺序（从头到尾）为：",
+   opts:["a₃, a₂, a₁","a₁, a₂, a₃","a₂, a₃, a₁","a₁, a₃, a₂"], ans:0,
+   exp:"头插法：每个新元素都插在头结点之后，先来的被压到后面，最终顺序与输入相反。尾插法则保持输入顺序。"},
+  {id:"d1q4", sec:"sec1", diff:"★", stem:"循环队列采用'牺牲一个存储单元'法区分队空与队满，容量为 size 的数组最多能存放的元素个数是：",
+   opts:["size − 1","size","size + 1","size / 2"], ans:0,
+   exp:"牺牲一格：队满条件 (rear+1)%size == front，front==rear 表示队空。代价是一个格子永远不用，换来判空判满的简洁区分。"},
+  {id:"d1q5", sec:"sec1", diff:"★★", stem:"对称矩阵 A[1..6,1..6] 的下三角部分（i ≥ j）按行优先存入一维数组（下标从 1 开始），元素 A[4][2] 对应的下标 k 为：",
+   opts:["8","7","9","10"], ans:0,
+   exp:"k = i(i−1)/2 + j = 4×3/2 + 2 = 8。第 i 行前有 1+2+…+(i−1) = i(i−1)/2 个元素，加上本行第 j 个。"},
+
+  {id:"d2q1", sec:"sec2", diff:"★", stem:"一棵二叉树有 20 个叶子结点，则度为 2 的结点数为：",
+   opts:["19","20","21","18"], ans:0,
+   exp:"n₀ = n₂ + 1 ⇒ n₂ = 20 − 1 = 19。推导：总结点数 = n₀+n₁+n₂，边数 = 总结点数 − 1 = n₁ + 2n₂，联立即得。"},
+  {id:"d2q2", sec:"sec2", diff:"★★", stem:"具有 100 个结点的完全二叉树的高度（根为第 1 层）为：",
+   opts:["7","6","8","5"], ans:0,
+   exp:"高度 = ⌊log₂100⌋ + 1 = 6 + 1 = 7。因为 2⁶ = 64 ≤ 100 < 128 = 2⁷，前 6 层最多 63 个结点，第 7 层必然有结点。"},
+  {id:"d2q3", sec:"sec2", diff:"★★", stem:"下列遍历序列组合中，能唯一确定一棵二叉树的是：",
+   opts:["中序 + 先序","先序 + 后序","仅先序","层序 + 后序"], ans:0,
+   exp:"必须含中序才能划分左右子树。先序+后序不能：独子结点无法判定是左孩子还是右孩子。层序+后序同样缺中序，不行。"},
+  {id:"d2q4", sec:"sec2", diff:"★", stem:"有 9 个叶子结点的哈夫曼树，结点总数为：",
+   opts:["17","18","16","19"], ans:0,
+   exp:"哈夫曼树无度为 1 的结点：n₀ = 9，n₂ = n₀ − 1 = 8，总数 = 9 + 8 = 2n − 1 = 17。"},
+  {id:"d2q5", sec:"sec2", diff:"★★★", stem:"5 阶 B 树中，除根结点外的任意非叶结点至少包含的关键字数为：",
+   opts:["2","3","4","1"], ans:0,
+   exp:"非根非叶结点至少 ⌈m/2⌉ = 3 棵子树，关键字数 = 子树数 − 1 = 2。根结点至少 2 棵子树、1 个关键字。注意'子树数 = 关键字数 + 1'是 B 树（B+ 树是子树数 = 关键字数）。"},
+
+  {id:"d3q1", sec:"sec3", diff:"★", stem:"无向图有 16 条边，所有顶点的度数之和为：",
+   opts:["32","16","31","依赖顶点数"], ans:0,
+   exp:"每条边贡献 2 个度，度数之和 = 2e = 32。握手定理，常与'奇度结点数为偶数'一起出题。"},
+  {id:"d3q2", sec:"sec3", diff:"★★", stem:"n 个顶点的有向强连通图，最少包含的边数为：",
+   opts:["n","n−1","n(n−1)","2n"], ans:0,
+   exp:"n 个顶点构成一个有向环即强连通，恰 n 条边。少于 n 条必有顶点入度或出度为 0，无法强连通。"},
+  {id:"d3q3", sec:"sec3", diff:"★", stem:"关于图的遍历，正确的说法是：",
+   opts:["DFS 需要借助栈（或递归），BFS 需要借助队列","DFS 借助队列，BFS 借助栈","两者都只需标记数组","BFS 不能用于无向图"], ans:0,
+   exp:"DFS 深入到底需回溯 → 栈；BFS 逐层扩展 → 队列。BFS 还有个隐藏考点：对无权图，BFS 从单源出发第一次到达即最短路径。"},
+  {id:"d3q4", sec:"sec3", diff:"★★", stem:"对稠密图求最小生成树，宜选用：",
+   opts:["Prim 算法","Kruskal 算法","Dijkstra 算法","拓扑排序"], ans:0,
+   exp:"Prim O(n²) 与边数无关，稠密图占优；Kruskal O(elog₂e) 逐边处理，稀疏图占优。Dijkstra 是最短路不是 MST——三个算法混着考是常见陷阱。"},
+  {id:"d3q5", sec:"sec3", diff:"★★★", stem:"关于关键路径，正确的说法是：",
+   opts:["缩短一个关键活动的时间，工期不一定缩短","关键路径是 AOE 网中从源点到汇点的最短路径","关键活动的时间余量为正","关键路径一定只有一条"], ans:0,
+   exp:"AOE 网可能有多条关键路径，只缩短其中一条上的活动工期不变；且缩短后原本非关键的活动可能成为新的关键活动。关键活动满足最早开始 = 最迟开始（余量为 0）。"},
+
+  {id:"d4q1", sec:"sec4", diff:"★", stem:"对含有 11 个元素的有序表进行二分查找，最多需要的比较次数为：",
+   opts:["4","3","5","11"], ans:0,
+   exp:"⌈log₂(11+1)⌉ = ⌈3.58⌉ = 4。也可用判定树：11 个结点的判定树高度 4（根为第 1 层）。"},
+  {id:"d4q2", sec:"sec4", diff:"★", stem:"散列表的装填因子 α 越大，则：",
+   opts:["发生冲突的可能性越大","查找效率越高","表越长","散列函数越好"], ans:0,
+   exp:"α = 元素数/表长，越满越容易撞车。散列表的平均查找长度是 α 的函数，而非 n 或 m 的直接函数——这与一般查找结构不同。"},
+  {id:"d4q3", sec:"sec4", diff:"★★", stem:"与线性探测法相比，拉链（链地址）法的优点是：",
+   opts:["不会产生堆积现象，且删除记录方便","不需要散列函数","空间占用一定更少","装填因子必须小于 1"], ans:0,
+   exp:"拉链法把同义词串成链表，探测序列互不干扰，无一次/二次堆积；删除只改指针。代价是指针空间；线性探测不能物理删除（只能做惰性标记）也是常考点。"},
+  {id:"d4q4", sec:"sec4", diff:"★", stem:"二分查找适用的前提是：",
+   opts:["顺序存储且元素有序","链式存储且元素有序","顺序存储即可","元素有序即可"], ans:0,
+   exp:"两个条件缺一不可：有序才能决定往哪半边找，顺序存储才能 O(1) 取中点。链表上二分会退化为遍历。"},
+  {id:"d4q5", sec:"sec4", diff:"★★", stem:"散列表的查找效率（平均查找长度）直接取决于：",
+   opts:["散列函数、处理冲突的方法、装填因子","仅取决于表长","仅取决于元素个数","关键字的大小"], ans:0,
+   exp:"三大因素。特别提醒：与表中元素个数 n、表长 m 没有'直接'关系——相同 α 下不同冲突处理方法的 ASL 差别可以很大。"},
+
+  {id:"d5q1", sec:"sec5", diff:"★", stem:"下列排序方法中，全部属于稳定排序的一组是：",
+   opts:["直接插入、冒泡、归并","快速、堆、归并","简单选择、希尔、基数","冒泡、快速、堆"], ans:0,
+   exp:"稳定的四君子：直接插入、冒泡、归并、基数。不稳定：简单选择、希尔、快排、堆。记反了会连环丢分，建议整体背。"},
+  {id:"d5q2", sec:"sec5", diff:"★★", stem:"待排序序列基本有序（接近正序）时，效率最高的排序方法是：",
+   opts:["直接插入排序","快速排序","堆排序","简单选择排序"], ans:0,
+   exp:"基本有序时直接插入/冒泡可近 O(n)；而快排在基本有序时最坏 O(n²)——'越有序越快'只适用于插入类和冒泡。"},
+  {id:"d5q3", sec:"sec5", diff:"★★", stem:"快速排序在最坏情况下的时间复杂度为 O(n²)，触发最坏情况的典型输入是：",
+   opts:["序列基本有序或基本逆序","序列完全随机","序列中所有元素互不相同","序列长度为 2 的幂"], ans:0,
+   exp:"基本有序时每趟划分都极度不平衡（一边空一边 n−1），递归深度达 n。对策：三者取中或随机选枢轴。"},
+  {id:"d5q4", sec:"sec5", diff:"★★", stem:"关于堆排序，正确的说法是：",
+   opts:["建初始堆的时间复杂度为 O(n)","建初始堆需要 O(nlogn)","它是稳定排序","只能对升序数据排序"], ans:0,
+   exp:"自底向上建堆是 O(n)（各层结点数×下滤代价求和）；之后每次取堆顶+调整共 O(nlogn)，整体 O(nlogn)。不稳定，且与初始状态无关。"},
+  {id:"d5q5", sec:"sec5", diff:"★★", stem:"简单选择排序的比较次数与初始序列状态的关系是：",
+   opts:["比较次数固定为 n(n−1)/2，与初始状态无关","基本有序时比较次数显著减少","基本逆序时比较次数增加","比较次数为 O(nlogn)"], ans:0,
+   exp:"无论什么输入，简单选择都要完整扫 i = 1..n−1 遍找最值，比较次数恒为 n(n−1)/2。移动次数最多 3(n−1) 次，倒也与初始状态关系不大。"}
+];
+
+const KEY = "408-ds-v1";
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e) { state = {}; }
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+
+function renderQ(q, no){
+  const el = document.createElement("div");
+  el.className = "q";
+  el.id = "q-" + q.id;
+  const st = state[q.id];
+  el.innerHTML =
+    '<div class="meta">练习 ' + no + ' · 难度 <span class="diff">' + q.diff + "</span></div>" +
+    '<div class="stem">' + q.stem + "</div>" +
+    q.opts.map(function(o, i){ return '<button class="opt" data-i="' + i + '">' + String.fromCharCode(65+i) + ". " + o + "</button>"; }).join("") +
+    '<div class="exp"><b>解析：</b>' + q.exp + "</div>";
+  if (st !== undefined) {
+    el.classList.add("done");
+    if (!st.correct) el.classList.add("wrong");
+    el.querySelectorAll(".opt").forEach(function(b){
+      const i = parseInt(b.dataset.i);
+      if (i === q.ans) b.classList.add("correct");
+      else if (i === st.sel) b.classList.add("wrong");
+    });
+  }
+  el.addEventListener("click", function(ev){
+    const b = ev.target.closest(".opt");
+    if (!b || el.classList.contains("done")) return;
+    const sel = parseInt(b.dataset.i);
+    const correct = sel === q.ans;
+    state[q.id] = { sel: sel, correct: correct };
+    save();
+    el.classList.add("done");
+    if (!correct) el.classList.add("wrong");
+    el.querySelectorAll(".opt").forEach(function(x){
+      const i = parseInt(x.dataset.i);
+      x.disabled = true;
+      if (i === q.ans) x.classList.add("correct");
+      else if (i === sel) x.classList.add("wrong");
+    });
+    updateStats();
+  });
+  return el;
+}
+
+const secs = [];
+QS.forEach(function(q){ if (secs.indexOf(q.sec) < 0) secs.push(q.sec); });
+secs.forEach(function(sec){
+  const box = document.getElementById("qz-" + sec);
+  const mine = QS.filter(function(q){ return q.sec === sec; });
+  mine.forEach(function(q, i){ box.appendChild(renderQ(q, i + 1)); });
+});
+document.getElementById("totalNum").textContent = QS.length;
+
+function updateStats(){
+  const ids = Object.keys(state);
+  const wrong = ids.filter(function(k){ return !state[k].correct; });
+  document.getElementById("doneNum").textContent = ids.length;
+  document.getElementById("wrongNum").textContent = wrong.length;
+  secs.forEach(function(sec){
+    const el = document.getElementById("num-" + sec);
+    if (!el) return;
+    const mine = QS.filter(function(q){ return q.sec === sec; });
+    const done = mine.filter(function(q){ return state[q.id] !== undefined; }).length;
+    const w = mine.filter(function(q){ return state[q.id] && !state[q.id].correct; }).length;
+    el.textContent = "已做 " + done + "/" + mine.length + (w ? " · 错 " + w : "");
+  });
+  QS.forEach(function(q){
+    const cell = document.getElementById("q-" + q.id);
+    if (cell) cell.classList.toggle("wrong", state[q.id] !== undefined && !state[q.id].correct);
+  });
+  document.getElementById("banner").textContent =
+    "错题模式 · 共 " + wrong.length + " 道错题。重做一遍做对的题会自动移出错题本。";
+}
+updateStats();
+
+const btnW = document.getElementById("btnWrong");
+btnW.addEventListener("click", function(){
+  document.body.classList.toggle("wrongonly");
+  btnW.classList.toggle("active", document.body.classList.contains("wrongonly"));
+});
+document.getElementById("btnReset").addEventListener("click", function(){
+  if (confirm("确定清空本课程所有做题记录吗？")) {
+    localStorage.removeItem(KEY);
+    location.reload();
+  }
+});
+</script>
+</body>
+</html>

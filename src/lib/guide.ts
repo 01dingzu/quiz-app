@@ -119,6 +119,11 @@ interface GuideResource {
  *     母题库、标注表都是全量覆盖（真题 100% 标注）。这三科的真题解析大多缺失
  *     或带水印，无法逐字锚定，因此**不生成干扰项诊断**（诊断分片 questions 为空），
  *     但「知识点 + 前置知识链 + 母题骨架」三项不受影响，仍是完整交付。
+ *   · 数学一三科：由 scripts/ai-guide/4-build-math.mjs 生成，**共用一份三科全量
+ *     资源**。math.json 的 subject 按题号段硬分，约 30 道线代/概率题被标成高等
+ *     数学；按 subject 分科会让这些题拿到错误学科的知识点，故三行指向同一组
+ *     文件，每题的 topic / mt 按题干实际考点人工指定。数学选项是公式、解析是
+ *     LaTeX，不做干扰项诊断与解析体检（两分片为空）。
  * 新增科目只需在这里加一行；缺文件的加载器会静默返回 null。
  */
 const RESOURCES: GuideResource[] = [
@@ -153,6 +158,31 @@ const RESOURCES: GuideResource[] = [
     mothers: 'guide/mothers-408-net.json',
     warn: 'guide/exp-warn-408-net.json',
     tags: 'guide/tags-408-net.json',
+  },
+  // 数学一三科共用一份全量资源（见上方说明）
+  {
+    subject: '高等数学',
+    kg: 'guide/kg-math.json',
+    diag: 'guide/diag/math.json',
+    mothers: 'guide/mothers-math.json',
+    warn: 'guide/exp-warn-math.json',
+    tags: 'guide/tags-math.json',
+  },
+  {
+    subject: '线性代数',
+    kg: 'guide/kg-math.json',
+    diag: 'guide/diag/math.json',
+    mothers: 'guide/mothers-math.json',
+    warn: 'guide/exp-warn-math.json',
+    tags: 'guide/tags-math.json',
+  },
+  {
+    subject: '概率统计',
+    kg: 'guide/kg-math.json',
+    diag: 'guide/diag/math.json',
+    mothers: 'guide/mothers-math.json',
+    warn: 'guide/exp-warn-math.json',
+    tags: 'guide/tags-math.json',
   },
 ]
 
